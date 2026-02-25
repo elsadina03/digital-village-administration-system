@@ -1,0 +1,36 @@
+.topbar {
+  height: 56px;
+  background: #ffffff;
+  border-bottom: 1px solid #e8edf2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+}
+
+.iconBtn {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+
+.iconBtn:hover { background: #f3f4f6; }
+
+.searchWrap { flex: 1; display: flex; justify-content: center; }
+.search {
+  width: min(520px, 100%);
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  outline: none;
+}
+
+.right { display: flex; align-items: center; gap: 10px; }
+
+.profile { display: flex; align-items: center; gap: 10px; }
+.avatar { width: 32px; height: 32px; border-radius: 999px; background: #d1d5db; }
+.profileText .name { font-weight: 600; font-size: 13px; line-height: 1.1; }
+.profileText .role { font-size: 12px; opacity: 0.7; }
