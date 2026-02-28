@@ -5,7 +5,8 @@ import Dashboard from "./pages/Layanan/Arsip/Dashboard";
 import PengajuanSurat from "./pages/Layanan/Pengajuan/PengajuanSurat";
 import ArsipDokumen from "./pages/Layanan/Arsip/ArsipDokumen";
 import Pengaduan from "./pages/Layanan/Pengaduan/Pengaduan";
-import Program from "./pages/Program-Kegiatan/Program";
+import Program from "./pages/Program-Kegiatan/Program_Desa/Program";
+import Keuangan from "./pages/Keuangan/Data-Anggaran";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/pengajuan" element={<PengajuanSurat />} />
         <Route path="/arsip" element={<ArsipDokumen />} />
+        <Route path="/data-anggaran" element={<Keuangan />} />
 
         {/* Tambahan route */}
         <Route path="/profile" element={<div>Profile</div>} />
