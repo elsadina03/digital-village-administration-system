@@ -7,6 +7,7 @@ import ArsipDokumen from "./pages/Layanan/Arsip/ArsipDokumen";
 import Pengaduan from "./pages/Layanan/Pengaduan/Pengaduan";
 import Program from "./pages/Program-Kegiatan/Program_Desa/Program";
 import Keuangan from "./pages/Keuangan/Data-Anggaran";
+import LaporanKegiatan from "./pages/Program-Kegiatan/Laporan_Kegiatan/LaporanKegiatan";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="/profile" element={<div>Profile</div>} />
         <Route path="/pengaduan" element={<Pengaduan />} />
         <Route path="/program-desa" element={<Program />} />
+        <Route path="/laporan-kegiatan" element={<LaporanKegiatan />} />
         <Route path="/berita" element={<div>Berita</div>} />
 
         <Route path="/payment/overview" element={<div>Payment Overview</div>} />
