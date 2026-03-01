@@ -1,0 +1,148 @@
+.laporan-container {
+  padding: 20px;
+}
+.laporan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.laporan-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.laporan-search {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #d0d6d4;
+  min-width: 240px;
+}
+.laporan-buttons .btn-export {
+  background: #0f5132;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.table-wrap {
+  overflow: auto;
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+}
+.laporan-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.laporan-table th,
+.laporan-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #eef2f2;
+  text-align: left;
+}
+.progress {
+  position: relative;
+  height: 20px;
+  background: #eef6f4;
+  border-radius: 10px;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg,#2dbd7e,#0f5132);
+  border-radius: 10px;
+}
+.progress-text {
+  position: absolute;
+  right: 8px;
+  top: 0;
+  font-size: 12px;
+  color: #fff;
+}
+.action {
+  margin-left: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* New styles for updated layout */
+.laporan-page {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.card {
+  background: #f8fdfb;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 6px 18px rgba(12, 43, 36, 0.06);
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.title-and-search {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.title-and-search h3 { margin: 0; color: #0f5132 }
+.laporan-search { min-width: 300px; }
+
+.btn-export-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(90deg,#2dbd7e,#0f5132);
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(47,122,94,0.15);
+}
+.btn-export-main .caret { margin-left: 6px; opacity: 0.9 }
+.export-wrap { position: relative; }
+.export-menu {
+  position: absolute;
+  right: 0;
+  margin-top: 8px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(12,43,36,0.12);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.export-menu button {
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.export-menu button:hover { background: #f2f7f5 }
+
+.table-container { overflow-x: auto; }
+.laporan-table { width: 100%; min-width: 1000px; border-collapse: collapse; background: white; border-radius: 8px; }
+.laporan-table th, .laporan-table td { padding: 14px 12px; border-bottom: 1px solid #eef2f2 }
+.laporan-table thead th { background: #0f5132; color: #fff; font-weight: 600; }
+.laporan-table tbody tr:hover { background: #fbfffd }
+.strong { font-weight: 700; color: #0e6b4f }
+.progress { height: 12px; background: #eef6f4; border-radius: 8px; overflow: hidden }
+.progress-bar { height: 100%; background: linear-gradient(90deg,#9ee0c2,#2dbd7e); }
+.progress-label { font-size: 12px; color: #0f5132; margin-top: 6px }
+
+.doc-section h4 { color: #0f5132; margin: 0 0 12px 0 }
+.doc-category { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 20px }
+.doc-title { width: 220px; color: #0f5132; font-weight: 600 }
+.doc-gallery { display: flex; gap: 12px; overflow-x: auto; padding: 8px 0 }
+.doc-item { width: 160px; height: 100px; flex: 0 0 auto; border-radius: 8px; overflow: hidden }
+.doc-item img { width: 100%; height: 100%; object-fit: cover; display: block }
+

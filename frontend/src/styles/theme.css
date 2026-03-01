@@ -1,0 +1,104 @@
+/* Global design tokens: colors and typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Colors */
+  --color-primary: #004D40;
+  /* Primary */
+  --color-secondary: #26A69A;
+  /* Secondary */
+  --color-tertiary: #B2DFDB;
+  /* Tertiary */
+  --color-bg: #F4F7F6;
+  /* Background */
+  --color-text-1: #263238;
+  /* Text 1 */
+  --color-text-2: #546E7A;
+  /* Text 2 */
+  --color-text-3: #BDC1C6;
+  /* Text 3 */
+  --color-success: #43A047;
+  --color-warning: #FFC107;
+  --color-danger: #D32F2F;
+
+  /* Surface / utility */
+  --surface-border: #e6eef0;
+  --surface-muted: #f1f5f9;
+
+  /* Typography (Inter loaded above) */
+  --font-family-base: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+
+  /* Typographic scale as requested */
+  --typo-primary-size: 45px;
+  /* Primary > Inter - Semi Bold - 45 */
+  --typo-primary-weight: 600;
+
+  --typo-secondary-size: 30px;
+  /* Secondary > Inter - Medium - 30 (letter-spacing 3%) */
+  --typo-secondary-weight: 500;
+  --typo-secondary-letter-spacing: 0.03em;
+
+  --typo-tertiary-size: 25px;
+  /* Tertiary > Inter - Medium - 25 */
+  --typo-tertiary-weight: 500;
+
+  --typo-text1-size: 20px;
+  /* Text 1 > Inter - Medium - 20 (letter-spacing 3%) */
+  --typo-text1-weight: 500;
+  --typo-text1-letter-spacing: 0.03em;
+
+  --typo-text2-size: 16px;
+  /* Text 2 > Inter - Regular - 16 */
+  --typo-text2-weight: 400;
+}
+
+/* Utility typography classes */
+.typo-primary {
+  font-family: var(--font-family-base);
+  font-weight: var(--typo-primary-weight);
+  font-size: var(--typo-primary-size);
+  color: var(--color-text-1);
+}
+
+.typo-secondary {
+  font-family: var(--font-family-base);
+  font-weight: var(--typo-secondary-weight);
+  font-size: var(--typo-secondary-size);
+  letter-spacing: var(--typo-secondary-letter-spacing);
+  color: var(--color-text-1);
+}
+
+.typo-tertiary {
+  font-family: var(--font-family-base);
+  font-weight: var(--typo-tertiary-weight);
+  font-size: var(--typo-tertiary-size);
+  color: var(--color-text-1);
+}
+
+.typo-text1 {
+  font-family: var(--font-family-base);
+  font-weight: var(--typo-text1-weight);
+  font-size: var(--typo-text1-size);
+  letter-spacing: var(--typo-text1-letter-spacing);
+  color: var(--color-text-1);
+}
+
+.typo-text2 {
+  font-family: var(--font-family-base);
+  font-weight: var(--typo-text2-weight);
+  font-size: var(--typo-text2-size);
+  color: var(--color-text-2);
+}
+
+/* small helper tokens */
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-secondary {
+  color: var(--color-secondary);
+}
+
+.bg-surface {
+  background: var(--color-bg);
+}
