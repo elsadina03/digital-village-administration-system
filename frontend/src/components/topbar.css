@@ -34,3 +34,9 @@
 .avatar { width: 32px; height: 32px; border-radius: 999px; background: #d1d5db; }
 .profileText .name { font-weight: 600; font-size: 13px; line-height: 1.1; }
 .profileText .role { font-size: 12px; opacity: 0.7; }
+
+/* public nav */
+.topbar nav a { color: var(--color-text-1); text-decoration: none; padding: 6px 8px; }
+.topbar nav a.nav-active { color: var(--color-primary); font-weight:600 }
+
+.btn { padding:8px 12px; border-radius:8px; border:0; cursor:pointer; background: linear-gradient(90deg, var(--color-primary), var(--color-secondary)); color:#fff; box-shadow:0 8px 20px rgba(2,48,40,0.12) }

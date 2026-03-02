@@ -1,17 +1,26 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./auth.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   function handleSubmit(e) {
     e.preventDefault();
     // TODO: hook to auth API
     console.log("sign in", { email, password });
+    // simple demo auth: mark as authenticated and redirect to dashboard
+    try {
+      localStorage.setItem("isAuth", "true");
+    } catch (err) {
+      /* ignore */
+    }
+    navigate('/');
   }
+
 
   return (
     <div className="auth-shell">
