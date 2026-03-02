@@ -37,7 +37,16 @@ body,html,#root{height:100%;}
 .auth-form label{display:block;font-size:13px;color:#2d6b60;margin:12px 0 6px}
 .auth-form input{width:100%;padding:10px 12px;border:1px solid #e2e8e6;border-radius:6px}
 .auth-form .btn{
-  margin-top:18px;width:100%;padding:12px;background:linear-gradient(90deg,#0b5a45,#0f966f);border:none;color:#fff;border-radius:8px;cursor:pointer}
+  margin-top:18px;
+  width:100%;
+  padding:12px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  border:none;
+  color:#fff;
+  border-radius:8px;
+  cursor:pointer;
+  box-shadow: 0 10px 24px rgba(2,48,40,0.18);
+}
 .auth-footer{ text-align:center;margin-top:12px;color:#2d6b60}
 .small-link{color:#0b5a45;font-weight:600}
 

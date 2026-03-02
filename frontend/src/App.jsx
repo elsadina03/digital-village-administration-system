@@ -10,9 +10,14 @@ import Pengaduan from "./pages/Layanan/Pengaduan/Pengaduan";
 import Profile from "./pages/Profile/Profile";
 import Program from "./pages/Program-Kegiatan/Program_Desa/Program";
 import Keuangan from "./pages/Keuangan/Data-Anggaran";
+import Input_APBDes from "./pages/Keuangan/Input_APBDes/Input_APBDes";
 import LaporanKegiatan from "./pages/Program-Kegiatan/Laporan_Kegiatan/LaporanKegiatan";
 import SuratDiproses from "./pages/Dashboard_Monitoring/Surat_Diproses/SuratDiproses";
 import PembuatanSurat from "./pages/Program-Kegiatan/Pembuatan_Surat/PembuatanSurat";
+import Berita from "./pages/Berita/Berita";
+import BeritaDetail from "./pages/Berita/BeritaDetail";
+import Penduduk from "./pages/Penduduk/Penduduk";
+import StrukturOrganisasi from "./pages/StrukturOrganisasi/StrukturOrganisasi";
 
 export default function App() {
   return (
@@ -24,15 +29,21 @@ export default function App() {
         <Route path="/pengajuan" element={<PengajuanSurat />} />
         <Route path="/arsip" element={<ArsipDokumen />} />
         <Route path="/data-anggaran" element={<Keuangan />} />
+        <Route path="/input-apbdes" element={<Input_APBDes />} />
 
-        {/* Tambahan route */}
+        {/* Public pages (accessible without login) */}
+        <Route path="/berita" element={<Berita />} />
+        <Route path="/berita/:id" element={<BeritaDetail />} />
+        <Route path="/penduduk" element={<Penduduk />} />
+        <Route path="/struktur-organisasi" element={<StrukturOrganisasi />} />
+
+        {/* Authenticated pages */}
         <Route path="/profile" element={<Profile />} />
         <Route path="/pengaduan" element={<Pengaduan />} />
         <Route path="/program-desa" element={<Program />} />
         <Route path="/laporan-kegiatan" element={<LaporanKegiatan />} />
         <Route path="/pembuatan-surat" element={<PembuatanSurat />} />
         <Route path="/surat" element={<SuratDiproses />} />
-        <Route path="/berita" element={<div>Berita</div>} />
 
         <Route path="/payment/overview" element={<div>Payment Overview</div>} />
         <Route path="/payment/details" element={<div>Payment Details</div>} />
