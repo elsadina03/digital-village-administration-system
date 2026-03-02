@@ -32,7 +32,9 @@ label{display:block;font-weight:600;margin-bottom:6px;color:#0b5346}
 input, select, textarea{width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px}
 .controls{display:flex;gap:12px;margin-top:18px}
 .btn{padding:12px 26px;border-radius:8px;border:none;cursor:pointer}
-.btn-primary{background:linear-gradient(90deg,#0b8b74,#3fd0b9);color:white}
+.btn-primary{background:linear-gradient(90deg,#0b8b74,#3fd0b9);color:white;box-shadow:0 8px 18px rgba(63,208,185,0.28)}
 .btn-primary[disabled]{opacity:0.6;cursor:not-allowed}
 .btn-cancel{background:#f7d77a;color:#3b2f00}
+.btn-logout{background: rgba(255,75,75,0.88); color: #fff}
+.btn-logout:hover{filter:brightness(0.98)}
 .note{color:#5b6b65;margin-top:6px;font-size:13px}

@@ -14,12 +14,13 @@ export default function Profile() {
     alamat: "Jalan Raya Bandara Juanda",
   }), []);
 
-  const [form, setForm] = useState(initialUser);
+  const [savedUser, setSavedUser] = useState(initialUser);
+  const [form, setForm] = useState(savedUser);
   const [saved, setSaved] = useState(false);
 
   const dirty = useMemo(() => {
-    return Object.keys(initialUser).some(k => initialUser[k] !== form[k]);
-  }, [initialUser, form]);
+    return Object.keys(savedUser).some(k => savedUser[k] !== form[k]);
+  }, [savedUser, form]);
 
   function onChange(e) {
     const { name, value } = e.target;
@@ -31,13 +32,21 @@ export default function Profile() {
     // placeholder: call API to save
     console.log("Saving", form);
     setSaved(true);
+    // treat current form as saved baseline
+    setSavedUser(form);
   }
 
-  function onCancel() {
-    // revert changes
-    setForm(initialUser);
-    setSaved(false);
-    navigate(-1);
+  function onSecondary() {
+    if (dirty) {
+      // Batal: revert to last saved
+      setForm(savedUser);
+      setSaved(false);
+      return;
+    }
+
+    // Logout (no unsaved changes)
+    try { localStorage.removeItem("isAuth"); } catch(_) {}
+    navigate('/login');
   }
 
   return (
@@ -92,7 +101,9 @@ export default function Profile() {
 
           <div className="controls">
             <button className="btn btn-primary" onClick={onSave} disabled={!dirty}>Simpan</button>
-            <button className="btn btn-cancel" onClick={onCancel}>Batal</button>
+            <button className={"btn "+(dirty?"btn-cancel":"btn-logout")} onClick={onSecondary}>
+              {dirty ? 'Batal' : 'Logout'}
+            </button>
           </div>
 
           <div className="note">{saved ? "Perubahan tersimpan." : "Simpan akan aktif jika ada perubahan."}</div>

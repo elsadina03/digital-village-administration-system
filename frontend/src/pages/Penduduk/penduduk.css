@@ -1,0 +1,83 @@
+/* Penduduk page styles */
+.penduduk-root { min-height: 100vh; background: #f7faf9; }
+.penduduk-container { max-width: 1180px; margin: 0 auto; padding: 32px 24px; }
+
+/* Header */
+.penduduk-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
+.penduduk-title { font-size: 26px; font-weight: 700; color: #0b5346; margin: 0 0 4px; }
+.penduduk-subtitle { color: #5b8c85; margin: 0; font-size: 14px; }
+
+/* Stat cards */
+.penduduk-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+.penduduk-stat-card { background: #fff; border-radius: 12px; padding: 20px 24px; box-shadow: 0 4px 14px rgba(11,83,70,0.07); }
+.pstat-value { font-size: 32px; font-weight: 700; }
+.pstat-label { font-size: 13px; color: #7b8b86; margin-top: 4px; }
+
+/* Bar chart */
+.penduduk-chart-section,
+.penduduk-demografi-section { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 14px rgba(11,83,70,0.07); margin-bottom: 24px; }
+.penduduk-chart-section h3,
+.penduduk-demografi-section h3 { margin: 0 0 16px; color: #0b5346; }
+.penduduk-bars { display: flex; flex-direction: column; gap: 12px; }
+.pbar-row { display: flex; align-items: center; gap: 12px; }
+.pbar-label { width: 150px; font-size: 14px; color: #374151; flex-shrink: 0; }
+.pbar-track { flex: 1; height: 12px; background: #e9f5f3; border-radius: 99px; overflow: hidden; }
+.pbar-fill { height: 100%; background: linear-gradient(90deg, #1fa18a, #0b5346); border-radius: 99px; transition: width 0.4s ease; }
+.pbar-pct { width: 40px; font-size: 13px; color: #5b8c85; text-align: right; flex-shrink: 0; }
+
+/* Admin bar */
+.penduduk-admin-bar { display: flex; align-items: center; justify-content: space-between; background: #f0faf7; border-radius: 10px; padding: 12px 18px; margin-bottom: 16px; }
+.admin-badge { background: #0fa78d; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+
+/* Add form */
+.penduduk-form { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 14px rgba(11,83,70,0.07); margin-bottom: 20px; }
+.penduduk-form h4 { margin: 0 0 16px; color: #0b5346; font-size: 16px; }
+.form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px; }
+.form-field { display: flex; flex-direction: column; gap: 4px; }
+.form-field label { font-size: 13px; color: #5b8c85; font-weight: 600; }
+.form-field input, .form-field select { padding: 9px 12px; border: 1.5px solid #e5e7eb; border-radius: 8px; outline: none; font-size: 14px; }
+.form-field input:focus, .form-field select:focus { border-color: #0fa78d; }
+
+/* Search row */
+.penduduk-search-row { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+.penduduk-search { flex: 1; min-width: 200px; padding: 10px 14px; border: 1.5px solid #e5e7eb; border-radius: 10px; outline: none; font-size: 14px; }
+.penduduk-search:focus { border-color: #0fa78d; }
+.penduduk-count { font-size: 13px; color: #7b8b86; white-space: nowrap; }
+
+/* Table */
+.penduduk-table-wrap { background: #fff; border-radius: 12px; box-shadow: 0 4px 14px rgba(11,83,70,0.07); overflow-x: auto; margin-bottom: 20px; }
+.penduduk-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.penduduk-table thead tr { background: #f0faf7; }
+.penduduk-table th { padding: 12px 14px; text-align: left; font-weight: 600; color: #0b5346; white-space: nowrap; }
+.penduduk-table td { padding: 11px 14px; border-top: 1px solid #f3f4f6; color: #374151; }
+.penduduk-table tbody tr:hover { background: #f9fffe; }
+.nik-cell { font-family: monospace; color: #5b8c85; font-size: 13px; }
+
+/* Gender badge */
+.jk-badge { padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.jk-l { background: #dbeafe; color: #1e40af; }
+.jk-p { background: #fce7f3; color: #be185d; }
+
+/* Action buttons */
+.action-cell { display: flex; gap: 6px; }
+.table-btn-edit-sm { padding: 4px 10px; border-radius: 6px; border: 1px solid #0fa78d; background: transparent; color: #0b5346; font-size: 12px; cursor: pointer; transition: background .15s; }
+.table-btn-edit-sm:hover { background: #0fa78d; color: #fff; }
+.table-btn-delete-sm { padding: 4px 10px; border-radius: 6px; border: 1px solid #e53e3e; background: transparent; color: #e53e3e; font-size: 12px; cursor: pointer; transition: background .15s; }
+.table-btn-delete-sm:hover { background: #e53e3e; color: #fff; }
+
+.empty-row { text-align: center; color: #9ca3af; padding: 24px; }
+
+/* Public note */
+.penduduk-public-note { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 14px 18px; font-size: 14px; color: #1e40af; }
+.btn { padding: 9px 18px; border-radius: 8px; border: 0; cursor: pointer; background: linear-gradient(90deg, #1fa18a, #0b5346); color: #fff; font-weight: 600; font-size: 14px; box-shadow: 0 4px 12px rgba(11,83,70,0.2); }
+.btn:hover { opacity: 0.92; }
+
+@media (max-width: 900px) {
+  .penduduk-stats { grid-template-columns: repeat(2, 1fr); }
+  .form-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .penduduk-stats { grid-template-columns: repeat(2, 1fr); }
+  .form-grid { grid-template-columns: 1fr; }
+  .pbar-label { width: 110px; }
+}
