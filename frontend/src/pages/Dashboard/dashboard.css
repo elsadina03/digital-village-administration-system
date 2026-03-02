@@ -1,0 +1,69 @@
+/* Dashboard styles */
+.dashboard-root { font-family: var(--font-family, 'Helvetica Neue', Arial, sans-serif); color: #0b3b34; }
+.dashboard-hero { position: relative; background-size: cover; background-position: center; height: 420px; display: flex; align-items: center; }
+.dashboard-hero .overlay { position: absolute; inset: 0; background: rgba(6, 120, 102, 0.23); }
+.dashboard-hero .hero-content { position: relative; max-width: 900px; margin-left: 60px; color: #fff; }
+.dashboard-hero h1 { font-size: 48px; margin: 0 0 10px; font-weight: 700; }
+.dashboard-hero p { font-size: 20px; margin: 0; opacity: 0.95 }
+
+.container { max-width: 1180px; margin: 60px auto; padding: 0 24px; }
+
+.sambutan { display: flex; gap: 40px; align-items: center; }
+.sambutan-img img { width: 520px; border-radius: 8px; display: block; }
+.sambutan-text h3 { color: #0fa78d; margin: 0 0 6px; letter-spacing: 0.6px; }
+.sambutan-text h2 { margin: 0 0 8px; font-size: 36px; }
+.sambutan-text .lead { color: #0fa78d; font-weight: 700; }
+
+.visi-misi .section-title { text-align: center; font-size: 36px; margin-bottom: 24px; }
+.capsule { display: flex; border-radius: 40px; overflow: hidden; box-shadow: 0 4px 0 rgba(0,0,0,0.03); }
+.capsule-left { flex: 1; background: #1fa18a; color: #fff; padding: 80px 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.capsule-left h3 { font-size: 36px; margin-bottom: 16px; }
+.capsule-right { flex: 1; background: #0b5346; color: #fff; padding: 40px 60px; }
+.capsule-right h3 { text-align: center; font-size: 36px; margin-bottom: 12px; }
+.capsule-right ol { padding-left: 20px; }
+
+.berita .section-title { font-size: 32px; margin-bottom: 20px; }
+.news-grid { display: flex; gap: 18px; flex-wrap: wrap; }
+.news-card { width: calc(33.333% - 12px); background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 6px 18px rgba(11,59,52,0.05); }
+.news-card img { width: 100%; height: 160px; object-fit: cover; display: block; }
+.news-body { padding: 16px; }
+.news-body h4 { margin: 0 0 6px; }
+.news-body .meta { font-size: 13px; color: #7b8b86; margin-bottom: 8px; }
+.news-body .excerpt { color: #444; }
+
+.profile .section-title { font-size: 32px; margin-bottom: 18px; }
+.profile-stats { display: flex; gap: 20px; margin-bottom: 30px; }
+.profile-stats .stat { flex: 1; background: #f3f7f6; padding: 26px; text-align: center; border-radius: 12px; font-weight: 700; color: #0b5346; }
+.profile-stats .stat span { display: block; font-weight: 400; margin-top: 8px; color: #4b6b65; }
+
+.team-grid { display: flex; gap: 28px; }
+.team-card { width: 220px; text-align: center; }
+.team-card img { width: 100%; height: 220px; object-fit: cover; border-radius: 6px; }
+.team-card h4 { margin: 12px 0 6px; }
+.team-card .role { color: #0b5346; }
+
+/* Organization horizontal scroll */
+.organization .section-title { font-size: 32px; margin-bottom: 18px; }
+.org-row { display: flex; gap: 20px; overflow-x: auto; padding: 18px 8px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+.org-card { min-width: 260px; flex: 0 0 auto; background: #fff; border-radius: 10px; box-shadow: 0 6px 18px rgba(11,59,52,0.04); overflow: hidden; scroll-snap-align: start; }
+.org-card img { width: 100%; height: 180px; object-fit: cover; display: block; }
+.org-body { padding: 12px 14px; }
+.org-body h4 { margin: 6px 0; }
+.org-body .role { color: #0b5346; font-weight: 600; }
+
+/* optional: nicer scrollbar for desktop */
+.org-row::-webkit-scrollbar { height: 10px; }
+.org-row::-webkit-scrollbar-thumb { background: rgba(11,83,70,0.15); border-radius: 8px; }
+
+.site-footer { background: #f7f8f8; padding: 36px 0 18px; margin-top: 40px; }
+.footer-grid { display: flex; gap: 40px; }
+.site-footer h4 { margin: 0 0 8px; color: #0b5346 }
+.copyright { text-align: center; color: #7b8b86; margin-top: 14px; }
+
+@media (max-width: 900px) {
+  .sambutan { flex-direction: column; }
+  .sambutan-img img { width: 100%; }
+  .capsule { flex-direction: column; }
+  .news-card { width: 100%; }
+  .team-grid { flex-wrap: wrap; justify-content: center; }
+}

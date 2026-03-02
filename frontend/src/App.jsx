@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 
-import Dashboard from "./pages/Layanan/Arsip/Dashboard";
+import Dashboard from "./pages/Dashboard/Dashboard";
 import PengajuanSurat from "./pages/Layanan/Pengajuan/PengajuanSurat";
 import ArsipDokumen from "./pages/Layanan/Arsip/ArsipDokumen";
 import Pengaduan from "./pages/Layanan/Pengaduan/Pengaduan";
