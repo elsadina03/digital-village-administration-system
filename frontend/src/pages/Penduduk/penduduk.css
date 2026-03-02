@@ -14,8 +14,10 @@
 .pstat-label { font-size: 13px; color: #7b8b86; margin-top: 4px; }
 
 /* Bar chart */
-.penduduk-chart-section { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 14px rgba(11,83,70,0.07); margin-bottom: 24px; }
-.penduduk-chart-section h3 { margin: 0 0 16px; color: #0b5346; }
+.penduduk-chart-section,
+.penduduk-demografi-section { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 14px rgba(11,83,70,0.07); margin-bottom: 24px; }
+.penduduk-chart-section h3,
+.penduduk-demografi-section h3 { margin: 0 0 16px; color: #0b5346; }
 .penduduk-bars { display: flex; flex-direction: column; gap: 12px; }
 .pbar-row { display: flex; align-items: center; gap: 12px; }
 .pbar-label { width: 150px; font-size: 14px; color: #374151; flex-shrink: 0; }
@@ -66,7 +68,7 @@
 .empty-row { text-align: center; color: #9ca3af; padding: 24px; }
 
 /* Public note */
-.penduduk-public-note { background: #fefce8; border: 1px solid #fde68a; border-radius: 10px; padding: 14px 18px; font-size: 14px; color: #92400e; }
+.penduduk-public-note { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 14px 18px; font-size: 14px; color: #1e40af; }
 .btn { padding: 9px 18px; border-radius: 8px; border: 0; cursor: pointer; background: linear-gradient(90deg, #1fa18a, #0b5346); color: #fff; font-weight: 600; font-size: 14px; box-shadow: 0 4px 12px rgba(11,83,70,0.2); }
 .btn:hover { opacity: 0.92; }
 

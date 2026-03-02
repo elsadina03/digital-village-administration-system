@@ -18,6 +18,11 @@ import Berita from "./pages/Berita/Berita";
 import BeritaDetail from "./pages/Berita/BeritaDetail";
 import Penduduk from "./pages/Penduduk/Penduduk";
 import StrukturOrganisasi from "./pages/StrukturOrganisasi/StrukturOrganisasi";
+import BantuanSosial from "./pages/Dashboard_Monitoring/BantuanSosial/BantuanSosial";
+import LaporanDanaDesa from "./pages/Keuangan/Laporan_DanaDesa/LaporanDanaDesa";
+import RealisasiAnggaran from "./pages/Keuangan/Realisasi_Anggaran/RealisasiAnggaran";
+import Galeri from "./pages/Galeri/Galeri";
+import Kontak from "./pages/Kontak/Kontak";
 
 export default function App() {
   return (
@@ -26,29 +31,37 @@ export default function App() {
       <Route path="/register" element={<Register />} />
       <Route element={<Layout />}>
         <Route path="/" element={<Dashboard />} />
+
+        {/* Layanan */}
         <Route path="/pengajuan" element={<PengajuanSurat />} />
         <Route path="/arsip" element={<ArsipDokumen />} />
+        <Route path="/pengaduan" element={<Pengaduan />} />
+
+        {/* Keuangan Desa */}
         <Route path="/data-anggaran" element={<Keuangan />} />
         <Route path="/input-apbdes" element={<Input_APBDes />} />
+        <Route path="/realisasi-anggaran" element={<RealisasiAnggaran />} />
+        <Route path="/laporan-dana-desa" element={<LaporanDanaDesa />} />
 
-        {/* Public pages (accessible without login) */}
+        {/* Program & Kegiatan */}
+        <Route path="/program-desa" element={<Program />} />
+        <Route path="/laporan-kegiatan" element={<LaporanKegiatan />} />
+        <Route path="/pembuatan-surat" element={<PembuatanSurat />} />
+
+        {/* Dashboard Monitoring */}
+        <Route path="/surat" element={<SuratDiproses />} />
+        <Route path="/bantuan-sosial" element={<BantuanSosial />} />
+
+        {/* Informasi Publik Desa */}
         <Route path="/berita" element={<Berita />} />
         <Route path="/berita/:id" element={<BeritaDetail />} />
         <Route path="/penduduk" element={<Penduduk />} />
         <Route path="/struktur-organisasi" element={<StrukturOrganisasi />} />
+        <Route path="/galeri" element={<Galeri />} />
+        <Route path="/kontak" element={<Kontak />} />
 
-        {/* Authenticated pages */}
+        {/* Akun */}
         <Route path="/profile" element={<Profile />} />
-        <Route path="/pengaduan" element={<Pengaduan />} />
-        <Route path="/program-desa" element={<Program />} />
-        <Route path="/laporan-kegiatan" element={<LaporanKegiatan />} />
-        <Route path="/pembuatan-surat" element={<PembuatanSurat />} />
-        <Route path="/surat" element={<SuratDiproses />} />
-
-        <Route path="/payment/overview" element={<div>Payment Overview</div>} />
-        <Route path="/payment/details" element={<div>Payment Details</div>} />
-        <Route path="/payment/bundles" element={<div>Resource Bundles</div>} />
-        <Route path="/payment/export" element={<div>Export Receipts</div>} />
       </Route>
     </Routes>
   );

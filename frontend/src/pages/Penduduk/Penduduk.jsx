@@ -153,66 +153,107 @@ export default function Penduduk() {
           </form>
         )}
 
-        {/* Search */}
-        <div className="penduduk-search-row">
-          <input
-            className="penduduk-search"
-            placeholder="🔍 Cari nama atau NIK..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
-          <span className="penduduk-count">Menampilkan {filtered.length} dari {data.length} data</span>
-        </div>
-
-        {/* Table */}
-        <div className="penduduk-table-wrap">
-          <table className="penduduk-table">
-            <thead>
-              <tr>
-                <th>No</th>
-                <th>NIK</th>
-                <th>Nama Lengkap</th>
-                <th>Dusun</th>
-                <th>Jenis Kelamin</th>
-                <th>Usia</th>
-                <th>Status</th>
-                {isLoggedIn && <th>Aksi</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((d, i) => (
-                <tr key={d.id}>
-                  <td>{i + 1}</td>
-                  <td className="nik-cell">{d.nik}</td>
-                  <td>{d.nama}</td>
-                  <td>{d.dusun}</td>
-                  <td>
-                    <span className={`jk-badge ${d.jenisKelamin === "Laki-laki" ? "jk-l" : "jk-p"}`}>
-                      {d.jenisKelamin}
-                    </span>
-                  </td>
-                  <td>{d.usia}</td>
-                  <td>{d.status}</td>
-                  {isLoggedIn && (
-                    <td className="action-cell">
-                      <button className="table-btn-edit-sm">✏️</button>
-                      <button className="table-btn-delete-sm" onClick={() => handleDelete(d.id)}>🗑️</button>
-                    </td>
-                  )}
-                </tr>
-              ))}
-              {filtered.length === 0 && (
-                <tr><td colSpan={isLoggedIn ? 8 : 7} className="empty-row">Tidak ada data yang cocok.</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Public footer note */}
+        {/* Public: aggregate demographic info only */}
         {!isLoggedIn && (
-          <div className="penduduk-public-note">
-            <strong>Catatan:</strong> Data yang ditampilkan adalah ringkasan publik. Login sebagai admin untuk melihat detail lengkap dan mengelola data kependudukan.
-          </div>
+          <>
+            <section className="penduduk-demografi-section">
+              <h3>Kelompok Usia</h3>
+              <div className="penduduk-bars">
+                {[
+                  { label: "Anak-anak (< 17 th)",   persen: 18 },
+                  { label: "Dewasa (17 – 55 th)",    persen: 61 },
+                  { label: "Lansia (> 55 th)",       persen: 21 },
+                ].map(d => (
+                  <div className="pbar-row" key={d.label}>
+                    <div className="pbar-label">{d.label}</div>
+                    <div className="pbar-track">
+                      <div className="pbar-fill" style={{ width: `${d.persen}%` }} />
+                    </div>
+                    <div className="pbar-pct">{d.persen}%</div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="penduduk-demografi-section">
+              <h3>Status Perkawinan (Agregat)</h3>
+              <div className="penduduk-bars">
+                {[
+                  { label: "Kawin",        persen: 58 },
+                  { label: "Belum Kawin",  persen: 35 },
+                  { label: "Cerai / Janda / Duda", persen: 7 },
+                ].map(d => (
+                  <div className="pbar-row" key={d.label}>
+                    <div className="pbar-label">{d.label}</div>
+                    <div className="pbar-track">
+                      <div className="pbar-fill" style={{ width: `${d.persen}%` }} />
+                    </div>
+                    <div className="pbar-pct">{d.persen}%</div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <div className="penduduk-public-note">
+              🔒 <strong>Data individu bersifat rahasia.</strong> Informasi detail seperti NIK, nama warga, dan data pribadi lainnya hanya dapat diakses oleh petugas desa yang telah login.
+            </div>
+          </>
+        )}
+
+        {/* Admin only: search + full table */}
+        {isLoggedIn && (
+          <>
+            <div className="penduduk-search-row">
+              <input
+                className="penduduk-search"
+                placeholder="🔍 Cari nama atau NIK..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+              />
+              <span className="penduduk-count">Menampilkan {filtered.length} dari {data.length} data</span>
+            </div>
+
+            <div className="penduduk-table-wrap">
+              <table className="penduduk-table">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>NIK</th>
+                    <th>Nama Lengkap</th>
+                    <th>Dusun</th>
+                    <th>Jenis Kelamin</th>
+                    <th>Usia</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((d, i) => (
+                    <tr key={d.id}>
+                      <td>{i + 1}</td>
+                      <td className="nik-cell">{d.nik}</td>
+                      <td>{d.nama}</td>
+                      <td>{d.dusun}</td>
+                      <td>
+                        <span className={`jk-badge ${d.jenisKelamin === "Laki-laki" ? "jk-l" : "jk-p"}`}>
+                          {d.jenisKelamin}
+                        </span>
+                      </td>
+                      <td>{d.usia}</td>
+                      <td>{d.status}</td>
+                      <td className="action-cell">
+                        <button className="table-btn-edit-sm">✏️</button>
+                        <button className="table-btn-delete-sm" onClick={() => handleDelete(d.id)}>🗑️</button>
+                      </td>
+                    </tr>
+                  ))}
+                  {filtered.length === 0 && (
+                    <tr><td colSpan={8} className="empty-row">Tidak ada data yang cocok.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </div>
