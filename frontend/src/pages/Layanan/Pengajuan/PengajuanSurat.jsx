@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import axios from "axios";
 import "./PengajuanSurat.css";
 
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from "react-leaflet";
@@ -55,6 +56,30 @@ export default function PengajuanSurat() {
   const pageSize = 6;
   const totalPages = Math.max(1, Math.ceil(riwayat.length / pageSize));
   const riwayatPage = riwayat.slice((page - 1) * pageSize, page * pageSize);
+
+  useEffect(() => {
+    fetchRiwayat();
+  }, []);
+
+  const fetchRiwayat = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const res = await axios.get("http://localhost:8000/api/letters", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // Map the API data structure to match what the UI expects
+      const formatted = res.data.data.map(l => ({
+        id: l.id,
+        judul: l.letter_type?.name || "Surat",
+        waktu: new Date(l.created_at).toLocaleDateString("id-ID"),
+        status: l.status.charAt(0).toUpperCase() + l.status.slice(1)
+      }));
+      setRiwayat(formatted);
+    } catch (err) {
+      console.error("Gagal mengambil riwayat surat:", err);
+    }
+  };
 
   /* ================= FORM ================= */
   const fileRef = useRef(null);
@@ -118,7 +143,7 @@ export default function PengajuanSurat() {
 
   /* ================= SUBMIT ================= */
 
-  function handleAjukan(e) {
+  async function handleAjukan(e) {
     e.preventDefault();
 
     if (!jenisSurat || !nama || !email || !wa || !alamat) {
@@ -126,27 +151,55 @@ export default function PengajuanSurat() {
       return;
     }
 
-    const newItem = {
-      id: crypto.randomUUID(),
-      judul: jenisSurat,
-      waktu: "Baru saja",
-      status: "Proses",
-    };
+    try {
+      const token = localStorage.getItem("token");
 
-    setRiwayat((prev) => [newItem, ...prev]);
-    setPage(1);
+      // Since SURAT_OPTIONS items may not precisely match the logic needed, let's map it roughly to a letter type ID. 
+      // In a real app we'd fetch the exact LetterType options from /api/letter-types. For now, picking a dummy id 1 or 2 based on existence.
+      // (This requires the backend valid letter_type_id).
 
-    // reset
-    setJenisSurat("");
-    setNama("");
-    setEmail("");
-    setWa("");
-    setTujuan("");
-    setFotoNpwp(null);
-    setAlamat("");
-    if (fileRef.current) fileRef.current.value = "";
+      const formData = new FormData();
+      formData.append('letter_type_id', 1); // Assuming 1 exists locally
+      formData.append('nama', nama);
+      formData.append('email', email);
+      formData.append('wa', wa);
+      formData.append('alamat', alamat);
+      formData.append('tujuan', tujuan);
+      formData.append('latitude', koordinat[0]);
+      formData.append('longitude', koordinat[1]);
 
-    window.scrollTo({ top: 0, behavior: "smooth" });
+      if (fotoNpwp) {
+        formData.append('document', fotoNpwp); // using 'document' field based on Letter migration
+      }
+
+      await axios.post("http://localhost:8000/api/letters", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data"
+        }
+      });
+
+      alert("Surat berhasil diajukan!");
+
+      // refresh
+      fetchRiwayat();
+      setPage(1);
+
+      // reset
+      setJenisSurat("");
+      setNama("");
+      setEmail("");
+      setWa("");
+      setTujuan("");
+      setFotoNpwp(null);
+      setAlamat("");
+      if (fileRef.current) fileRef.current.value = "";
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Gagal mengajukan surat");
+    }
   }
 
   /* ================= RENDER ================= */
@@ -166,9 +219,9 @@ export default function PengajuanSurat() {
                 <div key={x.id} className="card">
                   <div className="cardTitle">{x.judul}</div>
                   <div className="cardTime">{x.waktu}</div>
-                    <div className="cardFoot">
-                        <span className="badge badge--wait">{x.status}</span>
-                    </div>
+                  <div className="cardFoot">
+                    <span className="badge badge--wait">{x.status}</span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -213,31 +266,31 @@ export default function PengajuanSurat() {
         </div>
 
         <div className="field">
-        <label>Foto NPWP</label>
+          <label>Foto NPWP</label>
 
-        <div className="fileRow">
+          <div className="fileRow">
             <button
-            type="button"
-            className="btnGhost"
-            onClick={() => fileRef.current?.click()}
+              type="button"
+              className="btnGhost"
+              onClick={() => fileRef.current?.click()}
             >
-            Pilih File
+              Pilih File
             </button>
 
             <input
-            ref={fileRef}
-            type="file"
-            accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-            onChange={(e) => setFotoNpwp(e.target.files?.[0] ?? null)}
-            style={{ display: "none" }}
+              ref={fileRef}
+              type="file"
+              accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+              onChange={(e) => setFotoNpwp(e.target.files?.[0] ?? null)}
+              style={{ display: "none" }}
             />
 
             <div className={`fileName ${fotoNpwp ? "filled" : ""}`}>
-            {npwpFileName}
+              {npwpFileName}
             </div>
-        </div>
+          </div>
 
-        <div className="hint">*PDF, Word, PNG, JPG, JPEG</div>
+          <div className="hint">*PDF, Word, PNG, JPG, JPEG</div>
         </div>
 
         {/* ================= ALAMAT AUTOCOMPLETE ================= */}

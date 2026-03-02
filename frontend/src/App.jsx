@@ -14,6 +14,9 @@ import Input_APBDes from "./pages/Keuangan/Input_APBDes/Input_APBDes";
 import LaporanKegiatan from "./pages/Program-Kegiatan/Laporan_Kegiatan/LaporanKegiatan";
 import SuratDiproses from "./pages/Dashboard_Monitoring/Surat_Diproses/SuratDiproses";
 import PembuatanSurat from "./pages/Program-Kegiatan/Pembuatan_Surat/PembuatanSurat";
+import Anggaran from "./pages/DashboardMonitoring/Anggaran/Anggaran";
+import Kependudukan from "./pages/DashboardMonitoring/Kependudukan/Kependudukan";
+=======
 import Berita from "./pages/Berita/Berita";
 import BeritaDetail from "./pages/Berita/BeritaDetail";
 import Penduduk from "./pages/Penduduk/Penduduk";
@@ -50,6 +53,11 @@ export default function App() {
 
         {/* Dashboard Monitoring */}
         <Route path="/surat" element={<SuratDiproses />} />
+
+        <Route path="/anggaran" element={<Anggaran />} />
+        <Route path="/penduduk" element={<Kependudukan />} />
+        <Route path="/berita" element={<div>Berita</div>} />
+=======
         <Route path="/bantuan-sosial" element={<BantuanSosial />} />
 
         {/* Informasi Publik Desa */}

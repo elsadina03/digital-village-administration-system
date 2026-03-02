@@ -5,10 +5,14 @@ import "./sidebar.css";
 export default function Sidebar({ collapsed }) {
   const [open, setOpen] = useState({
     layanan: true,
+
+    "dashboard-monitoring": true,
+=======
     monitoring: true,
     program: false,
     keuangan: false,
     informasi: false,
+
   });
 
   const menus = useMemo(
@@ -63,6 +67,9 @@ export default function Sidebar({ collapsed }) {
           { label: "Realisasi Anggaran", to: "/realisasi-anggaran" },
           { label: "Laporan Dana Desa", to: "/laporan-dana-desa" },
         ],
+
+      }
+=======
       },
 
       {
@@ -77,6 +84,7 @@ export default function Sidebar({ collapsed }) {
           { label: "Kontak & Lokasi", to: "/kontak" },
         ],
       },
+
     ],
     []
   );
