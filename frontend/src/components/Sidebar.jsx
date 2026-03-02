@@ -5,10 +5,10 @@ import "./sidebar.css";
 export default function Sidebar({ collapsed }) {
   const [open, setOpen] = useState({
     layanan: true,
-    payment: true,
-    subscriptions: false,
-    invoices: false,
-    coupons: false,
+    monitoring: true,
+    program: false,
+    keuangan: false,
+    informasi: false,
   });
 
   const menus = useMemo(
@@ -29,22 +29,22 @@ export default function Sidebar({ collapsed }) {
 
       {
         type: "group",
-        key: "dashboard-monitoring",
+        key: "monitoring",
         label: "Dashboard Monitoring",
         icon: "📊",
         items: [
           { label: "Jumlah Penduduk", to: "/penduduk" },
           { label: "Surat Diproses", to: "/surat" },
-          { label: "Total Anggaran", to: "/anggaran" },
+          { label: "Total Anggaran", to: "/data-anggaran" },
           { label: "Data Bantuan Sosial", to: "/bantuan-sosial" },
         ],
       },
-      
-       {
+
+      {
         type: "group",
-        key: "program-kegiatan",
+        key: "program",
         label: "Program & Kegiatan",
-        icon: "📊",
+        icon: "📋",
         items: [
           { label: "Program Desa", to: "/program-desa" },
           { label: "Laporan Kegiatan", to: "/laporan-kegiatan" },
@@ -54,20 +54,29 @@ export default function Sidebar({ collapsed }) {
 
       {
         type: "group",
-        key: "keuangan-desa",
+        key: "keuangan",
         label: "Keuangan Desa",
         icon: "💳",
         items: [
           { label: "Input APBDes", to: "/input-apbdes" },
           { label: "Data Anggaran", to: "/data-anggaran" },
-          { label: "Laporan Dana Desa", to: "/laporan-dana-desa" },
           { label: "Realisasi Anggaran", to: "/realisasi-anggaran" },
+          { label: "Laporan Dana Desa", to: "/laporan-dana-desa" },
         ],
       },
 
-      { type: "group", key: "subscriptions", label: "Subscriptions", icon: "📦", items: [] },
-      { type: "group", key: "invoices", label: "Invoices", icon: "🧾", items: [] },
-      { type: "group", key: "coupons", label: "Coupons", icon: "🏷️", items: [] },
+      {
+        type: "group",
+        key: "informasi",
+        label: "Informasi Desa",
+        icon: "🏡",
+        items: [
+          { label: "Berita Desa", to: "/berita" },
+          { label: "Galeri Desa", to: "/galeri" },
+          { label: "Struktur Organisasi", to: "/struktur-organisasi" },
+          { label: "Kontak & Lokasi", to: "/kontak" },
+        ],
+      },
     ],
     []
   );

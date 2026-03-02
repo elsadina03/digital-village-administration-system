@@ -1,0 +1,265 @@
+/* ===== TOAST NOTIFIKASI ===== */
+.kontak-toast {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  padding: .7rem 1.2rem;
+  font-size: .9rem;
+  font-weight: 600;
+  animation: fadeSlide .3s ease;
+}
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== TOMBOL EDIT INFO KANTOR ===== */
+.btn-edit-info {
+  background: #1e3a5f;
+  color: #fff;
+  border: none;
+  padding: .55rem 1.2rem;
+  border-radius: 8px;
+  font-size: .88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.btn-edit-info:hover { background: #162d4b; }
+
+/* ===== CARD FORM EDIT ===== */
+.edit-card {
+  border: 2px solid #bfdbfe;
+  background: #eff6ff;
+}
+.edit-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+}
+.edit-card-header h3 {
+  margin: 0;
+  color: #1e3a5f;
+  font-size: 1rem;
+}
+.edit-badge {
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: .75rem;
+  font-weight: 700;
+  padding: .2rem .6rem;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+/* ===== FORM EDIT ===== */
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.edit-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+}
+.edit-field label {
+  font-size: .83rem;
+  font-weight: 600;
+  color: #374151;
+}
+.edit-field input,
+.edit-field textarea {
+  border: 1.5px solid #bfdbfe;
+  border-radius: 7px;
+  padding: .5rem .8rem;
+  font-size: .9rem;
+  background: #fff;
+  outline: none;
+  resize: vertical;
+  transition: border .2s;
+  font-family: inherit;
+}
+.edit-field input:focus,
+.edit-field textarea:focus {
+  border-color: #3b82f6;
+}
+.req { color: #ef4444; }
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: .75rem;
+  padding-top: .25rem;
+}
+.btn-cancel {
+  background: #f1f5f9;
+  color: #374151;
+  border: none;
+  padding: .55rem 1.2rem;
+  border-radius: 7px;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-cancel:hover { background: #e2e8f0; }
+
+.btn-save {
+  background: #0fa78d;
+  color: #fff;
+  border: none;
+  padding: .55rem 1.3rem;
+  border-radius: 7px;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s;
+}
+.btn-save:hover { background: #0c8f78; }
+
+/* ===== ROOT ===== */
+.kontak-root {
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding: 2rem 1rem;
+}
+.kontak-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Header */
+.kontak-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.kontak-title { font-size: 1.6rem; font-weight: 700; color: #1e3a5f; margin: 0 0 .25rem; }
+.kontak-subtitle { color: #64748b; margin: 0; font-size: .95rem; }
+
+/* Grid */
+.kontak-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+.kontak-col { display: flex; flex-direction: column; gap: 1.5rem; }
+
+/* Card */
+.kontak-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.3rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.kontak-card h3 { margin: 0 0 1rem; font-size: 1rem; color: #1e3a5f; }
+
+/* Kontak List */
+.kontak-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .9rem; }
+.kontak-item { display: flex; align-items: flex-start; gap: .75rem; }
+.kontak-icon { font-size: 1.3rem; margin-top: .1rem; flex-shrink: 0; }
+.kontak-label { font-size: .75rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+.kontak-value { font-size: .9rem; color: #374151; }
+.kontak-link { font-size: .9rem; color: #0fa78d; text-decoration: none; font-weight: 600; }
+.kontak-link:hover { text-decoration: underline; }
+
+/* Jam Operasional */
+.jam-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+.jam-table td { padding: .5rem .4rem; border-bottom: 1px solid #f1f5f9; }
+.jam-table .hari { color: #374151; font-weight: 500; }
+.jam-table .jam  { text-align: right; color: #0fa78d; font-weight: 600; }
+.jam-table .tutup .hari { color: #94a3b8; }
+.jam-table .tutup .jam  { color: #ef4444; }
+
+/* Map */
+.map-placeholder { display: flex; flex-direction: column; gap: .4rem; }
+.map-note { font-size: .78rem; color: #94a3b8; margin: 0; }
+
+/* Perangkat */
+.perangkat-list { display: flex; flex-direction: column; gap: .85rem; }
+.perangkat-item {
+  display: flex;
+  align-items: flex-start;
+  gap: .85rem;
+  padding: .75rem;
+  background: #f8fafc;
+  border-radius: 10px;
+}
+.perangkat-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0fa78d, #34d399);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.perangkat-info { display: flex; flex-direction: column; gap: .15rem; }
+.perangkat-nama { font-size: .9rem; font-weight: 700; color: #1e3a5f; }
+.perangkat-jabatan { font-size: .78rem; color: #0fa78d; font-weight: 600; }
+.perangkat-ext { font-size: .74rem; color: #94a3b8; }
+.wa-btn {
+  display: inline-block;
+  margin-top: .25rem;
+  background: #dcfce7;
+  color: #166534;
+  font-size: .78rem;
+  font-weight: 600;
+  padding: .2rem .7rem;
+  border-radius: 20px;
+  text-decoration: none;
+  transition: background .2s;
+  width: fit-content;
+}
+.wa-btn:hover { background: #bbf7d0; }
+
+/* CTA */
+.kontak-cta {
+  background: linear-gradient(135deg, #1e3a5f, #0fa78d);
+  border-radius: 14px;
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  color: #fff;
+}
+.cta-content h3 { margin: 0 0 .3rem; font-size: 1.2rem; }
+.cta-content p  { margin: 0; font-size: .88rem; opacity: .85; }
+.cta-btn {
+  background: #fff;
+  color: #1e3a5f;
+  padding: .65rem 1.4rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: .9rem;
+  transition: background .2s;
+  white-space: nowrap;
+}
+.cta-btn:hover { background: #dbeafe; }
+
+@media (max-width: 768px) {
+  .kontak-grid { grid-template-columns: 1fr; }
+  .edit-row    { grid-template-columns: 1fr; }
+}
