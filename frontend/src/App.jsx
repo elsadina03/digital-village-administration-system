@@ -13,6 +13,8 @@ import Keuangan from "./pages/Keuangan/Data-Anggaran";
 import LaporanKegiatan from "./pages/Program-Kegiatan/Laporan_Kegiatan/LaporanKegiatan";
 import SuratDiproses from "./pages/Dashboard_Monitoring/Surat_Diproses/SuratDiproses";
 import PembuatanSurat from "./pages/Program-Kegiatan/Pembuatan_Surat/PembuatanSurat";
+import Anggaran from "./pages/DashboardMonitoring/Anggaran/Anggaran";
+import Kependudukan from "./pages/DashboardMonitoring/Kependudukan/Kependudukan";
 
 export default function App() {
   return (
@@ -32,6 +34,8 @@ export default function App() {
         <Route path="/laporan-kegiatan" element={<LaporanKegiatan />} />
         <Route path="/pembuatan-surat" element={<PembuatanSurat />} />
         <Route path="/surat" element={<SuratDiproses />} />
+        <Route path="/anggaran" element={<Anggaran />} />
+        <Route path="/penduduk" element={<Kependudukan />} />
         <Route path="/berita" element={<div>Berita</div>} />
 
         <Route path="/payment/overview" element={<div>Payment Overview</div>} />

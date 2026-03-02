@@ -5,10 +5,7 @@ import "./sidebar.css";
 export default function Sidebar({ collapsed }) {
   const [open, setOpen] = useState({
     layanan: true,
-    payment: true,
-    subscriptions: false,
-    invoices: false,
-    coupons: false,
+    "dashboard-monitoring": true,
   });
 
   const menus = useMemo(
@@ -39,8 +36,8 @@ export default function Sidebar({ collapsed }) {
           { label: "Data Bantuan Sosial", to: "/bantuan-sosial" },
         ],
       },
-      
-       {
+
+      {
         type: "group",
         key: "program-kegiatan",
         label: "Program & Kegiatan",
@@ -63,11 +60,7 @@ export default function Sidebar({ collapsed }) {
           { label: "Laporan Dana Desa", to: "/laporan-dana-desa" },
           { label: "Realisasi Anggaran", to: "/realisasi-anggaran" },
         ],
-      },
-
-      { type: "group", key: "subscriptions", label: "Subscriptions", icon: "📦", items: [] },
-      { type: "group", key: "invoices", label: "Invoices", icon: "🧾", items: [] },
-      { type: "group", key: "coupons", label: "Coupons", icon: "🏷️", items: [] },
+      }
     ],
     []
   );

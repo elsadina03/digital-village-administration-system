@@ -1,4 +1,5 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
+import axios from "axios";
 import "./ArsipDokumen.css";
 
 const KATEGORI = [
@@ -28,6 +29,35 @@ export default function ArsipDokumen() {
   // data arsip (local state)
   const [docsPribadi, setDocsPribadi] = useState([]); // {id, title, category, fileName, url, createdAt}
   const [docsDesa, setDocsDesa] = useState([]);
+
+  useEffect(() => {
+    fetchArchives();
+  }, []);
+
+  const fetchArchives = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const res = await axios.get("http://localhost:8000/api/archives", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      const allDocs = res.data.data.map(d => ({
+        id: d.id,
+        title: d.title,
+        category: d.category || "Lainnya",
+        fileName: d.file_path ? d.file_path.split("/").pop() : "unknown",
+        url: d.file_url,
+        type: d.type, // 'pribadi' or 'desa'
+        createdAt: d.created_at
+      }));
+
+      setDocsPribadi(allDocs.filter(d => d.type === 'pribadi'));
+      setDocsDesa(allDocs.filter(d => d.type === 'desa'));
+    } catch (err) {
+      console.error("Gagal memuat arsip:", err);
+    }
+  };
 
   const activeDocs = tab === "pribadi" ? docsPribadi : docsDesa;
 
@@ -60,7 +90,7 @@ export default function ArsipDokumen() {
     if (fileRef.current) fileRef.current.value = "";
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     if (!kategori || !namaDokumen || !file) {
@@ -68,22 +98,29 @@ export default function ArsipDokumen() {
       return;
     }
 
-    const url = URL.createObjectURL(file);
+    try {
+      const token = localStorage.getItem("token");
+      const formData = new FormData();
+      formData.append("title", namaDokumen.trim());
+      formData.append("type", tab);
+      formData.append("category", kategori);
+      formData.append("file", file);
 
-    const newDoc = {
-      id: crypto.randomUUID(),
-      title: namaDokumen.trim(),
-      category: kategori,
-      fileName: file.name,
-      url,
-      createdAt: new Date().toISOString(),
-    };
+      await axios.post("http://localhost:8000/api/archives", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data"
+        }
+      });
 
-    if (tab === "pribadi") setDocsPribadi((prev) => [newDoc, ...prev]);
-    else setDocsDesa((prev) => [newDoc, ...prev]);
-
-    setPage(1);
-    resetForm();
+      alert("Dokumen berhasil diarsip!");
+      fetchArchives();
+      setPage(1);
+      resetForm();
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Gagal mengupload arsip dokumen");
+    }
   }
 
   function handleOpen(doc) {
