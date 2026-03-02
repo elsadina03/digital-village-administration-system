@@ -1,0 +1,38 @@
+/* Simple profile card styles */
+.profile-page {
+  padding: 24px;
+}
+.profile-card {
+  display: flex;
+  gap: 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+.profile-left {
+  background: #1fa192;
+  color: #fff;
+  width: 320px;
+  padding: 36px 24px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+.profile-left .avatarLarge{
+  width:120px;height:120px;border-radius:999px;background:#e6eef0;margin-bottom:16px;
+}
+.profile-left .username{font-size:18px;font-weight:600;margin-bottom:4px}
+.profile-left .userrole{opacity:0.9}
+.profile-right{flex:1;padding:28px}
+.row{display:flex;gap:16px;margin-bottom:14px}
+.col{flex:1}
+label{display:block;font-weight:600;margin-bottom:6px;color:#0b5346}
+input, select, textarea{width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px}
+.controls{display:flex;gap:12px;margin-top:18px}
+.btn{padding:12px 26px;border-radius:8px;border:none;cursor:pointer}
+.btn-primary{background:linear-gradient(90deg,#0b8b74,#3fd0b9);color:white}
+.btn-primary[disabled]{opacity:0.6;cursor:not-allowed}
+.btn-cancel{background:#f7d77a;color:#3b2f00}
+.note{color:#5b6b65;margin-top:6px;font-size:13px}

@@ -48,6 +48,7 @@ export default function Sidebar({ collapsed }) {
         items: [
           { label: "Program Desa", to: "/program-desa" },
           { label: "Laporan Kegiatan", to: "/laporan-kegiatan" },
+          { label: "Pembuatan Surat", to: "/pembuatan-surat" },
         ],
       },
 
