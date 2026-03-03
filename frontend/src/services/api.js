@@ -3,6 +3,7 @@ import axios from 'axios';
 // Konfigurasi dasar Axios
 const api = axios.create({
     baseURL: 'http://127.0.0.1:8000/api', // URL Backend Laravel Anda
+    timeout: 10000, // 10 second timeout
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -19,6 +20,24 @@ api.interceptors.request.use(
         return config;
     },
     (error) => {
+        return Promise.reject(error);
+    }
+);
+
+// Response interceptor untuk handle errors
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.code === 'ECONNABORTED') {
+            console.error('Request timeout - server lambat merespons');
+        }
+        if (error.response?.status === 401) {
+            // Token expired or invalid
+            localStorage.removeItem('token');
+            if (!window.location.pathname.includes('/login')) {
+                window.location.href = '/login';
+            }
+        }
         return Promise.reject(error);
     }
 );

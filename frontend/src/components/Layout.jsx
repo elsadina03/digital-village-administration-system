@@ -1,30 +1,25 @@
-import { Outlet, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { Outlet } from "react-router-dom";
+import { useState, useContext } from "react";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import "./layout.css";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Layout() {
   const [collapsed, setCollapsed] = useState(false);
-  const location = useLocation();
+  const { user } = useContext(AuthContext);
 
-  const isAuthenticated = () => localStorage.getItem("isAuth") === "true";
-  // treat root and berita routes as public when not authenticated
-  const publicPaths = ["/", "/berita", "/penduduk", "/struktur-organisasi"];
-  const isPublicDashboard =
-    !isAuthenticated() &&
-    publicPaths.some((p) =>
-      p === "/" ? location.pathname === "/" : location.pathname.startsWith(p)
-    );
+  // If no user logged in → public view (no sidebar, public topbar)
+  const isPublic = !user;
 
   return (
     <div className={`shell ${collapsed ? "is-collapsed" : ""}`}>
-      {!isPublicDashboard && <Sidebar collapsed={collapsed} />}
+      {!isPublic && <Sidebar collapsed={collapsed} />}
 
       <div className="main">
         <Topbar
           collapsed={collapsed}
-          isPublic={isPublicDashboard}
+          isPublic={isPublic}
           onToggleSidebar={() => setCollapsed((v) => !v)}
         />
         <div className="page">

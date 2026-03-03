@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "./penduduk.css";
+import { AuthContext } from "../../context/AuthContext";
 
 const dummyData = [
   { id: 1, nik: "3515010101010001", nama: "Budi Hermawan",    dusun: "Dusun Sejahtera", jenisKelamin: "Laki-laki",   usia: 45, status: "Kawin" },
@@ -21,7 +22,8 @@ const stats = [
 ];
 
 export default function Penduduk() {
-  const isLoggedIn = localStorage.getItem("isAuth") === "true";
+  const { isAdmin, hasRole } = useContext(AuthContext);
+  const canEdit = isAdmin() || hasRole('Kepala Desa');
   const navigate = useNavigate();
 
   const [data, setData]         = useState(dummyData);
@@ -57,12 +59,12 @@ export default function Penduduk() {
           <div>
             <h1 className="penduduk-title">👥 Data Kependudukan Desa Bahagia</h1>
             <p className="penduduk-subtitle">
-              {isLoggedIn
+              {canEdit
                 ? "Kelola dan pantau data kependudukan desa secara menyeluruh."
                 : "Informasi kependudukan Desa Bahagia. Login untuk mengelola data."}
             </p>
           </div>
-          {!isLoggedIn && (
+          {!canEdit && (
             <button className="btn" onClick={() => navigate("/login")}>Login untuk Kelola</button>
           )}
         </div>
@@ -98,7 +100,7 @@ export default function Penduduk() {
         </section>
 
         {/* Admin toolbar (login only) */}
-        {isLoggedIn && (
+        {canEdit && (
           <div className="penduduk-admin-bar">
             <span className="admin-badge">🔧 Mode Admin</span>
             <button className="btn" onClick={() => setShowForm(v => !v)}>
@@ -108,7 +110,7 @@ export default function Penduduk() {
         )}
 
         {/* Add form (login only) */}
-        {isLoggedIn && showForm && (
+        {canEdit && showForm && (
           <form className="penduduk-form" onSubmit={handleSubmit}>
             <h4>Tambah Data Penduduk</h4>
             <div className="form-grid">
@@ -154,7 +156,7 @@ export default function Penduduk() {
         )}
 
         {/* Public: aggregate demographic info only */}
-        {!isLoggedIn && (
+        {!canEdit && (
           <>
             <section className="penduduk-demografi-section">
               <h3>Kelompok Usia</h3>
@@ -201,7 +203,7 @@ export default function Penduduk() {
         )}
 
         {/* Admin only: search + full table */}
-        {isLoggedIn && (
+        {canEdit && (
           <>
             <div className="penduduk-search-row">
               <input

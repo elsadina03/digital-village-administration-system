@@ -1,13 +1,11 @@
-import React from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import './dashboard.css'
 import hero from '../../assets/1399369597_Modorima.jpeg'
 import img1 from '../../assets/IMG_3050.JPG'
 import img2 from '../../assets/Three Simple Steps to Empowered Word-Learning - Peers and Pedagogy.jpeg'
-
-import news from '../../data/news'
-
-const dummyNews = [...news].sort((a,b)=>b.views-a.views).slice(0,3)
+import api from '../../services/api'
+import { AuthContext, ROLES } from '../../context/AuthContext'
 
 const team = [
   { id: 1, name: 'Budi Hermawan', role: 'Kepala Desa', img: img1 },
@@ -15,25 +13,63 @@ const team = [
   { id: 3, name: 'Siti Aminah', role: 'Bendahara Desa', img: img1 },
 ]
 
-const adminStats = [
-  { label: 'Total Penduduk', value: '345', icon: '👥', to: '/penduduk' },
-  { label: 'Surat Diproses', value: '12', icon: '📄', to: '/surat' },
-  { label: 'Total Anggaran', value: 'Rp 450 Jt', icon: '💰', to: '/data-anggaran' },
-  { label: 'Program Aktif', value: '5', icon: '📋', to: '/program-desa' },
-]
-
 export default function Dashboard() {
-  const isLoggedIn = localStorage.getItem('isAuth') === 'true'
+  const { user, isAdmin, canAccessFinance, canAccessProgram } = useContext(AuthContext)
+  const isLoggedIn = !!user
   const navigate = useNavigate()
+
+  const [news, setNews] = useState([])
+  const [stats, setStats] = useState({ penduduk: '-', surat: '-', anggaran: '-', program: '-' })
+  const [loadingNews, setLoadingNews] = useState(true)
+
+  useEffect(() => {
+    // Fetch berita publik (no auth required)
+    api.get('/news').then(res => {
+      const data = res.data.data ?? res.data
+      const sorted = [...data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      setNews(sorted.slice(0, 3))
+    }).catch(() => {}).finally(() => setLoadingNews(false))
+
+    // Fetch stats (only if logged in)
+    if (isLoggedIn) {
+      Promise.all([
+        api.get('/users/count').catch(() => null),
+        api.get('/letters?status=menunggu').catch(() => null),
+        api.get('/budgets?tahun=' + new Date().getFullYear()).catch(() => null),
+        api.get('/programs').catch(() => null),
+      ]).then(([citRes, letRes, budRes, progRes]) => {
+        const penduduk = citRes?.data?.total ?? citRes?.data?.data?.length ?? '-'
+        const surat = letRes?.data?.total ?? letRes?.data?.data?.length ?? '-'
+        const totalAnggaran = budRes?.data?.summary?.total_anggaran
+        const anggaran = totalAnggaran
+          ? 'Rp ' + (totalAnggaran / 1_000_000).toFixed(0) + ' Jt'
+          : '-'
+        const program = progRes?.data?.total ?? progRes?.data?.data?.length ?? '-'
+        setStats({ penduduk, surat, anggaran, program })
+      })
+    }
+  }, [isLoggedIn])
+
+  const adminStats = [
+    { label: 'Total Penduduk', value: stats.penduduk, icon: '👥', to: '/warga' },
+    { label: 'Surat Diproses', value: stats.surat,    icon: '📄', to: '/surat' },
+    { label: 'Total Anggaran', value: stats.anggaran, icon: '💰', to: '/data-anggaran' },
+    { label: 'Program Aktif',  value: stats.program,  icon: '📋', to: '/program-desa' },
+  ].filter(s => {
+    // Hidupkan hanya menu yg boleh diakses role ini
+    if (s.to === '/data-anggaran') return canAccessFinance()
+    if (s.to === '/program-desa') return canAccessProgram()
+    return true
+  })
 
   return (
     <div className="dashboard-root">
 
-      {/* ====== ADMIN PANEL (login only) ====== */}
+      {/* ====== ADMIN/STAFF PANEL (login only) ====== */}
       {isLoggedIn && (
         <section className="admin-panel container">
           <div className="admin-panel-header">
-            <h2>Panel Admin Desa Bahagia</h2>
+            <h2>Panel {user?.role?.name ?? 'Pengguna'} — {user?.name ?? ''}</h2>
             <p className="admin-subtitle">Selamat datang kembali, kelola data desa dari sini.</p>
           </div>
           <div className="admin-stats-grid">
@@ -48,9 +84,15 @@ export default function Dashboard() {
             ))}
           </div>
           <div className="admin-quick-actions">
-            <button className="admin-action-btn" onClick={() => navigate('/pengajuan')}>📝 Kelola Surat</button>
-            <button className="admin-action-btn" onClick={() => navigate('/berita')}>📰 Kelola Berita</button>
-            <button className="admin-action-btn" onClick={() => navigate('/input-apbdes')}>💳 Input APBDes</button>
+            {canAccessProgram() && (
+              <button className="admin-action-btn" onClick={() => navigate('/pengajuan')}>📝 Kelola Surat</button>
+            )}
+            {isAdmin() && (
+              <button className="admin-action-btn" onClick={() => navigate('/berita')}>📰 Kelola Berita</button>
+            )}
+            {canAccessFinance() && (
+              <button className="admin-action-btn" onClick={() => navigate('/input-apbdes')}>💳 Input APBDes</button>
+            )}
             <button className="admin-action-btn" onClick={() => navigate('/struktur-organisasi')}>🏛️ Struktur Organisasi</button>
           </div>
         </section>
@@ -105,16 +147,22 @@ export default function Dashboard() {
           }
         </div>
         <div className="news-grid">
-          {dummyNews.map(n => (
-            <article key={n.id} className="news-card">
-              <img src={n.img} alt={n.title} />
-              <div className="news-body">
-                <h4>{n.title}</h4>
-                <p className="meta">{n.date} • {n.author}</p>
-                <p className="excerpt">{n.excerpt}</p>
-              </div>
-            </article>
-          ))}
+          {loadingNews ? (
+            <p>Memuat berita...</p>
+          ) : news.length === 0 ? (
+            <p>Belum ada berita.</p>
+          ) : (
+            news.map(n => (
+              <article key={n.id} className="news-card">
+                {n.image_path && <img src={`http://127.0.0.1:8000/storage/${n.image_path}`} alt={n.title} />}
+                <div className="news-body">
+                  <h4>{n.title}</h4>
+                  <p className="meta">{n.created_at?.split('T')[0]} • {n.author?.name ?? 'Admin'}</p>
+                  <p className="excerpt">{n.content?.substring(0, 100)}...</p>
+                </div>
+              </article>
+            ))
+          )}
         </div>
       </section>
 
@@ -122,12 +170,12 @@ export default function Dashboard() {
         <div className="section-title-row">
           <h2 className="section-title">Profil Desa</h2>
           {isLoggedIn
-            ? <button className="table-btn-edit" onClick={() => navigate('/penduduk')}>👥 Data Penduduk</button>
-            : <Link to="/penduduk" className="detail-link">Lihat Data Penduduk →</Link>
+            ? <button className="table-btn-edit" onClick={() => navigate('/warga')}>👥 Data Penduduk</button>
+            : <Link to="/warga" className="detail-link">Lihat Data Penduduk →</Link>
           }
         </div>
         <div className="profile-stats">
-          <div className="stat">345<br/><span>Penduduk</span></div>
+          <div className="stat">{stats.penduduk}<br/><span>Penduduk</span></div>
           <div className="stat">12,4 km²<br/><span>Luas</span></div>
           <div className="stat">69213<br/><span>Kode Pos</span></div>
         </div>
@@ -168,14 +216,16 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* ====== PUBLIC CTA (non-login only) ====== */}
+      {/* ====== LOGIN CTA (public, before footer) ====== */}
       {!isLoggedIn && (
         <section className="public-cta container">
-          <div className="public-cta-content">
-            <h3>Butuh layanan administrasi desa?</h3>
-            <p>Login untuk mengakses pengajuan surat, laporan kegiatan, data keuangan, dan fitur lengkap lainnya.</p>
-            <button className="btn" onClick={() => navigate('/login')}>Login Sekarang</button>
+          <div className="public-cta-text">
+            <span>🏡 Warga Desa Bahagia?</span>
+            <p>Login untuk mengakses layanan administrasi desa — pengajuan surat, pengaduan, dan lainnya.</p>
           </div>
+          <button className="public-cta-btn" onClick={() => navigate('/login')}>
+            🔐 Login sebagai Warga
+          </button>
         </section>
       )}
 

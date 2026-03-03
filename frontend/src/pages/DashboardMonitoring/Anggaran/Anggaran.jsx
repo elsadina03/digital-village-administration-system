@@ -1,12 +1,15 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect, useContext } from "react";
+import api from "../../../services/api";
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
     PieChart, Pie, Cell
 } from 'recharts';
 import "./anggaran.css";
+import { AuthContext } from "../../../context/AuthContext";
 
 export default function Anggaran() {
+    const { canAccessFinance } = useContext(AuthContext);
+
     const [budgets, setBudgets] = useState([]);
     const [summary, setSummary] = useState({
         total_anggaran: 0,
@@ -25,15 +28,11 @@ export default function Anggaran() {
         keterangan: ""
     });
 
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-    const canAddData = ["Bendahara", "Admin Desa", "Kepala Desa"].includes(user.role);
+    const canAddData = canAccessFinance();
 
     const fetchBudgets = async () => {
         try {
-            const token = localStorage.getItem("token");
-            const response = await axios.get("http://localhost:8000/api/budgets", {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await api.get("/budgets");
             setBudgets(response.data.data);
             setSummary(response.data.summary);
         } catch (err) {
@@ -50,10 +49,7 @@ export default function Anggaran() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem("token");
-            await axios.post("http://localhost:8000/api/budgets", formData, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await api.post("/budgets", formData);
             alert("Data anggaran berhasil ditambahkan!");
             setShowForm(false);
             setFormData({ ...formData, nominal_anggaran: "", keterangan: "", nominal_realisasi: "0" });

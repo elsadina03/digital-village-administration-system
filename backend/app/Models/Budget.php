@@ -8,6 +8,9 @@ class Budget extends Model
 {
     protected $fillable = [
         'tahun',
+        'kategori',
+        'deskripsi',
+        'bulan',
         'sumber_dana',
         'nominal_anggaran',
         'nominal_realisasi',

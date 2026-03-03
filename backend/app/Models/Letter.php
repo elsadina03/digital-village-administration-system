@@ -20,7 +20,9 @@ class Letter extends Model
         'status',
         'physical_taken',
         'letter_number',
-        'document_path'
+        'document_path',
+        'rejection_note',
+        'processed_by',
     ];
 
     public function user()

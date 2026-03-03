@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect, useContext } from "react";
+import api from "../../../services/api";
+import { AuthContext } from "../../../context/AuthContext";
 import "./kependudukan.css";
 
 export default function Kependudukan() {
@@ -8,15 +9,14 @@ export default function Kependudukan() {
     const [loading, setLoading] = useState(true);
     const [importFile, setImportFile] = useState(null);
 
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-    const canImport = user.role === "Admin Desa" || user.role === "Kepala Desa";
+    const { isAdmin, hasRole } = useContext(AuthContext);
+    const canImport = isAdmin() || hasRole("Kepala Desa");
 
     const fetchCitizens = async () => {
         try {
-            const token = localStorage.getItem("token");
             const [listRes, statsRes] = await Promise.all([
-                axios.get("http://localhost:8000/api/citizens", { headers: { Authorization: `Bearer ${token}` } }),
-                axios.get("http://localhost:8000/api/citizens/stats", { headers: { Authorization: `Bearer ${token}` } })
+                api.get("/citizens"),
+                api.get("/citizens/stats")
             ]);
             setCitizens(listRes.data.data ? listRes.data.data : listRes.data);
 
@@ -48,10 +48,24 @@ export default function Kependudukan() {
         fetchCitizens();
     }, []);
 
-    const handleExport = () => {
-        // You can also use a token-based download if API requires it. 
-        // Assuming GET /api/citizens/export returns the file directly:
-        window.location.href = "http://localhost:8000/api/citizens/export";
+    const handleExport = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await api.get("/citizens/export", {
+                responseType: "blob",
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "data-penduduk.xlsx");
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (err) {
+            console.error("Gagal mengexport data", err);
+            alert("Gagal mengexport data.");
+        }
     };
 
     const handleImport = async (e) => {
@@ -62,16 +76,12 @@ export default function Kependudukan() {
         formData.append("file", importFile);
 
         try {
-            const token = localStorage.getItem("token");
-            await axios.post("http://localhost:8000/api/citizens/import", formData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "multipart/form-data"
-                }
+            await api.post("/citizens/import", formData, {
+                headers: { "Content-Type": "multipart/form-data" }
             });
             alert("Data berhasil diimport!");
             setImportFile(null);
-            fetchCitizens(); // refresh
+            fetchCitizens();
         } catch (err) {
             alert("Gagal mengimport data Excel.");
             console.error(err);

@@ -1,0 +1,98 @@
+.pubpend-root {
+  min-height: 60vh;
+}
+
+.pubpend-hero {
+  background: linear-gradient(135deg, #0b5a45 0%, #1a8c6b 100%);
+  color: #fff;
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.pubpend-hero h1 {
+  font-size: 2rem;
+  margin: 0 0 0.5rem;
+}
+
+.pubpend-hero p {
+  font-size: 1rem;
+  opacity: 0.85;
+  margin: 0;
+}
+
+.pubpend-container {
+  max-width: 900px;
+  margin: 2.5rem auto;
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 640px) {
+  .pubpend-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pubpend-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.pubpend-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.pubpend-value {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #0b5a45;
+  line-height: 1;
+}
+
+.pubpend-label {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+.pubpend-info {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  padding: 2rem;
+}
+
+.pubpend-info h2 {
+  margin: 0 0 1rem;
+  color: #1a3a2f;
+  font-size: 1.2rem;
+}
+
+.pubpend-info p {
+  color: #555;
+  line-height: 1.7;
+  margin: 0 0 0.75rem;
+}
+
+.pubpend-login-btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.65rem 1.5rem;
+  background: #0b5a45;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.pubpend-login-btn:hover {
+  background: #0d7a5f;
+}

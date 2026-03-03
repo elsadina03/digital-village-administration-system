@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from "react";
+import api from "../../../services/api";
 import "./Pengaduan.css";
 import { FiHeadphones } from "react-icons/fi";
 
@@ -12,10 +13,11 @@ export default function Pengaduan() {
   const [kategori, setKategori] = useState("Infrastruktur");
   const [alasan, setAlasan] = useState("");
   const [file, setFile] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const fileName = useMemo(() => (file ? file.name : "Belum ada dokumen yang dipilih"), [file]);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     if (!nama.trim() || !wa.trim() || !kategori || !alasan.trim()) {
@@ -23,16 +25,32 @@ export default function Pengaduan() {
       return;
     }
 
-    // TODO: nanti kirim ke backend pakai FormData
-    console.log({ nama, wa, kategori, alasan, file });
+    setSubmitting(true);
+    try {
+      const formData = new FormData();
+      formData.append("nama", nama);
+      formData.append("wa", wa);
+      formData.append("title", `[${kategori}] ${alasan.substring(0, 100)}`);
+      formData.append("description", alasan);
+      if (file) formData.append("file", file);
 
-    alert("Pengaduan terkirim (dummy).");
-    setNama("");
-    setWa("");
-    setKategori("Infrastruktur");
-    setAlasan("");
-    setFile(null);
-    if (fileRef.current) fileRef.current.value = "";
+      await api.post("/complaints", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
+
+      alert("Pengaduan berhasil dikirim!");
+      setNama("");
+      setWa("");
+      setKategori("Infrastruktur");
+      setAlasan("");
+      setFile(null);
+      if (fileRef.current) fileRef.current.value = "";
+    } catch (err) {
+      console.error(err);
+      alert("Gagal mengirim pengaduan. Coba lagi.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   function handleHelpClick() {
@@ -96,8 +114,8 @@ export default function Pengaduan() {
             <div className="hint">*PNG, JPG, PDF, Word; max 10MB</div>
           </div>
 
-          <button className="btnSend" type="submit">
-            Kirim
+          <button className="btnSend" type="submit" disabled={submitting}>
+            {submitting ? "Mengirim..." : "Kirim"}
           </button>
         </form>
       </div>

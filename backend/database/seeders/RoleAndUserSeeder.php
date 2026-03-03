@@ -14,12 +14,13 @@ class RoleAndUserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Define Roles
+        // Define Roles (5 roles)
         $roles = [
+            'Admin Desa',
             'Kepala Desa',
             'Sekretaris Desa',
             'Bendahara',
-            'Warga'
+            'Warga',
         ];
 
         foreach ($roles as $roleName) {
@@ -28,22 +29,24 @@ class RoleAndUserSeeder extends Seeder
 
         // Create Default Users for specific roles
         $usersToCreate = [
-            ['name' => 'Bapak Kepala Desa', 'email' => 'kepdes@desa.id', 'role' => 'Kepala Desa'],
-            ['name' => 'Bapak Sekretaris Desa', 'email' => 'sekdes@desa.id', 'role' => 'Sekretaris Desa'],
-            ['name' => 'Ibu Bendahara', 'email' => 'bendahara@desa.id', 'role' => 'Bendahara'],
-            ['name' => 'Budi Warga', 'email' => 'warga@desa.id', 'role' => 'Warga'],
+            ['name' => 'Admin Desa',          'email' => 'admin1@desa.id',      'password' => 'admindesa1',      'role' => 'Admin Desa',        'phone' => '082338232475'],
+            ['name' => 'Kepala Desa',         'email' => 'kepdes1@desa.id',     'password' => 'kepdesdesa1',     'role' => 'Kepala Desa',       'phone' => ''],
+            ['name' => 'Bapak Sekretaris',    'email' => 'sekdes1@desa.id',     'password' => 'sekdes1',         'role' => 'Sekretaris Desa',   'phone' => ''],
+            ['name' => 'Ibu Bendahara',       'email' => 'bendahara1@desa.id',  'password' => 'bendaharadesa1',  'role' => 'Bendahara',         'phone' => ''],
+            ['name' => 'Budi Warga',          'email' => 'wargadesa1@desa.id',  'password' => 'wargadesa1',      'role' => 'Warga',             'phone' => '082142045987'],
         ];
 
         foreach ($usersToCreate as $userData) {
             $role = Role::where('name', $userData['role'])->first();
             if ($role) {
-                User::firstOrCreate(
+                User::updateOrCreate(
                     ['email' => $userData['email']],
                     [
-                        'name' => $userData['name'],
-                        'password' => Hash::make('password123'),
-                        'role_id' => $role->id,
+                        'name'          => $userData['name'],
+                        'password'      => Hash::make($userData['password']),
+                        'role_id'       => $role->id,
                         'active_status' => true,
+                        'phone'         => $userData['phone'] ?? null,
                     ]
                 );
             }

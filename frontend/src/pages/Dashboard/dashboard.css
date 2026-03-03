@@ -85,7 +85,12 @@
 .table-btn-edit:hover { background: #0fa78d; color: #fff; }
 
 /* Public CTA banner */
-.public-cta { background: linear-gradient(120deg,#1fa18a,#0b5346); border-radius: 16px; padding: 0; overflow: hidden; }
+.public-cta { background: linear-gradient(120deg,#1fa18a,#0b5346); border-radius: 16px; padding: 24px 32px; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 0; }
+.public-cta-text { color: #fff; }
+.public-cta-text span { font-size: 18px; font-weight: 700; display: block; margin-bottom: 4px; }
+.public-cta-text p { margin: 0; opacity: 0.9; font-size: 14px; }
+.public-cta-btn { padding: 10px 22px; border-radius: 10px; border: 2px solid #fff; background: #fff; color: #0b5346; font-weight: 700; cursor: pointer; font-size: 14px; transition: background .15s, color .15s; white-space: nowrap; }
+.public-cta-btn:hover { background: transparent; color: #fff; }
 .public-cta-content { padding: 40px 48px; color: #fff; display: flex; flex-direction: column; gap: 12px; }
 .public-cta-content h3 { font-size: 24px; margin: 0; }
 .public-cta-content p { margin: 0; opacity: 0.9; max-width: 540px; }

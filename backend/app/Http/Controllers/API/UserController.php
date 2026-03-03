@@ -15,6 +15,11 @@ class UserController extends Controller
         return response()->json(User::with('role')->get());
     }
 
+    public function count()
+    {
+        return response()->json(['total' => User::count()]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([

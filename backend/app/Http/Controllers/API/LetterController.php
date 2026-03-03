@@ -4,12 +4,18 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use App\Models\Letter;
 use App\Models\LetterType;
+use App\Services\FonnteService;
 
 class LetterController extends Controller
 {
+    protected FonnteService $fonnte;
+
+    public function __construct(FonnteService $fonnte)
+    {
+        $this->fonnte = $fonnte;
+    }
     public function index(Request $request)
     {
         $query = Letter::with('letterType');
@@ -73,17 +79,47 @@ class LetterController extends Controller
         return response()->json(['message' => 'Success', 'data' => $letter]);
     }
 
+    /**
+     * Generate a unique letter number.
+     * Format: NNN/JENIS/DS/BULAN_ROMAWI/TAHUN
+     */
+    public function generateNumber(Request $request)
+    {
+        $year  = now()->year;
+        $month = now()->month;
+        $romans = ['','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+
+        $count = Letter::whereYear('created_at', $year)->whereNotNull('letter_number')->count() + 1;
+        $seq   = str_pad($count, 3, '0', STR_PAD_LEFT);
+
+        $jenis = $request->query('jenis', 'SK');
+        // shorten jenis surat to abbreviation
+        $abbr = match(strtolower($jenis)) {
+            'surat keterangan domisili' => 'SKD',
+            'surat keterangan beasiswa' => 'SKB',
+            'surat tidak mampu'         => 'STM',
+            'surat usaha'               => 'SU',
+            default                     => 'SK',
+        };
+
+        $number = "{$seq}/{$abbr}/DS/{$romans[$month]}/{$year}";
+        return response()->json(['letter_number' => $number]);
+    }
+
     public function update(Request $request, $id)
     {
         $letter = Letter::findOrFail($id);
         
         $request->validate([
-            'status' => 'sometimes|required|string|in:pending,diproses,selesai,ditolak',
+            'status'         => 'sometimes|required|string|in:pending,diproses,menunggu_kepdes,selesai,ditolak',
             'physical_taken' => 'sometimes|required|boolean',
-            'letter_number' => 'sometimes|nullable|string',
-            'document_path' => 'sometimes|nullable|file|mimes:pdf,doc,docx|max:10240'
+            'letter_number'  => 'sometimes|nullable|string',
+            'rejection_note' => 'sometimes|nullable|string',
+            'processed_by'   => 'sometimes|nullable|string',
+            'document_path'  => 'sometimes|nullable|file|mimes:pdf,doc,docx,png,jpg,jpeg|max:10240',
         ]);
 
+        $oldStatus = $letter->status;
         $data = $request->except(['document_path']);
 
         if ($request->hasFile('document_path')) {
@@ -92,8 +128,28 @@ class LetterController extends Controller
         }
 
         $letter->update($data);
+        $letter->refresh();
 
-        return response()->json(['message' => 'Surat berhasil diupdate', 'data' => $letter]);
+        // Kirim notifikasi WhatsApp ke pemohon
+        $waNumber = $letter->wa;
+        $newStatus = $letter->status;
+
+        if ($waNumber && $oldStatus !== $newStatus) {
+            $msg = match($newStatus) {
+                'menunggu_kepdes' =>
+                    "📋 *Update Status Surat*\n\nYth. {$letter->nama},\nPengajuan surat *{$letter->letterType?->name}* Anda sedang ditinjau oleh Kepala Desa ⏳.\n\nNomor Surat: {$letter->letter_number}\n\nSilakan cek aplikasi desa untuk informasi lebih lanjut.",
+                'selesai' =>
+                    "✅ *Surat Anda Disetujui*\n\nYth. {$letter->nama},\nSurat *{$letter->letterType?->name}* Anda telah disetujui oleh Kepala Desa.\nNomor Surat: {$letter->letter_number}\n\nSilakan unduh surat di aplikasi desa.",
+                'ditolak' =>
+                    "❌ *Surat Anda Ditolak*\n\nYth. {$letter->nama},\nMohon maaf, pengajuan surat *{$letter->letterType?->name}* Anda ditolak.\nAlasan: {$letter->rejection_note}\n\nSilakan ajukan ulang jika diperlukan.",
+                default => null,
+            };
+            if ($msg) {
+                $this->fonnte->send($waNumber, $msg);
+            }
+        }
+
+        return response()->json(['message' => 'Surat berhasil diupdate', 'data' => $letter->load('letterType', 'user')]);
     }
 
     public function destroy($id)

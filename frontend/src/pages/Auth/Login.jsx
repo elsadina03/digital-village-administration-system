@@ -1,24 +1,34 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
+import api from "../../services/api";
 import "./auth.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    // TODO: hook to auth API
-    console.log("sign in", { email, password });
-    // simple demo auth: mark as authenticated and redirect to dashboard
+    setError("");
+    setLoading(true);
+
     try {
-      localStorage.setItem("isAuth", "true");
+      const response = await api.post("/login", { email, password });
+      const { access_token, user } = response.data;
+      
+      login(access_token, user);
+      navigate('/');
     } catch (err) {
-      /* ignore */
+      setError(err.response?.data?.message || "Login gagal. Periksa email dan password Anda.");
+    } finally {
+      setLoading(false);
     }
-    navigate('/');
   }
 
 
@@ -36,12 +46,40 @@ export default function Login() {
 
           <div className="auth-form">
             <form onSubmit={handleSubmit}>
+              {error && (
+                <div style={{
+                  padding: "12px",
+                  marginBottom: "16px",
+                  backgroundColor: "#fee",
+                  border: "1px solid #fcc",
+                  borderRadius: "4px",
+                  color: "#c33",
+                  fontSize: "14px"
+                }}>
+                  {error}
+                </div>
+              )}
+
               <label>Email</label>
-              <input value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="example@gmail.com" />
+              <input 
+                type="email"
+                value={email} 
+                onChange={(e)=>setEmail(e.target.value)} 
+                placeholder="admin1@desa.id"
+                required
+                disabled={loading}
+              />
 
               <label>Password</label>
               <div className="input-with-icon">
-                <input type={showPassword?"text":"password"} value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="••••••••" />
+                <input 
+                  type={showPassword?"text":"password"} 
+                  value={password} 
+                  onChange={(e)=>setPassword(e.target.value)} 
+                  placeholder="••••••••"
+                  required
+                  disabled={loading}
+                />
                 <button type="button" className="icon-btn" onClick={()=>setShowPassword(s=>!s)} aria-label={showPassword?"Hide password":"Show password"}>
                   {showPassword ? (
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#0b5a45" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="M12 9a3 3 0 100 6 3 3 0 000-6z" stroke="#0b5a45" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
@@ -51,11 +89,13 @@ export default function Login() {
                 </button>
               </div>
 
-              <button className="btn" type="submit">Sign in</button>
+              <button className="btn" type="submit" disabled={loading}>
+                {loading ? "Memproses..." : "Sign in"}
+              </button>
             </form>
 
             <div className="auth-footer">
-              Don't have an account yet? <Link className="small-link" to="/register">Register</Link>
+              Belum punya akun? Hubungi petugas administrasi desa untuk mendapatkan akses.
             </div>
           </div>
         </div>

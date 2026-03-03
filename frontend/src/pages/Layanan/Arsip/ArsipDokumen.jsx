@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../../services/api";
 import "./ArsipDokumen.css";
 
 const KATEGORI = [
@@ -36,11 +36,7 @@ export default function ArsipDokumen() {
 
   const fetchArchives = async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-      const res = await axios.get("http://localhost:8000/api/archives", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get("/archives");
 
       const allDocs = res.data.data.map(d => ({
         id: d.id,
@@ -99,18 +95,14 @@ export default function ArsipDokumen() {
     }
 
     try {
-      const token = localStorage.getItem("token");
       const formData = new FormData();
       formData.append("title", namaDokumen.trim());
       formData.append("type", tab);
       formData.append("category", kategori);
       formData.append("file", file);
 
-      await axios.post("http://localhost:8000/api/archives", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data"
-        }
+      await api.post("/archives", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
       });
 
       alert("Dokumen berhasil diarsip!");

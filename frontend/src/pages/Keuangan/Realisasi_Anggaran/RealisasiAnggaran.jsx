@@ -1,190 +1,160 @@
-import { useState } from "react";
+﻿import { useState, useEffect, useMemo } from "react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import api from "../../../services/api";
 import "./realisasi-anggaran.css";
 
 function rupiah(n) {
-  return "Rp " + Number(n).toLocaleString("id-ID");
+    if (!n && n !== 0) return "Rp 0";
+    return "Rp " + Number(n).toLocaleString("id-ID");
 }
 
-const BULAN = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
-
-// Data dummy per bulan (kumulatif)
-const dataRealisasi2025 = [
-  { bulan: "Jan", pendapatan: 70000000,  pengeluaran: 55000000 },
-  { bulan: "Feb", pendapatan: 135000000, pengeluaran: 110000000 },
-  { bulan: "Mar", pendapatan: 210000000, pengeluaran: 162000000 },
-  { bulan: "Apr", pendapatan: 280000000, pengeluaran: 215000000 },
-  { bulan: "Mei", pendapatan: 350000000, pengeluaran: 270000000 },
-  { bulan: "Jun", pendapatan: 430000000, pengeluaran: 320000000 },
-];
-
-const detailPengeluaran = [
-  { id: 1, tanggal: "2025-01-05", uraian: "Gaji Perangkat Desa - Januari", bidang: "Pemerintahan", jumlah: 18000000, status: "Disetujui" },
-  { id: 2, tanggal: "2025-01-20", uraian: "Pemeliharaan Jalan Desa RT 03", bidang: "Pembangunan", jumlah: 35000000, status: "Disetujui" },
-  { id: 3, tanggal: "2025-02-03", uraian: "Kegiatan Posyandu Balita", bidang: "Pembinaan", jumlah: 5000000, status: "Disetujui" },
-  { id: 4, tanggal: "2025-02-15", uraian: "Pengadaan Alat Tulis Kantor", bidang: "Pemerintahan", jumlah: 2500000, status: "Disetujui" },
-  { id: 5, tanggal: "2025-03-10", uraian: "Pembangunan Drainase RT 01", bidang: "Pembangunan", jumlah: 45000000, status: "Disetujui" },
-  { id: 6, tanggal: "2025-03-25", uraian: "Pelatihan UMKM Warga Desa", bidang: "Pemberdayaan", jumlah: 8000000, status: "Disetujui" },
-  { id: 7, tanggal: "2025-04-12", uraian: "BLT Dana Desa Tahap 1", bidang: "Pemberdayaan", jumlah: 24000000, status: "Disetujui" },
-  { id: 8, tanggal: "2025-05-05", uraian: "Renovasi Balai Desa", bidang: "Pembangunan", jumlah: 60000000, status: "Proses" },
-  { id: 9, tanggal: "2025-06-07", uraian: "Kegiatan HUT RI ke-80", bidang: "Pembinaan", jumlah: 7500000, status: "Proses" },
-  { id: 10, tanggal: "2025-06-20", uraian: "Pengadaan CCTV Desa", bidang: "Pemerintahan", jumlah: 12000000, status: "Menunggu" },
-];
-
-const BIDANG_LIST = ["Semua", "Pemerintahan", "Pembangunan", "Pembinaan", "Pemberdayaan"];
-const STATUS_LIST = ["Semua", "Disetujui", "Proses", "Menunggu"];
-
-const BADGE_STATUS = {
-  "Disetujui": "badge-green",
-  "Proses": "badge-blue",
-  "Menunggu": "badge-yellow",
-};
-
-const maxVal = Math.max(...dataRealisasi2025.map((d) => d.pendapatan));
+const BULAN_LIST = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+const BULAN_FULL = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+const KATEGORI_LIST = ["Semua","Pemasukan","Belanja Desa","Belanja Modal","Belanja Pegawai","Lainnya"];
 
 export default function RealisasiAnggaran() {
-  const [filterBidang, setFilterBidang] = useState("Semua");
-  const [filterStatus, setFilterStatus] = useState("Semua");
-  const [search, setSearch] = useState("");
+    const [budgets,    setBudgets]    = useState([]);
+    const [summary,    setSummary]    = useState({});
+    const [loading,    setLoading]    = useState(true);
+    const [year,       setYear]       = useState(String(new Date().getFullYear()));
+    const [filterKat,  setFilterKat]  = useState("Semua");
+    const [search,     setSearch]     = useState("");
 
-  const totalPendapatan = 850000000;
-  const totalPengeluaranReal = detailPengeluaran
-    .filter(d => d.status === "Disetujui")
-    .reduce((acc, d) => acc + d.jumlah, 0);
+    useEffect(() => {
+        (async () => {
+            setLoading(true);
+            try {
+                const res = await api.get("/budgets", { params: { tahun: year } });
+                setBudgets(res.data.data || []);
+                setSummary(res.data.summary || {});
+            } finally {
+                setLoading(false);
+            }
+        })();
+    }, [year]);
 
-  const filteredDetail = detailPengeluaran.filter((d) => {
-    const matchBidang = filterBidang === "Semua" || d.bidang === filterBidang;
-    const matchStatus = filterStatus === "Semua" || d.status === filterStatus;
-    const matchQ = !search.trim() || d.uraian.toLowerCase().includes(search.toLowerCase());
-    return matchBidang && matchStatus && matchQ;
-  });
+    // Build monthly chart data from budgets
+    const chartData = useMemo(() => {
+        return BULAN_LIST.map((label, idx) => {
+            const bulanFull = BULAN_FULL[idx];
+            const bulanItems = budgets.filter(b => b.bulan === bulanFull);
+            return {
+                name: label,
+                Anggaran:  bulanItems.reduce((s, b) => s + Number(b.nominal_anggaran || 0), 0),
+                Realisasi: bulanItems.reduce((s, b) => s + Number(b.nominal_realisasi || 0), 0),
+            };
+        });
+    }, [budgets]);
 
-  return (
-    <div className="realisasi-root">
-      <div className="realisasi-container">
+    const filtered = useMemo(() => {
+        return budgets.filter(b => {
+            const matchKat = filterKat === "Semua" || b.kategori === filterKat;
+            const matchQ   = !search.trim() || (b.deskripsi + " " + b.sumber_dana).toLowerCase().includes(search.toLowerCase());
+            return matchKat && matchQ;
+        });
+    }, [budgets, filterKat, search]);
 
-        {/* Header */}
-        <div className="realisasi-header">
-          <h1 className="realisasi-title">📉 Realisasi Anggaran Desa Bahagia</h1>
-          <p className="realisasi-subtitle">Monitoring pemasukan dan pengeluaran anggaran desa secara real-time.</p>
-        </div>
+    const years = useMemo(() => {
+        const set = new Set(budgets.map(b => b.tahun));
+        set.add(String(new Date().getFullYear()));
+        return [...set].sort((a, b) => b - a);
+    }, [budgets]);
 
-        {/* Stat Cards */}
-        <div className="realisasi-stats">
-          <div className="rs-card" style={{ borderTop: "4px solid #0fa78d" }}>
-            <div className="rs-icon">💰</div>
-            <div>
-              <div className="rs-label">Total APBDes</div>
-              <div className="rs-value green-text">{rupiah(totalPendapatan)}</div>
-            </div>
-          </div>
-          <div className="rs-card" style={{ borderTop: "4px solid #3b82f6" }}>
-            <div className="rs-icon">📤</div>
-            <div>
-              <div className="rs-label">Sudah Direalisasi</div>
-              <div className="rs-value blue-text">{rupiah(totalPengeluaranReal)}</div>
-            </div>
-          </div>
-          <div className="rs-card" style={{ borderTop: "4px solid #f59e0b" }}>
-            <div className="rs-icon">💼</div>
-            <div>
-              <div className="rs-label">Sisa Anggaran</div>
-              <div className="rs-value yellow-text">{rupiah(totalPendapatan - totalPengeluaranReal)}</div>
-            </div>
-          </div>
-          <div className="rs-card" style={{ borderTop: "4px solid #8b5cf6" }}>
-            <div className="rs-icon">📊</div>
-            <div>
-              <div className="rs-label">% Realisasi</div>
-              <div className="rs-value purple-text">{Math.round((totalPengeluaranReal / totalPendapatan) * 100)}%</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Grafik Bulanan */}
-        <div className="realisasi-card">
-          <h3>📅 Grafik Realisasi Bulanan Tahun 2025</h3>
-          <div className="bar-chart">
-            {dataRealisasi2025.map((d) => (
-              <div className="bc-col" key={d.bulan}>
-                <div className="bc-bars">
-                  <div
-                    className="bc-bar income"
-                    style={{ height: `${(d.pendapatan / maxVal) * 140}px` }}
-                    title={`Pendapatan: ${rupiah(d.pendapatan)}`}
-                  />
-                  <div
-                    className="bc-bar expense"
-                    style={{ height: `${(d.pengeluaran / maxVal) * 140}px` }}
-                    title={`Pengeluaran: ${rupiah(d.pengeluaran)}`}
-                  />
+    return (
+        <div className="realisasi-root">
+            <div className="realisasi-container">
+                <div className="realisasi-header">
+                    <h1 className="realisasi-title">ðŸ“‰ Realisasi Anggaran</h1>
+                    <p className="realisasi-subtitle">Monitoring pemasukan dan pengeluaran anggaran desa secara real-time.</p>
                 </div>
-                <div className="bc-label">{d.bulan}</div>
-              </div>
-            ))}
-          </div>
-          <div className="chart-legend">
-            <span className="legend-box income-color"></span> Pendapatan &nbsp;
-            <span className="legend-box expense-color"></span> Pengeluaran
-          </div>
+
+                {/* Year selector */}
+                <div style={{ marginBottom: "16px", display:"flex", gap:"8px", flexWrap:"wrap" }}>
+                    {(years.length ? years : [String(new Date().getFullYear())]).map(y => (
+                        <button key={y} type="button"
+                            style={{ padding:"6px 16px", borderRadius:"20px", border:"1.5px solid #0fa78d",
+                                background: year === y ? "#0fa78d" : "#fff",
+                                color: year === y ? "#fff" : "#0fa78d", cursor:"pointer", fontWeight:600 }}
+                            onClick={() => setYear(y)}>{y}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Stat Cards */}
+                <div className="realisasi-stats">
+                    <div className="rs-card" style={{ borderTop: "4px solid #0fa78d" }}>
+                        <div className="rs-icon">ðŸ’°</div>
+                        <div><div className="rs-label">Total APBDes</div><div className="rs-value green-text">{rupiah(summary.total_anggaran)}</div></div>
+                    </div>
+                    <div className="rs-card" style={{ borderTop: "4px solid #3b82f6" }}>
+                        <div className="rs-icon">ðŸ“¤</div>
+                        <div><div className="rs-label">Sudah Direalisasi</div><div className="rs-value blue-text">{rupiah(summary.total_realisasi)}</div></div>
+                    </div>
+                    <div className="rs-card" style={{ borderTop: "4px solid #f59e0b" }}>
+                        <div className="rs-icon">ðŸ’¼</div>
+                        <div><div className="rs-label">Sisa Anggaran</div><div className="rs-value yellow-text">{rupiah(summary.sisa_anggaran)}</div></div>
+                    </div>
+                    <div className="rs-card" style={{ borderTop: "4px solid #8b5cf6" }}>
+                        <div className="rs-icon">ðŸ“Š</div>
+                        <div><div className="rs-label">% Realisasi</div><div className="rs-value purple-text">{summary.persentase_realisasi?.toFixed(1) ?? 0}%</div></div>
+                    </div>
+                </div>
+
+                {/* Bar Chart */}
+                <div className="realisasi-card">
+                    <h3>ðŸ“… Grafik Realisasi Bulanan Tahun {year}</h3>
+                    {loading ? <div>Memuat chartâ€¦</div> : (
+                        <ResponsiveContainer width="100%" height={260}>
+                            <BarChart data={chartData} margin={{ top: 10, right: 10, bottom: 0, left: 20 }}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis tickFormatter={v => `${(v/1e6).toFixed(0)}jt`} />
+                                <Tooltip formatter={v => rupiah(v)} />
+                                <Legend />
+                                <Bar dataKey="Anggaran"  fill="#0fa78d" radius={[4,4,0,0]} />
+                                <Bar dataKey="Realisasi" fill="#3b82f6" radius={[4,4,0,0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    )}
+                </div>
+
+                {/* Detail Table */}
+                <div className="realisasi-card">
+                    <h3>ðŸ§¾ Rincian Data Anggaran</h3>
+                    <div className="realisasi-toolbar">
+                        <input className="realisasi-search" placeholder="ðŸ” Cari deskripsi..."
+                            value={search} onChange={e => setSearch(e.target.value)} />
+                        <select className="realisasi-select" value={filterKat} onChange={e => setFilterKat(e.target.value)}>
+                            {KATEGORI_LIST.map(k => <option key={k}>{k}</option>)}
+                        </select>
+                    </div>
+
+                    {loading ? <div style={{padding:"1rem"}}>Memuat dataâ€¦</div> : (
+                    <div className="realisasi-table-wrapper">
+                        <table className="realisasi-table">
+                            <thead>
+                                <tr><th>#</th><th>Bulan/Tahun</th><th>Deskripsi</th><th>Sumber Dana</th><th>Kategori</th><th className="right">Anggaran</th><th className="right">Realisasi</th></tr>
+                            </thead>
+                            <tbody>
+                                {filtered.length === 0 ? (
+                                    <tr><td colSpan="7" style={{textAlign:"center",padding:"1.5rem",color:"#999"}}>Tidak ada data</td></tr>
+                                ) : filtered.map((b, i) => (
+                                    <tr key={b.id}>
+                                        <td>{i + 1}</td>
+                                        <td>{b.bulan ? `${b.bulan} ${b.tahun}` : b.tahun}</td>
+                                        <td>{b.deskripsi || "-"}</td>
+                                        <td><span className="bidang-tag">{b.sumber_dana}</span></td>
+                                        <td>{b.kategori}</td>
+                                        <td className="right">{rupiah(b.nominal_anggaran)}</td>
+                                        <td className="right">{rupiah(b.nominal_realisasi)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    )}
+                </div>
+            </div>
         </div>
-
-        {/* Detail Pengeluaran */}
-        <div className="realisasi-card">
-          <h3>🧾 Rincian Transaksi Anggaran</h3>
-          <div className="realisasi-toolbar">
-            <input
-              className="realisasi-search"
-              placeholder="🔍 Cari uraian..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <select className="realisasi-select" value={filterBidang} onChange={(e) => setFilterBidang(e.target.value)}>
-              {BIDANG_LIST.map((b) => <option key={b} value={b}>{b}</option>)}
-            </select>
-            <select className="realisasi-select" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
-              {STATUS_LIST.map((s) => <option key={s} value={s}>{s}</option>)}
-            </select>
-          </div>
-
-          <div className="realisasi-table-wrapper">
-            <table className="realisasi-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Tanggal</th>
-                  <th>Uraian Kegiatan</th>
-                  <th>Bidang</th>
-                  <th className="right">Jumlah</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredDetail.map((d, i) => (
-                  <tr key={d.id}>
-                    <td>{i + 1}</td>
-                    <td>{d.tanggal}</td>
-                    <td>{d.uraian}</td>
-                    <td><span className="bidang-tag">{d.bidang}</span></td>
-                    <td className="right">{rupiah(d.jumlah)}</td>
-                    <td><span className={`badge ${BADGE_STATUS[d.status]}`}>{d.status}</span></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Export */}
-        <div className="laporan-actions">
-          <button className="export-btn" onClick={() => alert("Export PDF tersedia setelah integrasi backend.")}>
-            📄 Export PDF
-          </button>
-          <button className="export-btn export-xl" onClick={() => alert("Export Excel tersedia setelah integrasi backend.")}>
-            📊 Export Excel
-          </button>
-        </div>
-
-      </div>
-    </div>
-  );
+    );
 }

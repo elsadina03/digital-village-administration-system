@@ -100,4 +100,24 @@ class AuthController extends Controller
     {
         return response()->json($request->user()->load('role'));
     }
+
+    public function profile(Request $request)
+    {
+        $user = $request->user()->load('role');
+        return response()->json(['message' => 'Success', 'data' => $user]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $request->validate([
+            'name'  => 'sometimes|string|max:255',
+            'phone' => 'sometimes|nullable|string|max:20',
+        ]);
+
+        $user->update($request->only('name', 'phone'));
+
+        return response()->json(['message' => 'Profil berhasil diperbarui', 'data' => $user->fresh()->load('role')]);
+    }
 }

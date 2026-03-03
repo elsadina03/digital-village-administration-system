@@ -1,8 +1,14 @@
 import "./topbar.css";
 import { useNavigate, NavLink } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Topbar({ onToggleSidebar, isPublic }) {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+
+  const displayName = user?.name ?? "—";
+  const displayRole = user?.role?.name ?? user?.role ?? "—";
 
   if (isPublic) {
     return (
@@ -15,8 +21,10 @@ export default function Topbar({ onToggleSidebar, isPublic }) {
           <nav style={{display: 'flex', gap:12, justifyContent:'center'}}>
             <NavLink to="/" end className={({isActive})=>isActive? 'nav-active':''}>Beranda</NavLink>
             <NavLink to="/berita" className={({isActive})=>isActive? 'nav-active':''}>Berita</NavLink>
-            <NavLink to="/penduduk" className={({isActive})=>isActive? 'nav-active':''}>Jumlah Penduduk</NavLink>
+            <NavLink to="/penduduk" className={({isActive})=>isActive? 'nav-active':''}>Penduduk</NavLink>
+            <NavLink to="/galeri" className={({isActive})=>isActive? 'nav-active':''}>Galeri</NavLink>
             <NavLink to="/struktur-organisasi" className={({isActive})=>isActive? 'nav-active':''}>Struktur Organisasi</NavLink>
+            <NavLink to="/kontak" className={({isActive})=>isActive? 'nav-active':''}>Kontak</NavLink>
           </nav>
         </div>
 
@@ -44,8 +52,8 @@ export default function Topbar({ onToggleSidebar, isPublic }) {
         <div className="profile" onClick={() => navigate("/profile")} style={{cursor: 'pointer'}}>
           <div className="avatar" />
           <div className="profileText">
-            <div className="name">Hariyanto</div>
-            <div className="role">Warga</div>
+            <div className="name">{displayName}</div>
+            <div className="role">{displayRole}</div>
           </div>
         </div>
       </div>

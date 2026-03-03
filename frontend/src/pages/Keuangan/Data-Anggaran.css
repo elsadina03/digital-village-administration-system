@@ -524,3 +524,57 @@
   .kw-table tr{ border-bottom: 1px solid #edf2f1; }
   .kw-table td{ border: 0; padding: 10px 14px; }
 }
+
+/* ============ Modal ============ */
+.kw-modal-overlay{
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200;
+}
+.kw-modal{
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px 32px;
+  max-width: 600px;
+  width: 92%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,.2);
+}
+.kw-modal-title{
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: var(--kw-top);
+}
+.kw-form-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.kw-form-full{ grid-column: 1 / -1; }
+.kw-form-grid label{ display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 600; color: #374151; }
+.kw-input{
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color .2s;
+}
+.kw-input:focus{ border-color: var(--kw-top); }
+.kw-modal-actions{
+  display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;
+}
+.kw-btn-cancel{
+  padding: 9px 20px; border-radius: 8px; border: 1.5px solid #d1d5db;
+  background: #fff; cursor: pointer; font-size: 14px;
+}
+.kw-btn-save{
+  padding: 9px 20px; border-radius: 8px; border: none;
+  background: var(--kw-top); color: #fff; cursor: pointer; font-size: 14px;
+  font-weight: 600;
+}
+.kw-btn-save:hover{ background: var(--kw-top2); }
+.kw-detail--del{ color: #ef4444; border-color: #ef4444; margin-left: 4px; }

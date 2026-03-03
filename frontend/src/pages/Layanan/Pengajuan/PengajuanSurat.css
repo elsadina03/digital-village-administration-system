@@ -69,12 +69,30 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .cardFoot .badge {
   flex: 0 0 auto;     /* jangan melebar */
   width: fit-content; /* ikuti panjang teks */
   max-width: 100%;
+}
+
+.cardNomor {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #1a4d3e;
+  font-weight: 700;
+}
+
+.cardReject {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #991b1b;
+  background: #fff1f2;
+  border-radius: 6px;
+  padding: 4px 8px;
 }
 
 .badge {
@@ -91,6 +109,26 @@
   color: #fff;
 }
 
+.badge--review {   /* menunggu kepdes */
+  background: #3b82f6;
+  color: #fff;
+}
+
+.badge--process {  /* diproses */
+  background: #8b5cf6;
+  color: #fff;
+}
+
+.badge--done {     /* selesai */
+  background: #22c55e;
+  color: #fff;
+}
+
+.badge--reject {   /* ditolak */
+  background: #ef4444;
+  color: #fff;
+}
+
 .badge--ok {
   background: #22c55e;
   color: #fff;
@@ -100,6 +138,22 @@
   background: #ef4444;
   color: #fff;
 }
+
+.btnExportPdf {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: #1a4d3e;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btnExportPdf:hover { background: #15403a; }
 
 /* ================= PAGER ================= */
 

@@ -4,11 +4,17 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use App\Models\Complaint;
+use App\Services\FonnteService;
 
 class ComplaintController extends Controller
 {
+    protected FonnteService $fonnte;
+
+    public function __construct(FonnteService $fonnte)
+    {
+        $this->fonnte = $fonnte;
+    }
     public function index(Request $request)
     {
         $query = Complaint::query();
@@ -71,6 +77,20 @@ class ComplaintController extends Controller
         ]);
 
         $complaint->update($request->only('status'));
+
+        // Kirim notifikasi WhatsApp ke pelapor
+        $waNumber = $complaint->wa;
+        if ($waNumber) {
+            $statusLabel = match($complaint->status) {
+                'Diproses' => 'sedang diproses ⏳',
+                'Selesai'  => 'telah selesai ✅',
+                'Ditolak'  => 'ditolak ❌',
+                default    => 'telah diperbarui',
+            };
+            $this->fonnte->send($waNumber,
+                "📢 *Update Pengaduan Anda*\n\nYth. {$complaint->nama},\nPengaduan *{$complaint->title}* {$statusLabel}.\n\nTerima kasih telah melapor kepada Desa."
+            );
+        }
 
         return response()->json(['message' => 'Status pengaduan berhasil diupdate', 'data' => $complaint]);
     }

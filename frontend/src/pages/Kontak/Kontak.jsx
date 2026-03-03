@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import "./kontak.css";
+import { AuthContext, ROLES } from "../../context/AuthContext";
+import api from "../../services/api";
 
 const INIT_INFO = {
   alamat:  "Jl. Raya Desa Bahagia No. 1, Kecamatan Sejahtera, Kabupaten Makmur, Jawa Timur 64184",
@@ -16,15 +18,23 @@ const JAM_OPERASIONAL = [
   { hari: "Minggu & Hari Libur", jam: "Tutup" },
 ];
 
-const PERANGKAT = [
-  { nama: "Budi Hermawan",  jabatan: "Kepala Desa",      wa: "0812-0001-0001", ext: "" },
-  { nama: "Dwi Nur Atika",  jabatan: "Sekretaris Desa",  wa: "0812-0002-0002", ext: "Administrasi & Surat" },
-  { nama: "Siti Aminah",    jabatan: "Bendahara Desa",   wa: "0812-0003-0003", ext: "Keuangan & Anggaran" },
-  { nama: "Hendra Saputra", jabatan: "Kaur Umum",        wa: "0812-0004-0004", ext: "Pelayanan Umum" },
-];
+const PERANGKAT_ROLE_EXT = {
+  "Kepala Desa":     "",
+  "Sekretaris Desa": "Administrasi & Surat",
+  "Bendahara Desa":  "Keuangan & Anggaran",
+};
 
 export default function Kontak() {
-  const isLoggedIn = localStorage.getItem("isAuth") === "true";
+  const { hasRole } = useContext(AuthContext);
+  const canEdit = hasRole(ROLES.ADMIN, ROLES.KEPDES);
+
+  const [perangkat, setPerangkat] = useState([]);
+
+  useEffect(() => {
+    api.get("/public/staff")
+      .then(res => setPerangkat(res.data.data ?? []))
+      .catch(() => setPerangkat([]));
+  }, []);
 
   // Data info kantor (nanti diganti fetch dari backend)
   const [info, setInfo]       = useState(INIT_INFO);
@@ -75,7 +85,7 @@ export default function Kontak() {
               Hubungi kami untuk pertanyaan, pengaduan, atau kebutuhan layanan administrasi Desa Bahagia.
             </p>
           </div>
-          {isLoggedIn && !editMode && (
+          {canEdit && !editMode && (
             <button className="btn-edit-info" onClick={handleEdit}>
               ✏️ Edit Info Kantor
             </button>
@@ -88,7 +98,7 @@ export default function Kontak() {
         )}
 
         {/* ===== FORM EDIT (hanya admin, saat editMode) ===== */}
-        {isLoggedIn && editMode && (
+        {canEdit && editMode && (
           <div className="kontak-card edit-card">
             <div className="edit-card-header">
               <h3>✏️ Edit Informasi Kantor</h3>
@@ -227,28 +237,35 @@ export default function Kontak() {
               </div>
             </div>
 
-            {/* Kontak Perangkat */}
             <div className="kontak-card">
               <h3>👥 Kontak Perangkat Desa</h3>
               <div className="perangkat-list">
-                {PERANGKAT.map((p) => (
-                  <div className="perangkat-item" key={p.nama}>
-                    <div className="perangkat-avatar">{p.nama.charAt(0)}</div>
-                    <div className="perangkat-info">
-                      <div className="perangkat-nama">{p.nama}</div>
-                      <div className="perangkat-jabatan">{p.jabatan}</div>
-                      {p.ext && <div className="perangkat-ext">{p.ext}</div>}
-                      <a
-                        href={`https://wa.me/62${p.wa.replace(/\D/g, "").substring(1)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="wa-btn"
-                      >
-                        💬 {p.wa}
-                      </a>
+                {perangkat.map((p) => {
+                  const ext = PERANGKAT_ROLE_EXT[p.role] ?? "";
+                  const waHref = p.phone
+                    ? `https://wa.me/62${p.phone.replace(/\D/g, "").replace(/^0/, "")}`
+                    : null;
+                  return (
+                    <div className="perangkat-item" key={p.id}>
+                      <div className="perangkat-avatar">{p.name.charAt(0)}</div>
+                      <div className="perangkat-info">
+                        <div className="perangkat-nama">{p.name}</div>
+                        <div className="perangkat-jabatan">{p.role}</div>
+                        {ext && <div className="perangkat-ext">{ext}</div>}
+                        {waHref && (
+                          <a
+                            href={waHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="wa-btn"
+                          >
+                            💬 {p.phone}
+                          </a>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 

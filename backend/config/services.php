@@ -35,4 +35,13 @@ return [
         ],
     ],
 
+    /*
+     * Fonnte — WhatsApp notification gateway
+     * Daftar & dapatkan token di https://fonnte.com/
+     * Langkah: Daftar → Login → Tambah Perangkat → Scan QR dengan WhatsApp → Salin token
+     */
+    'fonnte' => [
+        'token' => env('FONNTE_TOKEN', 'GANTI_DENGAN_TOKEN_FONNTE_KAMU'),
+    ],
+
 ];

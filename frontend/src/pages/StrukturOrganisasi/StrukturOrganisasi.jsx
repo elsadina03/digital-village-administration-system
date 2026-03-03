@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import img1 from "../../assets/IMG_3050.JPG";
 import img2 from "../../assets/Three Simple Steps to Empowered Word-Learning - Peers and Pedagogy.jpeg";
 import "./struktur-organisasi.css";
+import { AuthContext } from "../../context/AuthContext";
 
 const initialMembers = [
   { id: 1,  nama: "Budi Hermawan",     jabatan: "Kepala Desa",         level: 1, img: img1 },
@@ -31,7 +32,8 @@ const levelColors = {
 };
 
 export default function StrukturOrganisasi() {
-  const isLoggedIn  = localStorage.getItem("isAuth") === "true";
+  const { isAdmin } = useContext(AuthContext);
+  const canEdit = isAdmin();
   const navigate    = useNavigate();
   const [members, setMembers] = useState(initialMembers);
   const [showForm, setShowForm] = useState(false);
@@ -75,18 +77,15 @@ export default function StrukturOrganisasi() {
           <div>
             <h1 className="so-title">🏛️ Struktur Organisasi Desa Bahagia</h1>
             <p className="so-subtitle">
-              {isLoggedIn
+              {canEdit
                 ? "Kelola susunan perangkat dan aparatur Desa Bahagia."
-                : "Susunan perangkat dan aparatur Desa Bahagia periode 2022–2029."}
+                : "Susunan perangkat dan aparatur Desa Bahagia periode 2022\u20132029."}
             </p>
           </div>
-          {!isLoggedIn && (
-            <button className="btn" onClick={() => navigate("/login")}>Login</button>
-          )}
         </div>
 
         {/* Admin toolbar */}
-        {isLoggedIn && (
+        {canEdit && (
           <div className="so-admin-bar">
             <span className="so-admin-badge">🔧 Mode Admin</span>
             <button className="btn" onClick={() => { setEditId(null); setForm({ nama: "", jabatan: "", level: 3 }); setShowForm(v => !v); }}>
@@ -95,8 +94,8 @@ export default function StrukturOrganisasi() {
           </div>
         )}
 
-        {/* Add/Edit form (login only) */}
-        {isLoggedIn && showForm && (
+        {/* Add/Edit form (admin only) */}
+        {canEdit && showForm && (
           <form className="so-form" onSubmit={handleSubmit}>
             <h4>{editId ? "Edit Anggota" : "Tambah Anggota Baru"}</h4>
             <div className="so-form-grid">
@@ -142,7 +141,7 @@ export default function StrukturOrganisasi() {
                       <div className="so-card-name">{m.nama}</div>
                       <div className="so-card-jabatan" style={{ color: levelColors[lvl] }}>{m.jabatan}</div>
                     </div>
-                    {isLoggedIn && (
+                    {canEdit && (
                       <div className="so-card-actions">
                         <button className="tbs-edit" onClick={() => handleEdit(m)}>✏️</button>
                         <button className="tbs-del" onClick={() => handleDelete(m.id)}>🗑️</button>
@@ -171,7 +170,7 @@ export default function StrukturOrganisasi() {
           </div>
         </section>
 
-        {!isLoggedIn && (
+        {!canEdit && (
           <div className="so-public-note">
             <strong>Catatan:</strong> Data yang ditampilkan merupakan informasi publik. Login sebagai admin untuk mengelola susunan perangkat desa.
           </div>

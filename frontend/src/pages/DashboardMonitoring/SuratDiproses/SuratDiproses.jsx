@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect, useContext } from "react";
+import api from "../../../services/api";
+import { AuthContext } from "../../../context/AuthContext";
 import "./suratDiproses.css";
 
 export default function SuratDiproses() {
@@ -7,8 +8,8 @@ export default function SuratDiproses() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    const user = JSON.parse(localStorage.getItem("user"));
-    const isWarga = user && user.role === "Warga";
+    const { hasRole } = useContext(AuthContext);
+    const isWarga = hasRole("Warga");
 
     useEffect(() => {
         fetchSurat();
@@ -16,12 +17,7 @@ export default function SuratDiproses() {
 
     const fetchSurat = async () => {
         try {
-            const token = localStorage.getItem("token");
-            const response = await axios.get("http://localhost:8000/api/letters", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await api.get("/letters");
             setSuratList(response.data.data);
         } catch (err) {
             setError("Gagal memuat data surat.");
@@ -32,17 +28,7 @@ export default function SuratDiproses() {
 
     const updateStatus = async (id, newStatus) => {
         try {
-            const token = localStorage.getItem("token");
-            await axios.post(
-                `http://localhost:8000/api/letters/${id}?_method=PUT`,
-                { status: newStatus },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-            // Refresh list after update
+            await api.put(`/letters/${id}`, { status: newStatus });
             fetchSurat();
             alert(`Status berhasil diubah menjadi: ${newStatus}`);
         } catch (err) {

@@ -1,236 +1,166 @@
-import { useState } from "react";
+﻿import { useState, useEffect, useMemo } from "react";
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import api from "../../../services/api";
 import "./laporan-dana-desa.css";
 
 function rupiah(n) {
-  return "Rp " + Number(n).toLocaleString("id-ID");
+    if (!n && n !== 0) return "Rp 0";
+    return "Rp " + Number(n).toLocaleString("id-ID");
 }
 
-const TAHUN_LIST = ["2025", "2024", "2023"];
-
-const laporanData = {
-  "2025": {
-    total: 850000000,
-    terealisasi: 612000000,
-    sisa: 238000000,
-    sumber: [
-      { nama: "DD (Dana Desa) APBN", jumlah: 450000000 },
-      { nama: "ADD (Alokasi Dana Desa)", jumlah: 250000000 },
-      { nama: "Bagi Hasil Pajak & Retribusi", jumlah: 100000000 },
-      { nama: "Bantuan Keuangan Provinsi", jumlah: 50000000 },
-    ],
-    realisasi: [
-      { bidang: "Penyelenggaraan Pemerintahan", anggaran: 180000000, realisasi: 165000000 },
-      { bidang: "Pembangunan Desa", anggaran: 350000000, realisasi: 240000000 },
-      { bidang: "Pembinaan Kemasyarakatan", anggaran: 120000000, realisasi: 95000000 },
-      { bidang: "Pemberdayaan Masyarakat", anggaran: 150000000, realisasi: 82000000 },
-      { bidang: "Penanggulangan Bencana", anggaran: 50000000, realisasi: 30000000 },
-    ],
-  },
-  "2024": {
-    total: 780000000,
-    terealisasi: 760000000,
-    sisa: 20000000,
-    sumber: [
-      { nama: "DD (Dana Desa) APBN", jumlah: 420000000 },
-      { nama: "ADD (Alokasi Dana Desa)", jumlah: 220000000 },
-      { nama: "Bagi Hasil Pajak & Retribusi", jumlah: 90000000 },
-      { nama: "Bantuan Keuangan Provinsi", jumlah: 50000000 },
-    ],
-    realisasi: [
-      { bidang: "Penyelenggaraan Pemerintahan", anggaran: 160000000, realisasi: 158000000 },
-      { bidang: "Pembangunan Desa", anggaran: 320000000, realisasi: 315000000 },
-      { bidang: "Pembinaan Kemasyarakatan", anggaran: 110000000, realisasi: 107000000 },
-      { bidang: "Pemberdayaan Masyarakat", anggaran: 140000000, realisasi: 135000000 },
-      { bidang: "Penanggulangan Bencana", anggaran: 50000000, realisasi: 45000000 },
-    ],
-  },
-  "2023": {
-    total: 700000000,
-    terealisasi: 690000000,
-    sisa: 10000000,
-    sumber: [
-      { nama: "DD (Dana Desa) APBN", jumlah: 380000000 },
-      { nama: "ADD (Alokasi Dana Desa)", jumlah: 200000000 },
-      { nama: "Bagi Hasil Pajak & Retribusi", jumlah: 80000000 },
-      { nama: "Bantuan Keuangan Provinsi", jumlah: 40000000 },
-    ],
-    realisasi: [
-      { bidang: "Penyelenggaraan Pemerintahan", anggaran: 140000000, realisasi: 138000000 },
-      { bidang: "Pembangunan Desa", anggaran: 290000000, realisasi: 285000000 },
-      { bidang: "Pembinaan Kemasyarakatan", anggaran: 100000000, realisasi: 99000000 },
-      { bidang: "Pemberdayaan Masyarakat", anggaran: 120000000, realisasi: 118000000 },
-      { bidang: "Penanggulangan Bencana", anggaran: 50000000, realisasi: 50000000 },
-    ],
-  },
-};
+const COLORS = ["#0fa78d", "#3b82f6", "#f59e0b", "#8b5cf6", "#ef4444", "#10b981"];
 
 export default function LaporanDanaDesa() {
-  const [tahun, setTahun] = useState("2025");
-  const d = laporanData[tahun];
-  const persen = Math.round((d.terealisasi / d.total) * 100);
+    const [budgets,  setBudgets]  = useState([]);
+    const [summary,  setSummary]  = useState({});
+    const [loading,  setLoading]  = useState(true);
+    const [year,     setYear]     = useState(String(new Date().getFullYear()));
 
-  return (
-    <div className="laporan-root">
-      <div className="laporan-container">
+    const years = useMemo(() => {
+        const set = new Set(budgets.map(b => b.tahun));
+        set.add(String(new Date().getFullYear()));
+        return [...set].sort((a, b) => b - a);
+    }, [budgets]);
 
-        {/* Header */}
-        <div className="laporan-header">
-          <div>
-            <h1 className="laporan-title">📑 Laporan Dana Desa</h1>
-            <p className="laporan-subtitle">Transparansi penggunaan dana desa Bahagia kepada masyarakat.</p>
-          </div>
-          <div className="laporan-tahun-selector">
-            <span className="selector-label">Tahun Anggaran:</span>
-            {TAHUN_LIST.map((t) => (
-              <button
-                key={t}
-                className={`tahun-btn ${tahun === t ? "active" : ""}`}
-                onClick={() => setTahun(t)}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-        </div>
+    useEffect(() => {
+        (async () => {
+            setLoading(true);
+            try {
+                const res = await api.get("/budgets", { params: { tahun: year } });
+                setBudgets(res.data.data || []);
+                setSummary(res.data.summary || {});
+            } finally {
+                setLoading(false);
+            }
+        })();
+    }, [year]);
 
-        {/* Ringkasan */}
-        <div className="laporan-summary">
-          <div className="summary-card" style={{ borderTop: "4px solid #0fa78d" }}>
-            <div className="summary-label">Total Anggaran</div>
-            <div className="summary-value green">{rupiah(d.total)}</div>
-          </div>
-          <div className="summary-card" style={{ borderTop: "4px solid #3b82f6" }}>
-            <div className="summary-label">Terealisasi</div>
-            <div className="summary-value blue">{rupiah(d.terealisasi)}</div>
-          </div>
-          <div className="summary-card" style={{ borderTop: "4px solid #f59e0b" }}>
-            <div className="summary-label">Sisa Anggaran</div>
-            <div className="summary-value yellow">{rupiah(d.sisa)}</div>
-          </div>
-          <div className="summary-card" style={{ borderTop: "4px solid #8b5cf6" }}>
-            <div className="summary-label">Persentase Realisasi</div>
-            <div className="summary-value purple">{persen}%</div>
-          </div>
-        </div>
+    // Group by sumber_dana for pie chart
+    const pieData = useMemo(() => {
+        const map = {};
+        budgets.forEach(b => {
+            if (!map[b.sumber_dana]) map[b.sumber_dana] = 0;
+            map[b.sumber_dana] += Number(b.nominal_anggaran) || 0;
+        });
+        return Object.entries(map).map(([name, value]) => ({ name, value }));
+    }, [budgets]);
 
-        {/* Progress bar realisasi */}
-        <div className="laporan-progress-card">
-          <div className="prog-header">
-            <span>Realisasi Anggaran {tahun}</span>
-            <strong>{persen}%</strong>
-          </div>
-          <div className="prog-track">
-            <div className="prog-fill" style={{ width: `${persen}%` }} />
-          </div>
-          <div className="prog-footer">
-            <span>{rupiah(d.terealisasi)} dari {rupiah(d.total)}</span>
-          </div>
-        </div>
+    // Group by kategori for realisasi table
+    const byKategori = useMemo(() => {
+        const map = {};
+        budgets.forEach(b => {
+            if (!map[b.kategori]) map[b.kategori] = { anggaran: 0, realisasi: 0 };
+            map[b.kategori].anggaran  += Number(b.nominal_anggaran) || 0;
+            map[b.kategori].realisasi += Number(b.nominal_realisasi) || 0;
+        });
+        return Object.entries(map).map(([kategori, d]) => ({ kategori, ...d }));
+    }, [budgets]);
 
-        {/* 2 kolom: sumber & distribusi */}
-        <div className="laporan-two-col">
+    const persen = summary.total_anggaran > 0
+        ? Math.round((summary.total_realisasi / summary.total_anggaran) * 100) : 0;
 
-          {/* Sumber Dana */}
-          <div className="laporan-card">
-            <h3>💰 Sumber Dana</h3>
-            <table className="laporan-table">
-              <thead>
-                <tr>
-                  <th>Sumber</th>
-                  <th className="right">Jumlah</th>
-                </tr>
-              </thead>
-              <tbody>
-                {d.sumber.map((s) => (
-                  <tr key={s.nama}>
-                    <td>{s.nama}</td>
-                    <td className="right green-text">{rupiah(s.jumlah)}</td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td><strong>Total</strong></td>
-                  <td className="right"><strong>{rupiah(d.total)}</strong></td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
+    return (
+        <div className="laporan-root">
+            <div className="laporan-container">
 
-          {/* Realisasi per Bidang */}
-          <div className="laporan-card">
-            <h3>📊 Realisasi per Bidang</h3>
-            <table className="laporan-table">
-              <thead>
-                <tr>
-                  <th>Bidang</th>
-                  <th className="right">Anggaran</th>
-                  <th className="right">Realisasi</th>
-                  <th className="right">%</th>
-                </tr>
-              </thead>
-              <tbody>
-                {d.realisasi.map((r) => {
-                  const p = Math.round((r.realisasi / r.anggaran) * 100);
-                  return (
-                    <tr key={r.bidang}>
-                      <td>{r.bidang}</td>
-                      <td className="right">{rupiah(r.anggaran)}</td>
-                      <td className="right blue-text">{rupiah(r.realisasi)}</td>
-                      <td className="right">
-                        <span className={`persen-badge ${p >= 80 ? "good" : p >= 50 ? "mid" : "low"}`}>{p}%</span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Bar chart visual anggaran vs realisasi */}
-        <div className="laporan-card">
-          <h3>📈 Grafik Anggaran vs Realisasi per Bidang ({tahun})</h3>
-          <div className="chart-wrapper">
-            {d.realisasi.map((r) => {
-              const pAnggaran = 100;
-              const pRealisasi = Math.round((r.realisasi / r.anggaran) * 100);
-              return (
-                <div className="chart-row" key={r.bidang}>
-                  <div className="chart-label">{r.bidang}</div>
-                  <div className="chart-bars">
-                    <div className="bar-group">
-                      <div className="bar anggaran-bar" style={{ width: `${pAnggaran}%` }}>
-                        <span>{rupiah(r.anggaran)}</span>
-                      </div>
+                <div className="laporan-header">
+                    <div>
+                        <h1 className="laporan-title">ðŸ“‘ Laporan Dana Desa</h1>
+                        <p className="laporan-subtitle">Transparansi penggunaan dana desa kepada masyarakat.</p>
                     </div>
-                    <div className="bar-group">
-                      <div className={`bar realisasi-bar ${pRealisasi < 50 ? "low" : ""}`} style={{ width: `${pRealisasi}%` }}>
-                        <span>{rupiah(r.realisasi)}</span>
-                      </div>
+                    <div style={{ display:"flex", gap:"8px", flexWrap:"wrap" }}>
+                        {(years.length ? years : [String(new Date().getFullYear())]).map(y => (
+                            <button key={y} type="button"
+                                style={{ padding:"8px 20px", borderRadius:"20px", border:"2px solid #0fa78d",
+                                    background: year === y ? "#0fa78d" : "#fff",
+                                    color: year === y ? "#fff" : "#0fa78d", cursor:"pointer", fontWeight:700 }}
+                                onClick={() => setYear(y)}>Tahun {y}
+                            </button>
+                        ))}
                     </div>
-                  </div>
                 </div>
-              );
-            })}
-            <div className="chart-legend">
-              <span className="legend-box anggaran-color"></span> Anggaran &nbsp;
-              <span className="legend-box realisasi-color"></span> Realisasi
+
+                {loading ? <div style={{padding:"2rem",textAlign:"center"}}>Memuat laporanâ€¦</div> : (
+                <>
+                    {/* Summary cards */}
+                    <div className="laporan-stats">
+                        <div className="ls-card">
+                            <div className="ls-label">Total APBDes {year}</div>
+                            <div className="ls-value green">{rupiah(summary.total_anggaran)}</div>
+                        </div>
+                        <div className="ls-card">
+                            <div className="ls-label">Terealisasi</div>
+                            <div className="ls-value blue">{rupiah(summary.total_realisasi)}</div>
+                        </div>
+                        <div className="ls-card">
+                            <div className="ls-label">Sisa Anggaran</div>
+                            <div className="ls-value yellow">{rupiah(summary.sisa_anggaran)}</div>
+                        </div>
+                        <div className="ls-card">
+                            <div className="ls-label">% Realisasi</div>
+                            <div className="ls-value purple">{persen}%</div>
+                        </div>
+                    </div>
+
+                    {/* Progress bar */}
+                    <div className="laporan-card">
+                        <h3>Progress Realisasi Anggaran {year}</h3>
+                        <div style={{ background:"#e5e7eb", borderRadius:"999px", height:"24px", overflow:"hidden", margin:"12px 0" }}>
+                            <div style={{ width:`${persen}%`, background:"#0fa78d", height:"100%", borderRadius:"999px",
+                                display:"flex", alignItems:"center", justifyContent:"center",
+                                color:"#fff", fontSize:"12px", fontWeight:700, minWidth:"40px" }}>
+                                {persen}%
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"20px" }}>
+                        {/* Pie Chart */}
+                        <div className="laporan-card">
+                            <h3>Distribusi Sumber Dana</h3>
+                            {pieData.length === 0 ? <div style={{color:"#999",textAlign:"center",padding:"1rem"}}>Tidak ada data</div> : (
+                                <ResponsiveContainer width="100%" height={260}>
+                                    <PieChart>
+                                        <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90}>
+                                            {pieData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                                        </Pie>
+                                        <Tooltip formatter={v => rupiah(v)} />
+                                        <Legend />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            )}
+                        </div>
+
+                        {/* Realisasi by kategori */}
+                        <div className="laporan-card">
+                            <h3>Realisasi per Kategori</h3>
+                            <table style={{ width:"100%", borderCollapse:"collapse", fontSize:"14px" }}>
+                                <thead><tr style={{ textAlign:"left", borderBottom:"2px solid #e5e7eb" }}>
+                                    <th style={{padding:"8px 4px"}}>Kategori</th>
+                                    <th style={{padding:"8px 4px",textAlign:"right"}}>Anggaran</th>
+                                    <th style={{padding:"8px 4px",textAlign:"right"}}>Realisasi</th>
+                                    <th style={{padding:"8px 4px",textAlign:"right"}}>%</th>
+                                </tr></thead>
+                                <tbody>
+                                    {byKategori.length === 0 ? (
+                                        <tr><td colSpan="4" style={{textAlign:"center",padding:"1rem",color:"#999"}}>Tidak ada data</td></tr>
+                                    ) : byKategori.map((r, i) => (
+                                        <tr key={i} style={{ borderBottom:"1px solid #f3f4f6" }}>
+                                            <td style={{padding:"8px 4px"}}>{r.kategori}</td>
+                                            <td style={{padding:"8px 4px",textAlign:"right"}}>{rupiah(r.anggaran)}</td>
+                                            <td style={{padding:"8px 4px",textAlign:"right"}}>{rupiah(r.realisasi)}</td>
+                                            <td style={{padding:"8px 4px",textAlign:"right",fontWeight:700,color:"#0fa78d"}}>
+                                                {r.anggaran > 0 ? Math.round((r.realisasi / r.anggaran) * 100) : 0}%
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </>
+                )}
             </div>
-          </div>
         </div>
-
-        {/* Tombol export dummy */}
-        <div className="laporan-actions">
-          <button className="export-btn" onClick={() => alert("Fitur export PDF akan tersedia setelah integrasi backend.")}>
-            📄 Export PDF
-          </button>
-          <button className="export-btn export-xl" onClick={() => alert("Fitur export Excel akan tersedia setelah integrasi backend.")}>
-            📊 Export Excel
-          </button>
-        </div>
-
-      </div>
-    </div>
-  );
+    );
 }

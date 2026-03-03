@@ -1,42 +1,83 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./berita.css";
-import news from "../../data/news";
+import api from "../../services/api";
+import { AuthContext, ROLES, STAFF_ROLES } from "../../context/AuthContext";
 
 export default function Berita() {
-  const isLoggedIn = localStorage.getItem("isAuth") === "true";
+  const { isAdmin, hasRole } = useContext(AuthContext);
+  const canManage      = isAdmin() || hasRole(ROLES.SEKRETARIS);
+  const canSeeAnggaran = hasRole(...STAFF_ROLES);
+
+  const getExcerpt = (content) => {
+    if (!content) return "";
+    const filtered = content
+      .split("\n")
+      .filter(line => canSeeAnggaran || !line.trim().startsWith("Anggaran"))
+      .join(" ")
+      .trim();
+    return filtered.length > 120 ? filtered.substring(0, 120) + "..." : filtered;
+  };
   const navigate = useNavigate();
 
-  // Dummy state for admin add/delete simulation
-  const [articles, setArticles] = useState(news);
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [newTitle, setNewTitle] = useState("");
+  const [form, setForm] = useState({ title: "", content: "", image: null });
+  const [saving, setSaving] = useState(false);
 
-  // show many items on berita page; recent sorts by date (most recent first)
-  const recent = [...articles].sort((a,b)=> b.date.localeCompare(a.date)).slice(0, 6);
-  const popular = [...articles].sort((a,b)=>b.views-a.views).slice(0,3);
-
-  const handleDelete = (id) => {
-    if (window.confirm("Hapus berita ini?")) {
-      setArticles(prev => prev.filter(a => a.id !== id));
+  const fetchNews = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get("/news");
+      const data = res.data.data ?? res.data;
+      setArticles(data);
+    } catch (err) {
+      console.error("Gagal memuat berita", err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleAddBerita = (e) => {
+  useEffect(() => { fetchNews(); }, []);
+
+  const recent  = [...articles].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 6);
+  const popular = [...articles].sort((a, b) => (b.views ?? 0) - (a.views ?? 0)).slice(0, 3);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Hapus berita ini?")) return;
+    try {
+      await api.delete(`/news/${id}`);
+      setArticles(prev => prev.filter(a => a.id !== id));
+    } catch {
+      alert("Gagal menghapus berita.");
+    }
+  };
+
+  const handleAddBerita = async (e) => {
     e.preventDefault();
-    if (!newTitle.trim()) return;
-    const newItem = {
-      id: Date.now(),
-      title: newTitle,
-      date: new Date().toISOString().split("T")[0],
-      author: "Admin",
-      excerpt: "Klik untuk membaca selengkapnya...",
-      views: 0,
-      img: "",
-    };
-    setArticles(prev => [newItem, ...prev]);
-    setNewTitle("");
-    setShowForm(false);
+    if (!form.title.trim() || !form.content.trim()) {
+      alert("Judul dan konten wajib diisi.");
+      return;
+    }
+    setSaving(true);
+    try {
+      const formData = new FormData();
+      formData.append("title", form.title);
+      formData.append("content", form.content);
+      if (form.image) formData.append("image", form.image);
+
+      await api.post("/news", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setForm({ title: "", content: "", image: null });
+      setShowForm(false);
+      fetchNews();
+    } catch {
+      alert("Gagal menyimpan berita.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -46,82 +87,85 @@ export default function Berita() {
         <p>Kumpulan berita terkini dan populer dari Desa Bahagia</p>
       </header>
 
-      {/* ====== ADMIN TOOLBAR (login only) ====== */}
-      {isLoggedIn && (
+      {/* ====== ADMIN TOOLBAR (admin only) ====== */}
+      {canManage && (
         <div className="berita-admin-bar">
-          <span className="berita-admin-badge">🔧 Mode Admin</span>
+          <span className="berita-admin-badge">🔧 Mode Kelola</span>
           <button className="btn berita-add-btn" onClick={() => setShowForm(v => !v)}>
             {showForm ? "✕ Batal" : "＋ Tambah Berita"}
           </button>
         </div>
       )}
 
-      {/* Add berita form (login only) */}
-      {isLoggedIn && showForm && (
+      {/* Add berita form (admin only) */}
+      {canManage && showForm && (
         <form className="berita-add-form" onSubmit={handleAddBerita}>
           <input
             className="berita-add-input"
-            placeholder="Judul berita baru..."
-            value={newTitle}
-            onChange={e => setNewTitle(e.target.value)}
+            placeholder="Judul berita..."
+            value={form.title}
+            onChange={e => setForm({ ...form, title: e.target.value })}
           />
-          <button className="btn" type="submit">Simpan</button>
+          <textarea
+            className="berita-add-input"
+            placeholder="Konten berita..."
+            rows={4}
+            value={form.content}
+            onChange={e => setForm({ ...form, content: e.target.value })}
+          />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={e => setForm({ ...form, image: e.target.files[0] })}
+          />
+          <button className="btn" type="submit" disabled={saving}>{saving ? "Menyimpan..." : "Simpan"}</button>
         </form>
       )}
 
-      <div className="berita-grid">
-        <main className="berita-main">
-          <h2>Berita Terkini</h2>
-          <div className="news-list">
-            {recent.map(n => (
-              <article key={n.id} className="news-card">
-                {n.img && <img src={n.img} alt={n.title} />}
-                {!n.img && isLoggedIn && <div className="news-img-placeholder">📰</div>}
-                <div className="news-body">
-                  <h3><Link to={`/berita/${n.id}`}>{n.title}</Link></h3>
-                  <p className="meta">{n.date} • {n.author}</p>
-                  <p className="excerpt">{n.excerpt}</p>
-                  {/* Admin actions */}
-                  {isLoggedIn && (
-                    <div className="news-admin-actions">
-                      <button className="table-btn-edit-sm">✏️ Edit</button>
-                      <button className="table-btn-delete-sm" onClick={() => handleDelete(n.id)}>🗑️ Hapus</button>
+      {loading ? (
+        <p style={{ textAlign: "center", padding: "2rem" }}>Memuat berita...</p>
+      ) : (
+        <div className="berita-grid">
+          <main className="berita-main">
+            <h2>Berita Terkini</h2>
+            <div className="news-list">
+              {recent.length === 0 ? (
+                <p className="empty-state">Belum ada berita.</p>
+              ) : (
+                recent.map(n => (
+                  <article key={n.id} className="news-card">
+                    {n.image_path
+                      ? <img src={`http://127.0.0.1:8000/storage/${n.image_path}`} alt={n.title} />
+                      : <div className="news-img-placeholder">📰</div>
+                    }
+                    <div className="news-body">
+                      <h3><Link to={`/berita/${n.id}`}>{n.title}</Link></h3>
+                      <p className="meta">{n.created_at?.split("T")[0]} • {n.author?.name ?? "Admin"}</p>
+                      <p className="excerpt">{getExcerpt(n.content)}</p>
+                      {canManage && (
+                        <div className="news-admin-actions">
+                          <button className="table-btn-delete-sm" onClick={() => handleDelete(n.id)}>🗑️ Hapus</button>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              </article>
-            ))}
-          </div>
-        </main>
+                  </article>
+                ))
+              )}
+            </div>
+          </main>
 
-        <aside className="berita-aside">
-          <section>
-            <h3>Populer</h3>
-            <ul className="popular-list">
-              {popular.map(p => (
-                <li key={p.id}><Link to={`/berita/${p.id}`}>{p.title}</Link></li>
-              ))}
-            </ul>
-          </section>
-
-          <section>
-            <h3>Kategori (dummy)</h3>
-            <ul className="cat-list">
-              <li>Pengumuman</li>
-              <li>Kegiatan</li>
-              <li>Keuangan</li>
-            </ul>
-          </section>
-
-          {/* Login prompt for public users */}
-          {!isLoggedIn && (
-            <section className="berita-login-cta">
-              <p>Ingin mengelola berita desa?</p>
-              <button className="btn" onClick={() => navigate("/login")}>Login</button>
+          <aside className="berita-aside">
+            <section>
+              <h3>Terbaru</h3>
+              <ul className="popular-list">
+                {popular.map(p => (
+                  <li key={p.id}><Link to={`/berita/${p.id}`}>{p.title}</Link></li>
+                ))}
+              </ul>
             </section>
-          )}
-        </aside>
-      </div>
+          </aside>
+        </div>
+      )}
     </div>
   );
 }
