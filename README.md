@@ -58,6 +58,19 @@ Komunikasi antara frontend dan backend dilakukan melalui **REST API** menggunaka
 
 ---
 
+### Notifikasi WhatsApp (Fonnte)
+
+Sistem terintegrasi dengan **[Fonnte](https://fonnte.com)** untuk mengirim notifikasi WhatsApp secara otomatis. Notifikasi dikirim oleh backend (Laravel) melalui `FonnteService` ke nomor HP pengguna yang terdaftar.
+
+> Fitur ini memerlukan akun Fonnte dan nomor WhatsApp yang terhubung ke perangkat pengirim.
+
+Konfigurasi di file `.env` backend:
+```env
+FONNTE_TOKEN=your_fonnte_api_token
+```
+
+---
+
 ### Peran Pengguna (Role)
 
 | Role              | Akses                                                                      |
@@ -166,6 +179,19 @@ Communication between frontend and backend is via **REST API** using **JSON**, w
 | **Social Assistance**      | Social assistance recipient data management                   |
 | **Population Data**        | CRUD citizen data, Excel import/export                        |
 | **Monitoring Dashboard**   | Monitor letters, budget, population, and social assistance    |
+
+---
+
+### WhatsApp Notifications (Fonnte)
+
+The system integrates with **[Fonnte](https://fonnte.com)** to automatically send WhatsApp notifications. Notifications are sent from the backend (Laravel) via `FonnteService` to the registered phone numbers of users.
+
+> This feature requires a Fonnte account and a WhatsApp number connected to a sender device.
+
+Configure in the backend `.env` file:
+```env
+FONNTE_TOKEN=your_fonnte_api_token
+```
 
 ---
 
