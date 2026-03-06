@@ -6,6 +6,10 @@ import img1 from '../../assets/IMG_3050.JPG'
 import img2 from '../../assets/Three Simple Steps to Empowered Word-Learning - Peers and Pedagogy.jpeg'
 import api from '../../services/api'
 import { AuthContext, ROLES } from '../../context/AuthContext'
+import {
+  LuUsers, LuFileText, LuBanknote, LuClipboardList,
+  LuFilePen, LuNewspaper, LuCreditCard, LuLandmark, LuPencil,
+} from 'react-icons/lu'
 
 const team = [
   { id: 1, name: 'Budi Hermawan', role: 'Kepala Desa', img: img1 },
@@ -51,10 +55,10 @@ export default function Dashboard() {
   }, [isLoggedIn])
 
   const adminStats = [
-    { label: 'Total Penduduk', value: stats.penduduk, icon: '👥', to: '/warga' },
-    { label: 'Surat Diproses', value: stats.surat,    icon: '📄', to: '/surat' },
-    { label: 'Total Anggaran', value: stats.anggaran, icon: '💰', to: '/data-anggaran' },
-    { label: 'Program Aktif',  value: stats.program,  icon: '📋', to: '/program-desa' },
+    { label: 'Total Penduduk', value: stats.penduduk, icon: <LuUsers size={22} />, to: '/warga' },
+    { label: 'Surat Diproses', value: stats.surat,    icon: <LuFileText size={22} />, to: '/surat' },
+    { label: 'Total Anggaran', value: stats.anggaran, icon: <LuBanknote size={22} />, to: '/data-anggaran' },
+    { label: 'Program Aktif',  value: stats.program,  icon: <LuClipboardList size={22} />, to: '/program-desa' },
   ].filter(s => {
     // Hidupkan hanya menu yg boleh diakses role ini
     if (s.to === '/data-anggaran') return canAccessFinance()
@@ -85,15 +89,15 @@ export default function Dashboard() {
           </div>
           <div className="admin-quick-actions">
             {canAccessProgram() && (
-              <button className="admin-action-btn" onClick={() => navigate('/pengajuan')}>📝 Kelola Surat</button>
+              <button className="admin-action-btn" onClick={() => navigate('/pengajuan')}><LuFilePen size={16} /> Kelola Surat</button>
             )}
             {isAdmin() && (
-              <button className="admin-action-btn" onClick={() => navigate('/berita')}>📰 Kelola Berita</button>
+              <button className="admin-action-btn" onClick={() => navigate('/berita')}><LuNewspaper size={16} /> Kelola Berita</button>
             )}
             {canAccessFinance() && (
-              <button className="admin-action-btn" onClick={() => navigate('/input-apbdes')}>💳 Input APBDes</button>
+              <button className="admin-action-btn" onClick={() => navigate('/input-apbdes')}><LuCreditCard size={16} /> Input APBDes</button>
             )}
-            <button className="admin-action-btn" onClick={() => navigate('/struktur-organisasi')}>🏛️ Struktur Organisasi</button>
+            <button className="admin-action-btn" onClick={() => navigate('/struktur-organisasi')}><LuLandmark size={16} /> Struktur Organisasi</button>
           </div>
         </section>
       )}
@@ -142,7 +146,7 @@ export default function Dashboard() {
         <div className="section-title-row">
           <h2 className="section-title">Berita Desa</h2>
           {isLoggedIn
-            ? <button className="table-btn-edit" onClick={() => navigate('/berita')}>✏️ Kelola Berita</button>
+            ? <button className="table-btn-edit" onClick={() => navigate('/berita')}><LuPencil size={14} /> Kelola Berita</button>
             : <Link to="/berita" className="detail-link">Lihat Semua Berita →</Link>
           }
         </div>
@@ -170,7 +174,7 @@ export default function Dashboard() {
         <div className="section-title-row">
           <h2 className="section-title">Profil Desa</h2>
           {isLoggedIn
-            ? <button className="table-btn-edit" onClick={() => navigate('/warga')}>👥 Data Penduduk</button>
+            ? <button className="table-btn-edit" onClick={() => navigate('/warga')}><LuUsers size={14} /> Data Penduduk</button>
             : <Link to="/warga" className="detail-link">Lihat Data Penduduk →</Link>
           }
         </div>
@@ -186,7 +190,7 @@ export default function Dashboard() {
         <div className="section-title-row">
           <h2 className="section-title">Struktur Organisasi dan Tata Kerja Desa</h2>
           {isLoggedIn
-            ? <button className="table-btn-edit" onClick={() => navigate('/struktur-organisasi')}>✏️ Kelola Struktur</button>
+            ? <button className="table-btn-edit" onClick={() => navigate('/struktur-organisasi')}><LuPencil size={14} /> Kelola Struktur</button>
             : <Link to="/struktur-organisasi" className="detail-link">Lihat Selengkapnya →</Link>
           }
         </div>

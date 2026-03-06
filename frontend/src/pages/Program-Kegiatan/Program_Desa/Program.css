@@ -1,4 +1,4 @@
-.prWrap {
+﻿.prWrap {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 16px;
@@ -71,7 +71,9 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  transition: background 0.2s ease, transform 0.18s ease;
 }
+.btnAdd:hover { background: var(--color-secondary); transform: translateY(-1px); }
 
 .btnIcon {
   width: 40px;
@@ -103,9 +105,9 @@
 }
 
 .viewBtn.active {
-  background: linear-gradient(90deg, #0b5c4f, #1e9b86);
+  background: var(--color-secondary);
   color: #fff;
-  box-shadow: 0px 6px 20px rgba(4, 38, 31, 0.12), 0px 1px 3px rgba(4, 38, 31, 0.08);
+  box-shadow: 0px 6px 20px rgba(27, 67, 50, 0.12), 0px 1px 3px rgba(27, 67, 50, 0.08);
 }
 
 /* empty */
@@ -129,7 +131,7 @@
 
 /* stronger primary button style for empty state to match mock */
 .prEmpty .btnAdd {
-  background: linear-gradient(90deg, #004D40, #26A69A);
+  background: var(--color-secondary);
   padding: 10px 18px;
   font-weight: 900;
   border-radius: 12px;
@@ -203,17 +205,21 @@
   font-weight: 900;
   cursor: pointer;
   padding: 12px 14px;
+  transition: background 0.2s ease, transform 0.18s ease;
 }
+.btnCancel:hover { background: #d97706; transform: translateY(-1px); }
 
 .btnSave {
   border: 0;
   border-radius: 12px;
-  background: linear-gradient(90deg, #0b5c4f, #1e9b86);
+  background: var(--color-secondary);
   color: #fff;
   font-weight: 900;
   cursor: pointer;
   padding: 12px 14px;
+  transition: background 0.2s ease, transform 0.18s ease, box-shadow 0.18s ease;
 }
+.btnSave:not(:disabled):hover { background: var(--color-primary); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(27,67,50,0.22); }
 
 /* table */
 .prTableWrap {

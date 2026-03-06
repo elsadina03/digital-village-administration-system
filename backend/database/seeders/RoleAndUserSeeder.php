@@ -30,9 +30,9 @@ class RoleAndUserSeeder extends Seeder
         // Create Default Users for specific roles
         $usersToCreate = [
             ['name' => 'Admin Desa',          'email' => 'admin1@desa.id',      'password' => 'admindesa1',      'role' => 'Admin Desa',        'phone' => '082338232475'],
-            ['name' => 'Kepala Desa',         'email' => 'kepdes1@desa.id',     'password' => 'kepdesdesa1',     'role' => 'Kepala Desa',       'phone' => ''],
+            ['name' => 'Kepala Desa',         'email' => 'kepdes1@desa.id',     'password' => 'kepdesdesa1',     'role' => 'Kepala Desa',       'phone' => '082229942294'],
             ['name' => 'Bapak Sekretaris',    'email' => 'sekdes1@desa.id',     'password' => 'sekdes1',         'role' => 'Sekretaris Desa',   'phone' => ''],
-            ['name' => 'Ibu Bendahara',       'email' => 'bendahara1@desa.id',  'password' => 'bendaharadesa1',  'role' => 'Bendahara',         'phone' => ''],
+            ['name' => 'Ibu Bendahara',       'email' => 'bendahara1@desa.id',  'password' => 'bendaharadesa1',  'role' => 'Bendahara',         'phone' => '085959594679'],
             ['name' => 'Budi Warga',          'email' => 'wargadesa1@desa.id',  'password' => 'wargadesa1',      'role' => 'Warga',             'phone' => '082142045987'],
         ];
 

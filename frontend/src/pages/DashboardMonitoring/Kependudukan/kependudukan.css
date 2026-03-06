@@ -1,4 +1,4 @@
-.kependudukan-container {
+﻿.kependudukan-container {
     padding: 24px;
     background-color: #f8fafc;
     min-height: calc(100vh - 64px);
@@ -239,4 +239,19 @@
 .empty-state {
     padding: 48px !important;
     color: #94a3b8 !important;
+}
+
+/* ── Tablet ────────────────────────────── */
+@media (max-width: 900px) {
+  .kependudukan-container { padding: 16px; }
+  .kependudukan-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .stats-cards { grid-template-columns: 1fr 1fr; gap: 16px; }
+  .import-form { flex-direction: column; align-items: stretch; }
+  .import-form input[type="file"] { max-width: 100%; }
+}
+
+/* ── Mobile ────────────────────────────── */
+@media (max-width: 480px) {
+  .stats-cards { grid-template-columns: 1fr; }
+  .header-actions { flex-wrap: wrap; }
 }

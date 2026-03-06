@@ -19,8 +19,9 @@ class LetterController extends Controller
     public function index(Request $request)
     {
         $query = Letter::with('letterType');
-        // Warga hanya bisa melihat datanya sendiri. Admin dan Kades bisa melihat semua.
-        if ($request->user() && $request->user()->role->name === 'Warga') {
+        // Hanya staf admin yang boleh melihat semua surat. Role lain (Warga, Bendahara, dll) hanya melihat miliknya sendiri.
+        $adminRoles = ['Admin Desa', 'Kepala Desa', 'Sekretaris Desa'];
+        if ($request->user() && !in_array($request->user()->role->name, $adminRoles)) {
             $query->where('user_id', $request->user()->id);
         }
         $letters = $query->latest()->get();

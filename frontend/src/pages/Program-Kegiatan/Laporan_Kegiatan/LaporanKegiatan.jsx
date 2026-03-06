@@ -1,6 +1,7 @@
 ﻿import React, { useMemo, useState, useRef, useEffect } from "react";
 import "./LaporanKegiatan.css";
 import api from "../../../services/api";
+import { LuUpload, LuChevronDown } from "react-icons/lu";
 
 function rupiah(n) {
   if (!n) return "Rp 0";
@@ -104,9 +105,9 @@ export default function LaporanKegiatan() {
 
           <div className="export-wrap" ref={exportRef}>
             <button className="btn-export-main" onClick={() => setShowExport((s) => !s)}>
-              <span className="icon">ðŸ“¤</span>
+              <span className="icon"><LuUpload size={15} /></span>
               <span>Export Laporan</span>
-              <span className="caret">â–¾</span>
+              <span className="caret"><LuChevronDown size={14} /></span>
             </button>
             {showExport && (
               <div className="export-menu">

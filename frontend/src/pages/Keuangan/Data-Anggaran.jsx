@@ -2,6 +2,7 @@
 import api from "../../services/api";
 import { AuthContext } from "../../context/AuthContext";
 import "./Data-Anggaran.css";
+import { LuLandmark, LuSearch, LuClipboardList, LuBanknote, LuTrendingUp, LuCalendar, LuCircleCheck } from "react-icons/lu";
 
 const BULAN_LIST = ["Semua Bulan","Januari","Februari","Maret","April","Mei","Juni",
                     "Juli","Agustus","September","Oktober","November","Desember"];
@@ -37,7 +38,7 @@ export default function DataAnggaran() {
     const [page,   setPage]   = useState(1);
     const PER_PAGE = 10;
 
-    // â”€â”€ Modal tambah / edit â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ... Modal tambah / edit ...
     const [showForm, setShowForm]   = useState(false);
     const [editId,   setEditId]     = useState(null);
     const [form,     setForm]       = useState({
@@ -82,7 +83,7 @@ export default function DataAnggaran() {
     const paginated = rows.slice((page - 1) * PER_PAGE, page * PER_PAGE);
     const totalPages = Math.max(1, Math.ceil(rows.length / PER_PAGE));
 
-    // â”€â”€ CRUD handlers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ... CRUD handlers ...
     const openAdd  = () => { setEditId(null); setForm({ tahun: year, kategori: "Pemasukan", deskripsi: "", bulan: "Januari", sumber_dana: "", nominal_anggaran: "", nominal_realisasi: "0", keterangan: "" }); setShowForm(true); };
     const openEdit = (b) => { setEditId(b.id); setForm({ tahun: b.tahun, kategori: b.kategori ?? "Pemasukan", deskripsi: b.deskripsi ?? "", bulan: b.bulan ?? "Januari", sumber_dana: b.sumber_dana, nominal_anggaran: b.nominal_anggaran, nominal_realisasi: b.nominal_realisasi, keterangan: b.keterangan ?? "" }); setShowForm(true); };
 
@@ -114,17 +115,17 @@ export default function DataAnggaran() {
             {/* Topbar */}
             <header className="kw-topbar">
                 <div className="kw-brand">
-                    <span className="kw-logo">ðŸ›ï¸</span>
+                    <span className="kw-logo"><LuLandmark size={22} /></span>
                     <div className="kw-title">Manajemen Keuangan Desa</div>
                 </div>
                 <div className="kw-actions">
                     <div className="kw-search">
-                        <span className="kw-search-ico">ðŸ”Ž</span>
+                        <span className="kw-search-ico"><LuSearch size={16} /></span>
                         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Cari deskripsi / sumber dana" />
                     </div>
                     {canAccessFinance() && (
                         <button className="kw-export" type="button" onClick={openAdd}>
-                            ï¼‹ Tambah Data
+                            + Tambah Data
                         </button>
                     )}
                 </div>
@@ -165,19 +166,19 @@ export default function DataAnggaran() {
                     {/* Stat cards */}
                     <section className="kw-cards">
                         <div className="kw-card">
-                            <div className="kw-card-ico">ðŸ¦</div>
+                            <div className="kw-card-ico"><LuLandmark size={24} /></div>
                             <div><div className="kw-card-k">Total APBDes</div><div className="kw-card-v">{rupiah(summary.total_anggaran)}</div></div>
                         </div>
                         <div className="kw-card">
-                            <div className="kw-card-ico">ðŸ“‹</div>
+                            <div className="kw-card-ico"><LuClipboardList size={24} /></div>
                             <div><div className="kw-card-k">Realisasi Anggaran</div><div className="kw-card-v">{rupiah(summary.total_realisasi)}</div></div>
                         </div>
                         <div className="kw-card">
-                            <div className="kw-card-ico">ðŸ’°</div>
+                            <div className="kw-card-ico"><LuBanknote size={24} /></div>
                             <div><div className="kw-card-k">Sisa Anggaran</div><div className="kw-card-v">{rupiah(summary.sisa_anggaran)}</div></div>
                         </div>
                         <div className="kw-card">
-                            <div className="kw-card-ico">ðŸ“ˆ</div>
+                            <div className="kw-card-ico"><LuTrendingUp size={24} /></div>
                             <div><div className="kw-card-k">% Realisasi</div><div className="kw-card-v">{summary.persentase_realisasi?.toFixed(1) ?? 0}%</div></div>
                         </div>
                     </section>
@@ -190,12 +191,12 @@ export default function DataAnggaran() {
                         <div className="kw-tabs">
                             {["pemasukan","pengeluaran","laporan"].map(t => (
                                 <button key={t} className={`kw-tab ${tab === t ? "is-active" : ""}`} onClick={() => { setTab(t); setPage(1); }} type="button">
-                                    {t === "pemasukan" ? "â— Pemasukan" : t === "pengeluaran" ? "â—‹ Pengeluaran" : "ðŸ“„ Semua"}
+                                    {t === "pemasukan" ? "Pemasukan" : t === "pengeluaran" ? "Pengeluaran" : "Semua"}
                                 </button>
                             ))}
                         </div>
 
-                        {loading ? <div style={{padding:"1rem"}}>Memuat dataâ€¦</div> : error ? <div style={{padding:"1rem",color:"red"}}>{error}</div> : (
+                        {loading ? <div style={{padding:"1rem"}}>Memuat data...</div> : error ? <div style={{padding:"1rem",color:"red"}}>{error}</div> : (
                         <div className="kw-tableWrap">
                             <table className="kw-table">
                                 <thead>
@@ -241,7 +242,7 @@ export default function DataAnggaran() {
                 {/* Right sidebar filter */}
                 <aside className="kw-side">
                     <div className="kw-sideCard">
-                        <div className="kw-sideTitle">ðŸ“… Tahun</div>
+                        <div className="kw-sideTitle"><LuCalendar size={14} /> Tahun</div>
                         <div className="kw-radioList">
                             {years.map(y => (
                                 <label key={y} className={`kw-radio ${year === y ? "is-active" : ""}`}>
@@ -251,7 +252,7 @@ export default function DataAnggaran() {
                             ))}
                         </div>
                         <hr className="kw-sep" />
-                        <div className="kw-sideTitle">âœ… Bulan</div>
+                        <div className="kw-sideTitle"><LuCircleCheck size={14} /> Bulan</div>
                         <div className="kw-radioList">
                             {BULAN_LIST.map(m => (
                                 <label key={m} className={`kw-radio ${month === m ? "is-active" : ""}`}>
@@ -265,9 +266,9 @@ export default function DataAnggaran() {
                     <div className="kw-sideCard">
                         <div className="kw-sideTitle">Ringkasan</div>
                         <div className="kw-statList">
-                            <div className="kw-statItem">ðŸ’µ Pemasukan: {rupiah(summary.total_pemasukan)}</div>
-                            <div className="kw-statItem">ðŸ“¤ Pengeluaran: {rupiah(summary.total_pengeluaran)}</div>
-                            <div className="kw-statItem">ðŸ’¹ Sisa: {rupiah(summary.sisa_anggaran)}</div>
+                            <div className="kw-statItem">Pemasukan: {rupiah(summary.total_pemasukan)}</div>
+                            <div className="kw-statItem">Pengeluaran: {rupiah(summary.total_pengeluaran)}</div>
+                            <div className="kw-statItem">Sisa: {rupiah(summary.sisa_anggaran)}</div>
                         </div>
                     </div>
                 </aside>

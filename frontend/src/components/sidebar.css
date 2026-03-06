@@ -1,10 +1,12 @@
-.sb {
+﻿.sb {
   width: 260px;
   min-height: 100vh;
   background: #ffffff;
   border-right: 1px solid #e8edf2;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
+  transition: width 0.2s ease;
 }
 
 .sb__top {
@@ -30,6 +32,8 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .sb__item,
@@ -50,7 +54,7 @@
 
 .sb__item:hover,
 .sb__groupBtn:hover {
-  background: #f3f7f6;
+  background: #F8F6F1;
 }
 
 .sb__icon {
@@ -58,6 +62,7 @@
   display: grid;
   place-items: center;
   opacity: 0.9;
+  flex-shrink: 0;
 }
 
 .sb__label {
@@ -102,11 +107,12 @@
 }
 
 .sb__subItem:hover {
-  background: #f3f7f6;
+  background: #F8F6F1;
 }
 
+/* ── Collapsed (desktop) ──────────────────────────── */
 .sb--collapsed {
-  width: 72px; /* jadi tipis */
+  width: 72px;
 }
 
 .sb--collapsed .sb__label {
@@ -114,5 +120,42 @@
 }
 
 .sb--collapsed .sb__sub {
-  display: none; /* optional: sub menu disembunyiin pas collapse */
+  display: none;
+}
+
+.sb--collapsed .sb__chev {
+  display: none;
+}
+
+/* ── Mobile sidebar overlay (≤ 767px) ─────────────── */
+@media (max-width: 767px) {
+  .sb {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 260px;
+    z-index: 100;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: none;
+  }
+
+  /* When parent shell has .mobile-open, slide sidebar in */
+  .mobile-open .sb {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.18);
+  }
+
+  /* On mobile, never apply the icon-only collapsed style */
+  .sb--collapsed {
+    width: 260px;
+    transform: translateX(-100%);
+  }
+
+  .sb--collapsed .sb__label,
+  .sb--collapsed .sb__sub,
+  .sb--collapsed .sb__chev {
+    display: unset;
+  }
 }

@@ -4,6 +4,7 @@ import img1 from "../../assets/IMG_3050.JPG";
 import img2 from "../../assets/Three Simple Steps to Empowered Word-Learning - Peers and Pedagogy.jpeg";
 import "./struktur-organisasi.css";
 import { AuthContext } from "../../context/AuthContext";
+import { LuLandmark, LuWrench, LuX, LuPlus, LuPencil, LuTrash2 } from "react-icons/lu";
 
 const initialMembers = [
   { id: 1,  nama: "Budi Hermawan",     jabatan: "Kepala Desa",         level: 1, img: img1 },
@@ -75,7 +76,7 @@ export default function StrukturOrganisasi() {
         {/* Page header */}
         <div className="so-header">
           <div>
-            <h1 className="so-title">🏛️ Struktur Organisasi Desa Bahagia</h1>
+            <h1 className="so-title"><LuLandmark size={24} /> Struktur Organisasi Desa Bahagia</h1>
             <p className="so-subtitle">
               {canEdit
                 ? "Kelola susunan perangkat dan aparatur Desa Bahagia."
@@ -87,9 +88,9 @@ export default function StrukturOrganisasi() {
         {/* Admin toolbar */}
         {canEdit && (
           <div className="so-admin-bar">
-            <span className="so-admin-badge">🔧 Mode Admin</span>
+            <span className="so-admin-badge"><LuWrench size={14} /> Mode Admin</span>
             <button className="btn" onClick={() => { setEditId(null); setForm({ nama: "", jabatan: "", level: 3 }); setShowForm(v => !v); }}>
-              {showForm && !editId ? "✕ Batal" : "＋ Tambah Anggota"}
+              {showForm && !editId ? <><LuX size={14} /> Batal</> : <><LuPlus size={14} /> Tambah Anggota</>}
             </button>
           </div>
         )}
@@ -143,8 +144,8 @@ export default function StrukturOrganisasi() {
                     </div>
                     {canEdit && (
                       <div className="so-card-actions">
-                        <button className="tbs-edit" onClick={() => handleEdit(m)}>✏️</button>
-                        <button className="tbs-del" onClick={() => handleDelete(m.id)}>🗑️</button>
+                        <button className="tbs-edit" onClick={() => handleEdit(m)}><LuPencil size={14} /></button>
+                        <button className="tbs-del" onClick={() => handleDelete(m.id)}><LuTrash2 size={14} /></button>
                       </div>
                     )}
                   </div>

@@ -1,4 +1,4 @@
-:root{
+﻿:root{
   --kw-bg: #f2f6f5;
   --kw-top: #2aa69a;
   --kw-top2:#238f85;
@@ -472,7 +472,7 @@
 .kw-statItem{
   padding: 10px 12px;
   border-radius: 12px;
-  background:#f3f7f6;
+  background:#F8F6F1;
   border: 1px solid #e6f0ee;
   font-weight: 900;
   font-size: 13px;

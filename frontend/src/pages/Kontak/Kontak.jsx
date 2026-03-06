@@ -2,6 +2,25 @@ import { useState, useEffect, useContext } from "react";
 import "./kontak.css";
 import { AuthContext, ROLES } from "../../context/AuthContext";
 import api from "../../services/api";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import L from "leaflet";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import {
+  LuMapPin, LuPhone, LuSmartphone, LuMail, LuGlobe,
+  LuPin, LuClock, LuUsers, LuMap, LuMessageCircle,
+  LuPencil, LuCircleCheck, LuSave, LuSend,
+} from "react-icons/lu";
+
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
+
+const DESA_COORDS = [-7.614529, 112.1774926];
 
 const INIT_INFO = {
   alamat:  "Jl. Raya Desa Bahagia No. 1, Kecamatan Sejahtera, Kabupaten Makmur, Jawa Timur 64184",
@@ -66,11 +85,11 @@ export default function Kontak() {
 
   // Bangun array tampilan dari state
   const infoList = [
-    { icon: "📍", label: "Alamat",    value: info.alamat,  href: null },
-    { icon: "📞", label: "Telepon",   value: info.telepon, href: null },
-    { icon: "📱", label: "WhatsApp",  value: info.wa,      href: `https://wa.me/62${info.wa.replace(/\D/g,"").replace(/^0/,"")}`  },
-    { icon: "📧", label: "Email",     value: info.email,   href: `mailto:${info.email}` },
-    { icon: "🌐", label: "Website",   value: info.website, href: info.website.startsWith("http") ? info.website : `https://${info.website}` },
+    { icon: <LuMapPin size={18} />, label: "Alamat",    value: info.alamat,  href: null },
+    { icon: <LuPhone size={18} />, label: "Telepon",   value: info.telepon, href: null },
+    { icon: <LuSmartphone size={18} />, label: "WhatsApp",  value: info.wa,      href: `https://wa.me/62${info.wa.replace(/\D/g,"").replace(/^0/,"")}`  },
+    { icon: <LuMail size={18} />, label: "Email",     value: info.email,   href: `mailto:${info.email}` },
+    { icon: <LuGlobe size={18} />, label: "Website",   value: info.website, href: info.website.startsWith("http") ? info.website : `https://${info.website}` },
   ];
 
   return (
@@ -80,33 +99,33 @@ export default function Kontak() {
         {/* Header */}
         <div className="kontak-header">
           <div>
-            <h1 className="kontak-title">📞 Kontak & Lokasi</h1>
+            <h1 className="kontak-title"><LuPhone size={24} /> Kontak & Lokasi</h1>
             <p className="kontak-subtitle">
               Hubungi kami untuk pertanyaan, pengaduan, atau kebutuhan layanan administrasi Desa Bahagia.
             </p>
           </div>
           {canEdit && !editMode && (
             <button className="btn-edit-info" onClick={handleEdit}>
-              ✏️ Edit Info Kantor
+              <LuPencil size={16} /> Edit Info Kantor
             </button>
           )}
         </div>
 
         {/* Notifikasi simpan berhasil */}
         {saved && (
-          <div className="kontak-toast">✅ Informasi kantor berhasil diperbarui!</div>
+          <div className="kontak-toast"><LuCircleCheck size={18} /> Informasi kantor berhasil diperbarui!</div>
         )}
 
         {/* ===== FORM EDIT (hanya admin, saat editMode) ===== */}
         {canEdit && editMode && (
           <div className="kontak-card edit-card">
             <div className="edit-card-header">
-              <h3>✏️ Edit Informasi Kantor</h3>
+              <h3><LuPencil size={18} /> Edit Informasi Kantor</h3>
               <span className="edit-badge">Mode Edit</span>
             </div>
             <form className="edit-form" onSubmit={handleSave}>
               <div className="edit-field">
-                <label>📍 Alamat <span className="req">*</span></label>
+                <label><LuMapPin size={16} /> Alamat <span className="req">*</span></label>
                 <textarea
                   rows={2}
                   value={draft.alamat}
@@ -116,7 +135,7 @@ export default function Kontak() {
               </div>
               <div className="edit-row">
                 <div className="edit-field">
-                  <label>📞 Telepon <span className="req">*</span></label>
+                  <label><LuPhone size={16} /> Telepon <span className="req">*</span></label>
                   <input
                     type="text"
                     value={draft.telepon}
@@ -125,7 +144,7 @@ export default function Kontak() {
                   />
                 </div>
                 <div className="edit-field">
-                  <label>📱 WhatsApp</label>
+                  <label><LuSmartphone size={16} /> WhatsApp</label>
                   <input
                     type="text"
                     value={draft.wa}
@@ -136,7 +155,7 @@ export default function Kontak() {
               </div>
               <div className="edit-row">
                 <div className="edit-field">
-                  <label>📧 Email</label>
+                  <label><LuMail size={16} /> Email</label>
                   <input
                     type="email"
                     value={draft.email}
@@ -145,7 +164,7 @@ export default function Kontak() {
                   />
                 </div>
                 <div className="edit-field">
-                  <label>🌐 Website</label>
+                  <label><LuGlobe size={16} /> Website</label>
                   <input
                     type="text"
                     value={draft.website}
@@ -156,7 +175,7 @@ export default function Kontak() {
               </div>
               <div className="edit-actions">
                 <button type="button" className="btn-cancel" onClick={handleCancel}>Batal</button>
-                <button type="submit" className="btn-save">💾 Simpan Perubahan</button>
+                <button type="submit" className="btn-save"><LuSave size={16} /> Simpan Perubahan</button>
               </div>
             </form>
           </div>
@@ -169,7 +188,7 @@ export default function Kontak() {
           <div className="kontak-col">
 
             <div className="kontak-card">
-              <h3>📌 Informasi Kantor</h3>
+              <h3><LuPin size={18} /> Informasi Kantor</h3>
               <ul className="kontak-list">
                 {infoList.map((k) => (
                   <li key={k.label} className="kontak-item">
@@ -190,7 +209,7 @@ export default function Kontak() {
             </div>
 
             <div className="kontak-card">
-              <h3>⏰ Jam Operasional</h3>
+              <h3><LuClock size={18} /> Jam Operasional</h3>
               <table className="jam-table">
                 <tbody>
                   {JAM_OPERASIONAL.map((j) => (
@@ -208,37 +227,32 @@ export default function Kontak() {
           {/* Kanan: Peta + Kontak Perangkat */}
           <div className="kontak-col">
 
-            {/* Peta (embed Google Maps dummy / placeholder) */}
+            {/* Peta (react-leaflet / OpenStreetMap) */}
             <div className="kontak-card">
-              <h3>🗺️ Lokasi Kantor Desa</h3>
+              <h3><LuMap size={18} /> Lokasi Kantor Desa</h3>
               <div className="map-placeholder">
-                <iframe
-                  title="Lokasi Desa Bahagia"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3957.298!2d112.1774926!3d-7.614529!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwMzYnNTIuMyJTIDExMsKwMTAnMzkuMCJF!5e0!3m2!1sid!2sid!4v1699999999999!5m2!1sid!2sid"
-                  width="100%"
-                  height="250"
-                  style={{ border: 0, borderRadius: "8px" }}
-                  allowFullScreen=""
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-                <p className="map-note">
-                  📍 Jika peta tidak muncul, klik{" "}
-                  <a
-                    href="https://maps.google.com/?q=Jawa+Timur+Desa+Bahagia"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="kontak-link"
+                <div style={{ height: "260px", borderRadius: "10px", overflow: "hidden" }}>
+                  <MapContainer
+                    center={DESA_COORDS}
+                    zoom={15}
+                    style={{ height: "100%", width: "100%" }}
+                    scrollWheelZoom={false}
                   >
-                    di sini
-                  </a>{" "}
-                  untuk membuka Google Maps.
+                    <TileLayer
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                    />
+                    <Marker position={DESA_COORDS} />
+                  </MapContainer>
+                </div>
+                <p className="map-note">
+                  <LuMapPin size={14} /> Jl. Merdeka No.1, Desa Bahagia, Jawa Timur
                 </p>
               </div>
             </div>
 
             <div className="kontak-card">
-              <h3>👥 Kontak Perangkat Desa</h3>
+              <h3><LuUsers size={18} /> Kontak Perangkat Desa</h3>
               <div className="perangkat-list">
                 {perangkat.map((p) => {
                   const ext = PERANGKAT_ROLE_EXT[p.role] ?? "";
@@ -259,7 +273,7 @@ export default function Kontak() {
                             rel="noopener noreferrer"
                             className="wa-btn"
                           >
-                            💬 {p.phone}
+                            <LuMessageCircle size={14} /> {p.phone}
                           </a>
                         )}
                       </div>
@@ -278,7 +292,7 @@ export default function Kontak() {
             <h3>Punya Keluhan atau Masukan?</h3>
             <p>Kami siap mendengar. Kirimkan pengaduan kamu melalui halaman pengaduan online.</p>
           </div>
-          <a href="/pengaduan" className="cta-btn">📝 Kirim Pengaduan</a>
+          <a href="/pengaduan" className="cta-btn"><LuSend size={16} /> Kirim Pengaduan</a>
         </div>
 
       </div>

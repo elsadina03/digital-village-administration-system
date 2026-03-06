@@ -65,7 +65,7 @@ export default function LaporanDanaDesa() {
 
                 <div className="laporan-header">
                     <div>
-                        <h1 className="laporan-title">ðŸ“‘ Laporan Dana Desa</h1>
+                        <h1 className="laporan-title">Laporan Dana Desa</h1>
                         <p className="laporan-subtitle">Transparansi penggunaan dana desa kepada masyarakat.</p>
                     </div>
                     <div style={{ display:"flex", gap:"8px", flexWrap:"wrap" }}>
@@ -80,7 +80,7 @@ export default function LaporanDanaDesa() {
                     </div>
                 </div>
 
-                {loading ? <div style={{padding:"2rem",textAlign:"center"}}>Memuat laporanâ€¦</div> : (
+                {loading ? <div style={{padding:"2rem",textAlign:"center"}}>Memuat laporan...</div> : (
                 <>
                     {/* Summary cards */}
                     <div className="laporan-stats">

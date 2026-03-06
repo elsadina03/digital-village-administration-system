@@ -1,4 +1,4 @@
-.shell {
+﻿.shell {
   display: flex;
   min-height: 100vh;
 }
@@ -15,4 +15,37 @@
   background: #f6f7fb;
   flex: 1;
   min-width: 0;
+}
+
+/* Backdrop for mobile sidebar overlay */
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 99;
+}
+
+/* ── Mobile (≤ 767px) ─────────────────────────────── */
+@media (max-width: 767px) {
+  .shell {
+    /* main takes full width; sidebar overlays */
+    position: relative;
+  }
+
+  .page {
+    padding: 16px 12px;
+  }
+
+  /* Show backdrop when mobile sidebar is open */
+  .mobile-open .sidebar-backdrop {
+    display: block;
+  }
+}
+
+/* ── Tablet (768px – 1023px) ──────────────────────── */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .page {
+    padding: 20px 16px;
+  }
 }

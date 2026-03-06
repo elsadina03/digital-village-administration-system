@@ -2,6 +2,7 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import api from "../../../services/api";
 import "./realisasi-anggaran.css";
+import { LuBanknote, LuUpload, LuBriefcase, LuChartBar, LuCalendar, LuReceiptText, LuSearch } from "react-icons/lu";
 
 function rupiah(n) {
     if (!n && n !== 0) return "Rp 0";
@@ -64,7 +65,7 @@ export default function RealisasiAnggaran() {
         <div className="realisasi-root">
             <div className="realisasi-container">
                 <div className="realisasi-header">
-                    <h1 className="realisasi-title">ðŸ“‰ Realisasi Anggaran</h1>
+                    <h1 className="realisasi-title">Realisasi Anggaran</h1>
                     <p className="realisasi-subtitle">Monitoring pemasukan dan pengeluaran anggaran desa secara real-time.</p>
                 </div>
 
@@ -83,27 +84,27 @@ export default function RealisasiAnggaran() {
                 {/* Stat Cards */}
                 <div className="realisasi-stats">
                     <div className="rs-card" style={{ borderTop: "4px solid #0fa78d" }}>
-                        <div className="rs-icon">ðŸ’°</div>
+                        <div className="rs-icon"><LuBanknote size={24} /></div>
                         <div><div className="rs-label">Total APBDes</div><div className="rs-value green-text">{rupiah(summary.total_anggaran)}</div></div>
                     </div>
                     <div className="rs-card" style={{ borderTop: "4px solid #3b82f6" }}>
-                        <div className="rs-icon">ðŸ“¤</div>
+                        <div className="rs-icon"><LuUpload size={24} /></div>
                         <div><div className="rs-label">Sudah Direalisasi</div><div className="rs-value blue-text">{rupiah(summary.total_realisasi)}</div></div>
                     </div>
                     <div className="rs-card" style={{ borderTop: "4px solid #f59e0b" }}>
-                        <div className="rs-icon">ðŸ’¼</div>
+                        <div className="rs-icon"><LuBriefcase size={24} /></div>
                         <div><div className="rs-label">Sisa Anggaran</div><div className="rs-value yellow-text">{rupiah(summary.sisa_anggaran)}</div></div>
                     </div>
                     <div className="rs-card" style={{ borderTop: "4px solid #8b5cf6" }}>
-                        <div className="rs-icon">ðŸ“Š</div>
+                        <div className="rs-icon"><LuChartBar size={24} /></div>
                         <div><div className="rs-label">% Realisasi</div><div className="rs-value purple-text">{summary.persentase_realisasi?.toFixed(1) ?? 0}%</div></div>
                     </div>
                 </div>
 
                 {/* Bar Chart */}
                 <div className="realisasi-card">
-                    <h3>ðŸ“… Grafik Realisasi Bulanan Tahun {year}</h3>
-                    {loading ? <div>Memuat chartâ€¦</div> : (
+                    <h3>Grafik Realisasi Bulanan Tahun {year}</h3>
+                    {loading ? <div>Memuat chart...</div> : (
                         <ResponsiveContainer width="100%" height={260}>
                             <BarChart data={chartData} margin={{ top: 10, right: 10, bottom: 0, left: 20 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
@@ -120,16 +121,16 @@ export default function RealisasiAnggaran() {
 
                 {/* Detail Table */}
                 <div className="realisasi-card">
-                    <h3>ðŸ§¾ Rincian Data Anggaran</h3>
+                    <h3>Rincian Data Anggaran</h3>
                     <div className="realisasi-toolbar">
-                        <input className="realisasi-search" placeholder="ðŸ” Cari deskripsi..."
+                        <input className="realisasi-search" placeholder="Cari deskripsi..."
                             value={search} onChange={e => setSearch(e.target.value)} />
                         <select className="realisasi-select" value={filterKat} onChange={e => setFilterKat(e.target.value)}>
                             {KATEGORI_LIST.map(k => <option key={k}>{k}</option>)}
                         </select>
                     </div>
 
-                    {loading ? <div style={{padding:"1rem"}}>Memuat dataâ€¦</div> : (
+                    {loading ? <div style={{padding:"1rem"}}>Memuat data...</div> : (
                     <div className="realisasi-table-wrapper">
                         <table className="realisasi-table">
                             <thead>

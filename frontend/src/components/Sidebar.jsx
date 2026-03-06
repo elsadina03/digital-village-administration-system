@@ -2,6 +2,10 @@ import { NavLink } from "react-router-dom";
 import { useMemo, useState, useContext } from "react";
 import { AuthContext, ROLES } from "../context/AuthContext";
 import "./sidebar.css";
+import {
+    LuHouse, LuFileText, LuUsers, LuChartBar, LuClipboardList,
+    LuCreditCard, LuHeartHandshake, LuNewspaper, LuSettings, LuChevronDown,
+} from "react-icons/lu";
 
 const { ADMIN, KEPDES, SEKRETARIS, BENDAHARA, WARGA } = ROLES;
 
@@ -15,14 +19,14 @@ const ALL_MENUS = [
         type: "link",
         label: "Beranda",
         to: "/",
-        icon: "🏠",
+        icon: <LuHouse size={18} />,
         allowedRoles: null, // semua
     },
     {
         type: "group",
         key: "layanan",
         label: "Layanan",
-        icon: "🧾",
+        icon: <LuFileText size={18} />,
         allowedRoles: null, // semua
         itemRules: {
             "/pengajuan":         null,   // semua
@@ -41,7 +45,7 @@ const ALL_MENUS = [
         type: "group",
         key: "penduduk",
         label: "Data Penduduk",
-        icon: "👥",
+        icon: <LuUsers size={18} />,
         allowedRoles: [ADMIN, KEPDES],
         items: [
             { label: "Daftar Penduduk", to: "/warga" },
@@ -51,7 +55,7 @@ const ALL_MENUS = [
         type: "group",
         key: "monitoring",
         label: "Dashboard Monitoring",
-        icon: "📊",
+        icon: <LuChartBar size={18} />,
         allowedRoles: [ADMIN, KEPDES, BENDAHARA], // Sekretaris tidak perlu dashboard
         itemRules: {
             "/penduduk-stats":  [ADMIN, KEPDES],
@@ -70,7 +74,7 @@ const ALL_MENUS = [
         type: "group",
         key: "program",
         label: "Program & Kegiatan",
-        icon: "📋",
+        icon: <LuClipboardList size={18} />,
         allowedRoles: [ADMIN, KEPDES, SEKRETARIS],
         itemRules: {
             "/program-desa":     null,          // semua yang boleh lihat group ini
@@ -87,7 +91,7 @@ const ALL_MENUS = [
         type: "group",
         key: "keuangan",
         label: "Keuangan Desa",
-        icon: "💳",
+        icon: <LuCreditCard size={18} />,
         allowedRoles: [ADMIN, KEPDES, BENDAHARA],
         items: [
             { label: "Input APBDes",        to: "/input-apbdes" },
@@ -100,7 +104,7 @@ const ALL_MENUS = [
         type: "group",
         key: "bansos",
         label: "Bantuan Sosial",
-        icon: "🤝",
+        icon: <LuHeartHandshake size={18} />,
         allowedRoles: [ADMIN, KEPDES, SEKRETARIS], // Sekretaris juga bisa lihat bansos
         items: [
             { label: "Kelola Bantuan", to: "/kelola-bansos" },
@@ -110,7 +114,7 @@ const ALL_MENUS = [
         type: "group",
         key: "informasi",
         label: "Informasi Desa",
-        icon: "🏡",
+        icon: <LuNewspaper size={18} />,
         allowedRoles: null, // semua
         items: [
             { label: "Berita Desa",         to: "/berita" },
@@ -123,7 +127,7 @@ const ALL_MENUS = [
         type: "group",
         key: "kelola",
         label: "Kelola Sistem",
-        icon: "⚙️",
+        icon: <LuSettings size={18} />,
         allowedRoles: [ADMIN],
         items: [
             { label: "Manajemen User", to: "/users" },
@@ -208,7 +212,7 @@ export default function Sidebar({ collapsed }) {
                             >
                                 <span className="sb__icon">{m.icon}</span>
                                 <span className="sb__label">{m.label}</span>
-                                <span className={`sb__chev ${isOpen ? "open" : ""}`}>▾</span>
+                                <span className={`sb__chev ${isOpen ? "open" : ""}`}><LuChevronDown size={14} /></span>
                             </button>
 
                             {isOpen && m.items?.length > 0 && (

@@ -70,13 +70,13 @@ export default function Input_APBDes() {
                 tahun: String(year), bulan, kategori: "Pemasukan",
                 sumber_dana: p.key, deskripsi: p.key,
                 nominal_anggaran: Number(p.value), nominal_realisasi: 0,
-                keterangan: `APBDes ${year} â€” ${villageName}`,
+                keterangan: `APBDes ${year} - ${villageName}`,
             })),
             ...belanja.filter(b => b.value).map(b => ({
                 tahun: String(year), bulan, kategori: b.key.includes("Modal") ? "Belanja Modal" : "Belanja Desa",
                 sumber_dana: "APBDes", deskripsi: b.key,
                 nominal_anggaran: Number(b.value), nominal_realisasi: 0,
-                keterangan: note || `APBDes ${year} â€” ${villageName}`,
+                keterangan: note || `APBDes ${year} - ${villageName}`,
             })),
         ];
 
@@ -93,13 +93,13 @@ export default function Input_APBDes() {
     return (
         <div className="apb-page">
             <header className="apb-top">
-                <div className="apb-title">Input APBDes â€” Formulir Mudah &amp; Ramah Orang Tua</div>
+                <div className="apb-title">Input APBDes - Formulir Mudah &amp; Ramah Orang Tua</div>
                 <div className="apb-sub">Data akan langsung tersimpan ke database desa</div>
             </header>
 
             {saved && (
                 <div style={{ background:"#d1fae5", color:"#065f46", padding:"12px 24px", margin:"12px 24px", borderRadius:"10px", fontWeight:600 }}>
-                    âœ… Data APBDes berhasil disimpan ke database!
+                    Data APBDes berhasil disimpan ke database!
                 </div>
             )}
 
@@ -167,7 +167,7 @@ export default function Input_APBDes() {
                         <label className="apb-label">Catatan singkat</label>
                         <textarea className="apb-input apb-input--textarea" value={note} onChange={e => setNote(e.target.value)} placeholder="Keterangan tambahan..." />
                         <div className="apb-actions apb-actions--end">
-                            <button type="submit" className="apb-submit" disabled={saving}>{saving ? "Menyimpanâ€¦" : "Simpan APBDes"}</button>
+                            <button type="submit" className="apb-submit" disabled={saving}>{saving ? "Menyimpan..." : "Simpan APBDes"}</button>
                         </div>
                     </section>
                 </main>
@@ -175,7 +175,7 @@ export default function Input_APBDes() {
                 <aside className="apb-side">
                     <div className="apb-sideCard">
                         <div className="apb-sideTitle">Ringkasan Cepat</div>
-                        <div className="apb-sideRow">Desa: <strong>{villageName || 'â€”'}</strong></div>
+                        <div className="apb-sideRow">Desa: <strong>{villageName || '-'}</strong></div>
                         <div className="apb-sideRow">Tahun: <strong>{year}</strong></div>
                         <div className="apb-sideRow">Bulan: <strong>{bulan}</strong></div>
                         <hr />

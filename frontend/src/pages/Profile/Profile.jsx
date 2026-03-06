@@ -73,6 +73,7 @@ export default function Profile() {
       setSaved(false);
       return;
     }
+    if (!window.confirm("Apakah Anda yakin ingin keluar?")) return;
     logout?.();
     navigate("/login");
   }
@@ -121,7 +122,7 @@ export default function Profile() {
           <div className="controls">
             <button className="btn btn-primary" onClick={onSave} disabled={!dirty}>Simpan</button>
             <button className={"btn "+(dirty?"btn-cancel":"btn-logout")} onClick={onSecondary}>
-              {dirty ? 'Batal' : 'Logout'}
+              {dirty ? 'Batal' : 'Keluar'}
             </button>
           </div>
 

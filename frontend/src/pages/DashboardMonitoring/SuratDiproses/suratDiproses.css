@@ -1,4 +1,4 @@
-.surat-container {
+﻿.surat-container {
     padding: 24px;
     background-color: #f8fafc;
     min-height: calc(100vh - 64px);
@@ -127,4 +127,15 @@
 
 .btn-tolak:hover {
     background-color: #dc2626;
+}
+
+/* ── Responsive ────────────────────────── */
+@media (max-width: 900px) {
+  .surat-container { padding: 16px; }
+  .action-buttons { flex-direction: column; gap: 4px; }
+  .action-buttons button { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .surat-header h2 { font-size: 18px; }
 }

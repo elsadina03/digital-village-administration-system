@@ -1,6 +1,6 @@
 ﻿import { useMemo, useState, useEffect, useContext } from "react";
 import "./Program.css";
-import { FiPlus, FiEdit2, FiTrash2, FiGrid, FiCalendar, FiCheckCircle, FiClock, FiAlertCircle } from "react-icons/fi";
+import { FiPlus, FiEdit2, FiTrash2, FiGrid, FiCalendar, FiCheckCircle, FiClock, FiAlertCircle, FiSearch } from "react-icons/fi";
 import api from "../../../services/api";
 import { AuthContext } from "../../../context/AuthContext";
 
@@ -215,7 +215,7 @@ export default function Program() {
             <>
               <div className="prSearch">
                 <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Cari Program" />
-                <span className="prSearchIcon">ðŸ”</span>
+                <span className="prSearchIcon"><FiSearch size={15} /></span>
               </div>
               <select value={filterKategori} onChange={(e) => setFilterKategori(e.target.value)}>
                 {KATEGORI.map((k) => <option key={k} value={k}>{k}</option>)}

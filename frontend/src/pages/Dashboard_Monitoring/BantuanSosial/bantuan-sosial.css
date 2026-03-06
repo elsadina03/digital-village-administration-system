@@ -1,4 +1,4 @@
-.bansos-root {
+﻿.bansos-root {
   min-height: 100vh;
   background: #f5f7fa;
   padding: 2rem 1rem;
@@ -65,7 +65,7 @@
 
 /* Buttons */
 .btn-primary {
-  background: #0fa78d;
+  background: #2D6A4F;
   color: #fff;
   border: none;
   padding: .55rem 1.2rem;
@@ -133,7 +133,7 @@
   transition: border .2s;
 }
 .form-group input:focus,
-.form-group select:focus { border-color: #0fa78d; }
+.form-group select:focus { border-color: #2D6A4F; }
 
 .required { color: #ef4444; }
 
@@ -160,7 +160,7 @@
   width: 260px;
   outline: none;
 }
-.bansos-search:focus { border-color: #0fa78d; }
+.bansos-search:focus { border-color: #2D6A4F; }
 
 .bansos-filter-jenis {
   display: flex;
@@ -178,7 +178,7 @@
   transition: all .2s;
 }
 .jenis-btn.active {
-  background: #0fa78d;
+  background: #2D6A4F;
   color: #fff;
   font-weight: 600;
 }

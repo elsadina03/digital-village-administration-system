@@ -1,5 +1,5 @@
-/* Login.css */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+﻿/* Login.css */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
 .auth-container {
   display: flex;
@@ -9,7 +9,7 @@
   /* Use the provided image for the background */
   background: url('/auth-bg.jpg') center/cover no-repeat;
   padding: 2rem;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .auth-card {
