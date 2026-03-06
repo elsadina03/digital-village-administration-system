@@ -1,5 +1,7 @@
-import { useMemo, useRef, useState, useEffect } from "react";
+import { useMemo, useRef, useState, useEffect, useContext } from "react";
 import api from "../../../services/api";
+import { AuthContext, STAFF_ROLES } from "../../../context/AuthContext";
+import { LuSearch, LuTrash2, LuChevronDown } from "react-icons/lu";
 import "./ArsipDokumen.css";
 
 const KATEGORI = [
@@ -13,6 +15,8 @@ const KATEGORI = [
 
 export default function ArsipDokumen() {
   const fileRef = useRef(null);
+  const { user } = useContext(AuthContext);
+  const isStaff = STAFF_ROLES.includes(user?.role?.name);
 
   // tab: "pribadi" | "desa"
   const [tab, setTab] = useState("pribadi");
@@ -20,6 +24,12 @@ export default function ArsipDokumen() {
   // filter/search
   const [search, setSearch] = useState("");
   const [filterKategori, setFilterKategori] = useState("Semua Kategori");
+
+  // custom dropdown state
+  const [showFilterDd, setShowFilterDd] = useState(false);
+  const [showKategoriDd, setShowKategoriDd] = useState(false);
+  const filterDdRef = useRef(null);
+  const kategoriDdRef = useRef(null);
 
   // form upload
   const [kategori, setKategori] = useState("");
@@ -34,17 +44,27 @@ export default function ArsipDokumen() {
     fetchArchives();
   }, []);
 
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (filterDdRef.current && !filterDdRef.current.contains(e.target)) setShowFilterDd(false);
+      if (kategoriDdRef.current && !kategoriDdRef.current.contains(e.target)) setShowKategoriDd(false);
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const fetchArchives = async () => {
     try {
       const res = await api.get("/archives");
 
-      const allDocs = res.data.data.map(d => ({
+      const allDocs = res.data.map(d => ({
         id: d.id,
         title: d.title,
         category: d.category || "Lainnya",
         fileName: d.file_path ? d.file_path.split("/").pop() : "unknown",
         url: d.file_url,
         type: d.type, // 'pribadi' or 'desa'
+        uploadedBy: d.uploaded_by,
         createdAt: d.created_at
       }));
 
@@ -73,11 +93,13 @@ export default function ArsipDokumen() {
     });
   }, [activeDocs, search, filterKategori]);
 
-  // pagination dummy
+  // pagination
   const [page, setPage] = useState(1);
-  const pageSize = 6;
-  const totalPages = Math.max(1, Math.ceil(filteredDocs.length / pageSize));
-  const pagedDocs = filteredDocs.slice((page - 1) * pageSize, page * pageSize);
+  const pageSize = 4;
+  // Sort newest first so page 1 = terbaru, page 2 = terlama
+  const sortedDocs = [...filteredDocs].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const totalPages = Math.max(1, Math.ceil(sortedDocs.length / pageSize));
+  const pagedDocs = sortedDocs.slice((page - 1) * pageSize, page * pageSize);
 
   function resetForm() {
     setKategori("");
@@ -119,6 +141,22 @@ export default function ArsipDokumen() {
     window.open(doc.url, "_blank", "noopener,noreferrer");
   }
 
+  async function handleDelete(doc) {
+    if (!window.confirm(`Hapus dokumen "${doc.title}"? Tindakan ini tidak dapat dibatalkan.`)) return;
+    try {
+      await api.delete(`/archives/${doc.id}`);
+      fetchArchives();
+    } catch (err) {
+      alert(err.response?.data?.message || "Gagal menghapus dokumen");
+    }
+  }
+
+  function canDelete(doc) {
+    if (isStaff) return true;
+    // Warga hanya bisa hapus dokumen pribadi milik sendiri
+    return doc.type === "pribadi" && doc.uploadedBy === user?.id;
+  }
+
   function clampPage(next) {
     if (next < 1) return 1;
     if (next > totalPages) return totalPages;
@@ -139,24 +177,32 @@ export default function ArsipDokumen() {
               }}
               placeholder="Cari Arsip Dokumen"
             />
-            <span className="icon">🔍</span>
+            <span className="icon"><LuSearch size={18} /></span>
           </div>
 
-          <div className="selectBox">
-            <select
-              value={filterKategori}
-              onChange={(e) => {
-                setFilterKategori(e.target.value);
-                setPage(1);
-              }}
+          <div className="ddWrap" ref={filterDdRef}>
+            <button
+              type="button"
+              className="ddBtn"
+              onClick={() => setShowFilterDd((s) => !s)}
             >
-              <option>Semua Kategori</option>
-              {KATEGORI.map((k) => (
-                <option key={k} value={k}>
-                  {k}
-                </option>
-              ))}
-            </select>
+              <span>{filterKategori}</span>
+              <LuChevronDown size={14} className={`ddCaret${showFilterDd ? " open" : ""}`} />
+            </button>
+            {showFilterDd && (
+              <div className="ddMenu">
+                {["Semua Kategori", ...KATEGORI].map((k) => (
+                  <button
+                    key={k}
+                    type="button"
+                    className={filterKategori === k ? "active" : ""}
+                    onClick={() => { setFilterKategori(k); setPage(1); setShowFilterDd(false); }}
+                  >
+                    {k}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="tabs">
@@ -187,11 +233,21 @@ export default function ArsipDokumen() {
                 <div key={d.id} className="card">
                   <div className="cardTitle">{d.title}</div>
                   <div className="cardSub">{d.category}</div>
+                  <div className="cardDate">
+                    {d.createdAt
+                      ? new Date(d.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })
+                      : "—"}
+                  </div>
 
                   <div className="cardActions">
                     <button className="btnOutline" onClick={() => handleOpen(d)}>
                       Lihat Dokumen
                     </button>
+                    {canDelete(d) && (
+                      <button className="btnDanger" onClick={() => handleDelete(d)} title="Hapus dokumen">
+                        <LuTrash2 size={15} />
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -233,68 +289,85 @@ export default function ArsipDokumen() {
         </div>
       </div>
 
-      {/* Upload section */}
-      <h2 className="uploadTitle">
-        Upload & Arsip Dokumen {tab === "pribadi" ? "Pribadi" : "Desa"}
-      </h2>
+      {/* Upload section — Pribadi tab: semua user; Desa tab: hanya staff */}
+      {(tab === "pribadi" || isStaff) && (
+        <>
+          <h2 className="uploadTitle">
+            {tab === "desa" ? "Upload & Arsip Dokumen Desa" : "Upload & Arsip Dokumen Pribadi"}
+          </h2>
 
-      <form className="form" onSubmit={handleSubmit}>
-        <div className="grid2">
-          <div className="field">
-            <label>Kategori Dokumen*</label>
-            {/* IMPORTANT: kasih class selectWrap biar arrow custom hanya untuk select */}
-            <div className="inputWrap selectWrap">
-              <select value={kategori} onChange={(e) => setKategori(e.target.value)}>
-                <option value="">Pilih Kategori Dokumen</option>
-                {KATEGORI.map((k) => (
-                  <option key={k} value={k}>
-                    {k}
-                  </option>
-                ))}
-              </select>
+          <form className="form" onSubmit={handleSubmit}>
+            <div className="grid2">
+              <div className="field">
+                <label>Kategori Dokumen*</label>
+                <div className="ddWrap" ref={kategoriDdRef}>
+                  <button
+                    type="button"
+                    className={`ddBtn ddBtnForm${!kategori ? " ddBtnPlaceholder" : ""}`}
+                    onClick={() => setShowKategoriDd((s) => !s)}
+                  >
+                    <span>{kategori || "Pilih Kategori Dokumen"}</span>
+                    <LuChevronDown size={14} className={`ddCaret${showKategoriDd ? " open" : ""}`} />
+                  </button>
+                  {showKategoriDd && (
+                    <div className="ddMenu ddMenuForm">
+                      {KATEGORI.map((k) => (
+                        <button
+                          key={k}
+                          type="button"
+                          className={kategori === k ? "active" : ""}
+                          onClick={() => { setKategori(k); setShowKategoriDd(false); }}
+                        >
+                          {k}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="field">
+                <label>Nama Dokumen*</label>
+                <div className="inputWrap">
+                  <input
+                    value={namaDokumen}
+                    onChange={(e) => setNamaDokumen(e.target.value)}
+                    placeholder="Masukkan nama/judul dokumen"
+                  />
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div className="field">
-            <label>Nama Dokumen*</label>
-            <div className="inputWrap">
-              <input
-                value={namaDokumen}
-                onChange={(e) => setNamaDokumen(e.target.value)}
-                placeholder="Masukkan nama/judul dokumen"
-              />
+            <div className="field">
+              <label>File Dokumen*</label>
+              <div className="fileRow">
+                <button
+                  type="button"
+                  className="btnGhost"
+                  onClick={() => fileRef.current?.click()}
+                >
+                  Pilih File
+                </button>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                  style={{ display: "none" }}
+                />
+                <div className={`fileName ${file ? "filled" : ""}`}>
+                  {file ? file.name : "Belum ada file yang dipilih"}
+                </div>
+              </div>
+              <div className="hint">*PDF, Word, PNG, JPG, JPEG.</div>
             </div>
-          </div>
-        </div>
 
-        <div className="field">
-          <label>File Dokumen*</label>
-          <div className="fileRow">
-            <button
-              type="button"
-              className="btnGhost"
-              onClick={() => fileRef.current?.click()}
-            >
-              Pilih File
+            <button type="submit" className="btnPrimary">
+              Arsip Dokumen
             </button>
-            <input
-              ref={fileRef}
-              type="file"
-              accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-              style={{ display: "none" }}
-            />
-            <div className={`fileName ${file ? "filled" : ""}`}>
-              {file ? file.name : "Belum ada file yang dipilih"}
-            </div>
-          </div>
-          <div className="hint">*PDF, Word, PNG, JPG, JPEG.</div>
-        </div>
-
-        <button type="submit" className="btnPrimary">
-          Arsip Dokumen
-        </button>
-      </form>
+          </form>
+        </>
+      )}
     </div>
   );
 }

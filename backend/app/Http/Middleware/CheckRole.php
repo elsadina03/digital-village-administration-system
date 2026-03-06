@@ -15,7 +15,7 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!$request->user() || !in_array($request->user()->role->name, $roles)) {
+        if (!$request->user() || !in_array($request->user()->role?->name, $roles)) {
             return response()->json(['message' => 'Unauthorized action.'], 403);
         }
 

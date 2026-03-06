@@ -83,9 +83,17 @@
 .berita-add-btn { font-size: 14px; }
 
 /* Add berita form */
-.berita-add-form { display: flex; gap: 10px; margin-bottom: 20px; }
-.berita-add-input { flex: 1; padding: 9px 14px; border-radius: 8px; border: 1.5px solid #e5e7eb; outline: none; font-size: 14px; }
+.berita-form-card { background: #fff; border-radius: 12px; border: 1.5px solid #e5e7eb; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.berita-add-form { display: flex; flex-direction: column; gap: 16px; }
+.berita-form-field { display: flex; flex-direction: column; gap: 6px; }
+.berita-form-field label { font-size: 13px; font-weight: 600; color: #374151; }
+.berita-add-input { padding: 9px 14px; border-radius: 8px; border: 1.5px solid #e5e7eb; outline: none; font-size: 14px; width: 100%; box-sizing: border-box; }
 .berita-add-input:focus { border-color: #2D6A4F; }
+.berita-file-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.berita-file-btn { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; border: 1.5px solid #2D6A4F; background: transparent; color: #2D6A4F; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .15s; }
+.berita-file-btn:hover { background: #2D6A4F; color: #fff; }
+.berita-file-name { font-size: 13px; color: #6b7280; }
+.berita-submit-btn { align-self: flex-start; }
 
 /* News image placeholder for admin */
 .news-img-placeholder { width: 100%; height: 200px; background: #e9f5f3; display: flex; align-items: center; justify-content: center; font-size: 40px; flex-shrink: 0; }

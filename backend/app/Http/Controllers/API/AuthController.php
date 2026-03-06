@@ -9,9 +9,28 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Citizen;
+use App\Services\FonnteService;
 
 class AuthController extends Controller
 {
+    protected FonnteService $fonnte;
+
+    public function __construct(FonnteService $fonnte)
+    {
+        $this->fonnte = $fonnte;
+    }
+
+    private function notifyAdmin(string $message): void
+    {
+        $admin = User::whereHas('role', fn($q) => $q->where('name', 'Admin Desa'))
+                     ->whereNotNull('phone')
+                     ->first();
+
+        if ($admin && $admin->phone) {
+            $this->fonnte->send($admin->phone, $message);
+        }
+    }
+
     public function register(Request $request)
     {
         $request->validate([
@@ -65,6 +84,17 @@ class AuthController extends Controller
         ]);
 
         if (!Auth::attempt($request->only('email', 'password'))) {
+            // Notify admin only if the email belongs to a real account (wrong password scenario)
+            $existingUser = User::where('email', $request->email)->first();
+            if ($existingUser) {
+                $this->notifyAdmin(
+                    "⚠️ *Masalah Login Akun Warga*\n\n" .
+                    "Ada percobaan login yang *gagal* (password salah) pada akun:\n" .
+                    "👤 Nama : {$existingUser->name}\n" .
+                    "📧 Email: {$existingUser->email}\n\n" .
+                    "Jika warga tidak bisa masuk, Anda dapat mereset password akun tersebut melalui halaman Manajemen Pengguna di sistem administrasi desa."
+                );
+            }
             return response()->json([
                 'message' => 'Invalid login details'
             ], 401);
@@ -73,6 +103,13 @@ class AuthController extends Controller
         $user = User::where('email', $request['email'])->firstOrFail();
 
         if (!$user->active_status) {
+            $this->notifyAdmin(
+                "🚫 *Akun Warga Nonaktif Mencoba Login*\n\n" .
+                "Ada percobaan login ke akun yang *dinonaktifkan*:\n" .
+                "👤 Nama : {$user->name}\n" .
+                "📧 Email: {$user->email}\n\n" .
+                "Jika warga perlu mengakses sistem, Anda dapat mengaktifkan kembali akun tersebut melalui halaman Manajemen Pengguna di sistem administrasi desa."
+            );
             return response()->json([
                 'message' => 'Account is inactive'
             ], 403);

@@ -53,23 +53,23 @@
 }
 
 .cardTitle {
-  font-size: 18px;
-  font-weight: 900;
+  font-size: 15px;
+  font-weight: 800;
 }
 
 .cardTime {
-  margin-top: 6px;
+  margin-top: 4px;
   opacity: 0.7;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .cardFoot {
-  margin-top: 12px;
+  margin-top: 10px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
@@ -154,6 +154,20 @@
   transition: background .15s;
 }
 .btnExportPdf:hover { background: #15403a; }
+
+.btnDeleteCard {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 8px;
+  background: #fff;
+  color: #e11d48;
+  border: 1px solid #e11d48;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.btnDeleteCard:hover { background: #e11d48; color: #fff; }
 
 /* ================= PAGER ================= */
 

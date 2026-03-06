@@ -1,7 +1,8 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import api from "../../../services/api";
 import "./Pengaduan.css";
 import { FiHeadphones } from "react-icons/fi";
+import { LuChevronDown } from "react-icons/lu";
 
 const KATEGORI = ["Infrastruktur", "Pelayanan", "Kesehatan", "Keamanan", "Kebersihan", "Lainnya"];
 
@@ -14,6 +15,18 @@ export default function Pengaduan() {
   const [alasan, setAlasan] = useState("");
   const [file, setFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+
+  // custom dropdown
+  const [showKategoriDd, setShowKategoriDd] = useState(false);
+  const kategoriDdRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (kategoriDdRef.current && !kategoriDdRef.current.contains(e.target)) setShowKategoriDd(false);
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const fileName = useMemo(() => (file ? file.name : "Belum ada dokumen yang dipilih"), [file]);
 
@@ -77,13 +90,30 @@ export default function Pengaduan() {
 
           <div className="field">
             <label>Kategori Pengaduan</label>
-            <select value={kategori} onChange={(e) => setKategori(e.target.value)}>
-              {KATEGORI.map((k) => (
-                <option key={k} value={k}>
-                  {k}
-                </option>
-              ))}
-            </select>
+            <div className="pgDdWrap" ref={kategoriDdRef}>
+              <button
+                type="button"
+                className="pgDdBtn"
+                onClick={() => setShowKategoriDd((s) => !s)}
+              >
+                <span>{kategori}</span>
+                <LuChevronDown size={14} className={`pgDdCaret${showKategoriDd ? " open" : ""}`} />
+              </button>
+              {showKategoriDd && (
+                <div className="pgDdMenu">
+                  {KATEGORI.map((k) => (
+                    <button
+                      key={k}
+                      type="button"
+                      className={kategori === k ? "active" : ""}
+                      onClick={() => { setKategori(k); setShowKategoriDd(false); }}
+                    >
+                      {k}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="field">

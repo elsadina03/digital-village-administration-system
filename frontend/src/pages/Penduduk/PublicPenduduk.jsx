@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
 import "./publicPenduduk.css";
+import { LuUsers, LuUser } from "react-icons/lu";
 
 export default function PublicPenduduk() {
   const [total, setTotal] = useState(null);
@@ -16,13 +17,13 @@ export default function PublicPenduduk() {
   return (
     <div className="pubpend-root">
       <div className="pubpend-hero">
-        <h1>👥 Data Kependudukan</h1>
+        <h1><LuUsers className="pubpend-hero-icon" /> Data Kependudukan</h1>
         <p>Informasi jumlah penduduk terdaftar di Desa Bahagia</p>
       </div>
 
       <div className="pubpend-container">
         <div className="pubpend-card">
-          <div className="pubpend-icon">👤</div>
+          <div className="pubpend-icon"><LuUser /></div>
           <div className="pubpend-value">{loading ? "…" : total}</div>
           <div className="pubpend-label">Total Penduduk Terdaftar</div>
         </div>

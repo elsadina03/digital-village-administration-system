@@ -6,8 +6,9 @@ import {
 } from 'recharts';
 import "./anggaran.css";
 import { AuthContext } from "../../../context/AuthContext";
+import { LuWallet, LuTrendingUp, LuChartBar } from "react-icons/lu";
 
-export default function Anggaran() {
+export default function Anggaran() { 
     const { canAccessFinance } = useContext(AuthContext);
 
     const [budgets, setBudgets] = useState([]);
@@ -145,21 +146,21 @@ export default function Anggaran() {
             {/* Summary Cards */}
             <div className="summary-cards">
                 <div className="summary-card budget-total">
-                    <div className="card-icon">💰</div>
+                    <div className="card-icon"><LuWallet size={28} /></div>
                     <div className="card-info">
                         <p>Total Anggaran</p>
                         <h3>{formatRupiah(summary.total_anggaran)}</h3>
                     </div>
                 </div>
                 <div className="summary-card budget-realisasi">
-                    <div className="card-icon">📈</div>
+                    <div className="card-icon"><LuTrendingUp size={28} /></div>
                     <div className="card-info">
                         <p>Total Realisasi</p>
                         <h3>{formatRupiah(summary.total_realisasi)}</h3>
                     </div>
                 </div>
                 <div className="summary-card budget-persen">
-                    <div className="card-icon">📊</div>
+                    <div className="card-icon"><LuChartBar size={28} /></div>
                     <div className="card-info">
                         <p>Persentase Penyerapan</p>
                         <h3>{summary.persentase_realisasi.toFixed(1)}%</h3>

@@ -21,7 +21,7 @@ class LetterController extends Controller
         $query = Letter::with('letterType');
         // Hanya staf admin yang boleh melihat semua surat. Role lain (Warga, Bendahara, dll) hanya melihat miliknya sendiri.
         $adminRoles = ['Admin Desa', 'Kepala Desa', 'Sekretaris Desa'];
-        if ($request->user() && !in_array($request->user()->role->name, $adminRoles)) {
+        if ($request->user() && !in_array($request->user()->role?->name, $adminRoles)) {
             $query->where('user_id', $request->user()->id);
         }
         $letters = $query->latest()->get();
@@ -71,7 +71,7 @@ class LetterController extends Controller
         $letter = Letter::with(['user', 'letterType'])->findOrFail($id);
         
         // Cek jika Warga, file hanya bisa diakses oleh pembuatnya sendiri
-        if (request()->user() && request()->user()->role->name === 'Warga') {
+        if (request()->user() && request()->user()->role?->name === 'Warga') {
             if ($letter->user_id !== request()->user()->id) {
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
@@ -156,6 +156,21 @@ class LetterController extends Controller
     public function destroy($id)
     {
         $letter = Letter::findOrFail($id);
+        $user = \Illuminate\Support\Facades\Auth::user();
+
+        $staffRoles = ['Admin Desa', 'Kepala Desa', 'Sekretaris Desa', 'Bendahara'];
+        $isStaff = in_array($user->role->name, $staffRoles);
+
+        if (!$isStaff) {
+            // Warga hanya bisa hapus surat miliknya sendiri yang masih pending atau ditolak
+            if ($letter->user_id !== $user->id) {
+                return response()->json(['message' => 'Tidak diizinkan menghapus surat ini.'], 403);
+            }
+            if (!in_array($letter->status, ['pending', 'ditolak'])) {
+                return response()->json(['message' => 'Surat yang sudah diproses tidak dapat dihapus.'], 403);
+            }
+        }
+
         $letter->delete();
         
         return response()->json(['message' => 'Surat berhasil dihapus']);

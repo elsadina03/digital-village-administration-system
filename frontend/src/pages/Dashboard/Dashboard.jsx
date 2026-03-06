@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import './dashboard.css'
-import hero from '../../assets/1399369597_Modorima.jpeg'
-import img1 from '../../assets/IMG_3050.JPG'
-import img2 from '../../assets/Three Simple Steps to Empowered Word-Learning - Peers and Pedagogy.jpeg'
 import api from '../../services/api'
 import { AuthContext, ROLES } from '../../context/AuthContext'
 import {
@@ -11,10 +8,24 @@ import {
   LuFilePen, LuNewspaper, LuCreditCard, LuLandmark, LuPencil,
 } from 'react-icons/lu'
 
+// HD village images from Unsplash (free to use)
+const HERO_IMG = 'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=1920&q=80'
+// Portrait photos — male & female from Unsplash (free to use)
+const PHOTO_MALE = [
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80',
+]
+const PHOTO_FEMALE = [
+  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=400&q=80',
+]
+
 const team = [
-  { id: 1, name: 'Budi Hermawan', role: 'Kepala Desa', img: img1 },
-  { id: 2, name: 'Dwi Nur Atika', role: 'Sekretaris Desa', img: img2 },
-  { id: 3, name: 'Siti Aminah', role: 'Bendahara Desa', img: img1 },
+  { id: 1, name: 'Budi Hermawan', role: 'Kepala Desa', img: PHOTO_MALE[0] },
+  { id: 2, name: 'Dwi Nur Atika', role: 'Sekretaris Desa', img: PHOTO_FEMALE[0] },
+  { id: 3, name: 'Siti Aminah', role: 'Bendahara Desa', img: PHOTO_FEMALE[1] },
 ]
 
 export default function Dashboard() {
@@ -102,7 +113,7 @@ export default function Dashboard() {
         </section>
       )}
 
-      <header className="dashboard-hero" style={{ backgroundImage: `url(${hero})` }}>
+      <header className="dashboard-hero" style={{ backgroundImage: `url(${HERO_IMG})` }}>
         <div className="overlay" />
         <div className="hero-content">
           <h1>Selamat Datang di Website Desa Bahagia</h1>
@@ -112,7 +123,7 @@ export default function Dashboard() {
 
       <section className="sambutan container">
         <div className="sambutan-img">
-          <img src={img1} alt="kepala-desa" />
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" alt="kepala-desa" />
         </div>
         <div className="sambutan-text">
           <h3>KEPALA DESA BAHAGIA</h3>
@@ -206,15 +217,15 @@ export default function Dashboard() {
           ))}
           {/* Add more placeholder positions to demonstrate horizontal scroll */}
           <div className="org-card">
-            <img src={img2} alt="Placeholder" />
+            <img src={PHOTO_MALE[1]} alt="Ahmad Sutanto" />
             <div className="org-body"><h4>Ahmad Sutanto</h4><p className="role">Kasi Pemerintahan</p></div>
           </div>
           <div className="org-card">
-            <img src={img1} alt="Placeholder" />
+            <img src={PHOTO_FEMALE[2]} alt="Rina Marlina" />
             <div className="org-body"><h4>Rina Marlina</h4><p className="role">Kasi Kesejahteraan</p></div>
           </div>
           <div className="org-card">
-            <img src={img2} alt="Placeholder" />
+            <img src={PHOTO_MALE[2]} alt="Yusuf Hidayat" />
             <div className="org-body"><h4>Yusuf Hidayat</h4><p className="role">Kasi Pelayanan</p></div>
           </div>
         </div>

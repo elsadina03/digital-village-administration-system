@@ -1,21 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useContext } from "react";
 import api from "../../../services/api";
+import { AuthContext, STAFF_ROLES } from "../../../context/AuthContext";
+import { LuPrinter, LuTrash2 } from "react-icons/lu";
 import "./PengajuanSurat.css";
 import ttdImg from "../../../assets/ttd_taza.png";
 
-import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from "react-leaflet";
-import L from "leaflet";
 
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
 
 const SURAT_OPTIONS = [
   "Surat Usaha",
@@ -23,30 +13,6 @@ const SURAT_OPTIONS = [
   "Surat Keterangan Beasiswa",
   "Surat Tidak Mampu",
 ];
-
-/* ================= MAP HELPERS ================= */
-
-function PickMarker({ value, onChange }) {
-  useMapEvents({
-    click(e) {
-      onChange([e.latlng.lat, e.latlng.lng]);
-    },
-  });
-
-  return <Marker position={value} />;
-}
-
-function FlyTo({ position }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (position && position.length === 2) {
-      map.flyTo(position, 16, { duration: 0.8 });
-    }
-  }, [position, map]);
-
-  return null;
-}
 
 /* ================= STATUS ================= */
 const STATUS_BADGE = {
@@ -151,6 +117,9 @@ function handleExportPDF(letter) {
 /* ================= COMPONENT ================= */
 
 export default function PengajuanSurat() {
+  const { user } = useContext(AuthContext);
+  const isStaff = STAFF_ROLES.includes(user?.role?.name);
+
   /* ================= RIWAYAT ================= */
   const [riwayat, setRiwayat] = useState([]);
   const [riwayatError, setRiwayatError] = useState(null);
@@ -185,11 +154,21 @@ export default function PengajuanSurat() {
         wa:             l.wa,
         letter_number:  l.letter_number,
         rejection_note: l.rejection_note,
+        user_id:        l.user_id,
       }));
       setRiwayat(formatted);
     } catch (err) {
       console.error("Gagal mengambil riwayat surat:", err);
-      setRiwayatError("Gagal memuat riwayat. Pastikan kamu sudah login dengan akun yang benar.");
+      const status = err.response?.status;
+      if (status === 401) {
+        setRiwayatError("Sesi habis. Silakan logout lalu login kembali.");
+      } else if (status === 403) {
+        setRiwayatError("Akses ditolak. Akun tidak memiliki izin untuk melihat riwayat.");
+      } else if (!err.response) {
+        setRiwayatError("Tidak dapat terhubung ke server. Pastikan backend sedang berjalan.");
+      } else {
+        setRiwayatError(`Gagal memuat riwayat (error ${status ?? "?"}).`);
+      }
     } finally {
       setRiwayatLoading(false);
     }
@@ -210,7 +189,7 @@ export default function PengajuanSurat() {
   const [loadingSuggest, setLoadingSuggest] = useState(false);
   const [showSuggest, setShowSuggest] = useState(false);
 
-  const [koordinat, setKoordinat] = useState([-7.3792, 112.7876]);
+  const [koordinat, setKoordinat] = useState([-7.3798, 112.7869]);
 
   const npwpFileName = useMemo(
     () => (fotoNpwp ? fotoNpwp.name : "Belum ada file yang dipilih"),
@@ -256,6 +235,22 @@ export default function PengajuanSurat() {
   }, [alamat]);
 
   /* ================= SUBMIT ================= */
+
+  async function handleDelete(x) {
+    if (!window.confirm(`Hapus pengajuan "${x.judul}"? Tindakan ini tidak dapat dibatalkan.`)) return;
+    try {
+      await api.delete(`/letters/${x.id}`);
+      fetchRiwayat();
+    } catch (err) {
+      alert(err.response?.data?.message || "Gagal menghapus pengajuan surat.");
+    }
+  }
+
+  function canDelete(x) {
+    if (isStaff) return true;
+    // Warga hanya bisa hapus surat miliknya sendiri yang masih pending atau ditolak
+    return x.status === "pending" || x.status === "ditolak";
+  }
 
   async function handleAjukan(e) {
     e.preventDefault();
@@ -319,7 +314,16 @@ export default function PengajuanSurat() {
           {riwayatLoading ? (
             <div className="historyEmpty">Memuat riwayat…</div>
           ) : riwayatError ? (
-            <div className="historyEmpty" style={{ color: "#ef4444" }}>{riwayatError}</div>
+            <div className="historyEmpty" style={{ color: "#ef4444" }}>
+              {riwayatError}
+              <br />
+              <button
+                onClick={fetchRiwayat}
+                style={{ marginTop: "0.75rem", padding: "0.4rem 1rem", cursor: "pointer", border: "1px solid #ef4444", borderRadius: "6px", background: "transparent", color: "#ef4444", fontSize: "0.85rem" }}
+              >
+                Coba lagi
+              </button>
+            </div>
           ) : riwayatPage.length === 0 ? (
             <div className="historyEmpty">Belum ada riwayat pengajuan untuk akun ini.</div>
           ) : (
@@ -334,7 +338,7 @@ export default function PengajuanSurat() {
                     )}
                     <div className="cardTime">{x.waktu}</div>
                     {x.status === "ditolak" && x.rejection_note && (
-                      <div className="cardReject">❌ {x.rejection_note}</div>
+                      <div className="cardReject">{x.rejection_note}</div>
                     )}
                     <div className="cardFoot">
                       <span className={`badge ${badge.cls}`}>{badge.label}</span>
@@ -344,7 +348,16 @@ export default function PengajuanSurat() {
                           onClick={() => handleExportPDF(x)}
                           title="Cetak / Simpan surat sebagai PDF"
                         >
-                          🖨️ Cetak PDF
+                          <LuPrinter size={13} /> Cetak PDF
+                        </button>
+                      )}
+                      {canDelete(x) && (
+                        <button
+                          className="btnDeleteCard"
+                          onClick={() => handleDelete(x)}
+                          title="Hapus pengajuan"
+                        >
+                          <LuTrash2 size={13} />
                         </button>
                       )}
                     </div>
@@ -462,11 +475,14 @@ export default function PengajuanSurat() {
 
         {/* ================= MAP ================= */}
         <div className="mapWrap">
-          <MapContainer center={koordinat} zoom={14} style={{ height: 360 }}>
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            <FlyTo position={koordinat} />
-            <PickMarker value={koordinat} onChange={setKoordinat} />
-          </MapContainer>
+          <iframe
+            title="Lokasi Alamat"
+            src={`https://maps.google.com/maps?q=${koordinat[0]},${koordinat[1]}&z=15&output=embed`}
+            style={{ width: "100%", height: 360, border: 0, borderRadius: 12, display: "block" }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
         </div>
 
         <button className="btnSubmit">Ajukan</button>

@@ -9,7 +9,7 @@
 .container { max-width: 1180px; margin: 60px auto; padding: 0 24px; }
 
 .sambutan { display: flex; gap: 40px; align-items: center; }
-.sambutan-img img { width: 520px; border-radius: 8px; display: block; }
+.sambutan-img img { width: 320px; height: 380px; object-fit: cover; object-position: top; border-radius: 12px; display: block; }
 .sambutan-text h3 { color: #2D6A4F; margin: 0 0 6px; letter-spacing: 0.6px; }
 .sambutan-text h2 { margin: 0 0 8px; font-size: 36px; }
 .sambutan-text .lead { color: #2D6A4F; font-weight: 700; }

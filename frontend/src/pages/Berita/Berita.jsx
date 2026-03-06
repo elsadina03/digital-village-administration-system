@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { LuWrench, LuX, LuPlus, LuTrash2 } from "react-icons/lu";
 import "./berita.css";
 import api from "../../services/api";
 import { AuthContext, ROLES, STAFF_ROLES } from "../../context/AuthContext";
@@ -25,6 +26,7 @@ export default function Berita() {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ title: "", content: "", image: null });
   const [saving, setSaving] = useState(false);
+  const imgRef = useRef(null);
 
   const fetchNews = async () => {
     try {
@@ -90,36 +92,57 @@ export default function Berita() {
       {/* ====== ADMIN TOOLBAR (admin only) ====== */}
       {canManage && (
         <div className="berita-admin-bar">
-          <span className="berita-admin-badge">🔧 Mode Kelola</span>
+          <span className="berita-admin-badge"><LuWrench size={14} style={{marginRight:5,verticalAlign:"middle"}} />Mode Kelola</span>
           <button className="btn berita-add-btn" onClick={() => setShowForm(v => !v)}>
-            {showForm ? "✕ Batal" : "＋ Tambah Berita"}
+            {showForm ? <><LuX size={14} style={{marginRight:4,verticalAlign:"middle"}} />Batal</> : <><LuPlus size={14} style={{marginRight:4,verticalAlign:"middle"}} />Tambah Berita</>}
           </button>
         </div>
       )}
 
       {/* Add berita form (admin only) */}
       {canManage && showForm && (
-        <form className="berita-add-form" onSubmit={handleAddBerita}>
-          <input
-            className="berita-add-input"
-            placeholder="Judul berita..."
-            value={form.title}
-            onChange={e => setForm({ ...form, title: e.target.value })}
-          />
-          <textarea
-            className="berita-add-input"
-            placeholder="Konten berita..."
-            rows={4}
-            value={form.content}
-            onChange={e => setForm({ ...form, content: e.target.value })}
-          />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={e => setForm({ ...form, image: e.target.files[0] })}
-          />
-          <button className="btn" type="submit" disabled={saving}>{saving ? "Menyimpan..." : "Simpan"}</button>
-        </form>
+        <div className="berita-form-card">
+          <form className="berita-add-form" onSubmit={handleAddBerita}>
+            <div className="berita-form-field">
+              <label>Judul Berita</label>
+              <input
+                className="berita-add-input"
+                placeholder="Masukkan judul berita..."
+                value={form.title}
+                onChange={e => setForm({ ...form, title: e.target.value })}
+              />
+            </div>
+            <div className="berita-form-field">
+              <label>Konten Berita</label>
+              <textarea
+                className="berita-add-input"
+                placeholder="Tulis konten berita..."
+                rows={5}
+                value={form.content}
+                onChange={e => setForm({ ...form, content: e.target.value })}
+              />
+            </div>
+            <div className="berita-form-field">
+              <label>Foto Berita <span style={{fontWeight:400,color:"#9ca3af"}}>(opsional)</span></label>
+              <div className="berita-file-row">
+                <button type="button" className="berita-file-btn" onClick={() => imgRef.current.click()}>
+                  <LuPlus size={14} />Pilih Foto
+                </button>
+                <span className="berita-file-name">{form.image ? form.image.name : "Belum ada foto dipilih"}</span>
+                <input
+                  ref={imgRef}
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={e => setForm({ ...form, image: e.target.files[0] })}
+                />
+              </div>
+            </div>
+            <button className="btn berita-submit-btn" type="submit" disabled={saving}>
+              {saving ? "Menyimpan..." : "Simpan Berita"}
+            </button>
+          </form>
+        </div>
       )}
 
       {loading ? (
@@ -144,7 +167,7 @@ export default function Berita() {
                       <p className="excerpt">{getExcerpt(n.content)}</p>
                       {canManage && (
                         <div className="news-admin-actions">
-                          <button className="table-btn-delete-sm" onClick={() => handleDelete(n.id)}>🗑️ Hapus</button>
+                          <button className="table-btn-delete-sm" onClick={() => handleDelete(n.id)}><LuTrash2 size={12} style={{marginRight:4,verticalAlign:"middle"}} />Hapus</button>
                         </div>
                       )}
                     </div>

@@ -1,21 +1,33 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import img1 from "../../assets/IMG_3050.JPG";
-import img2 from "../../assets/Three Simple Steps to Empowered Word-Learning - Peers and Pedagogy.jpeg";
 import "./struktur-organisasi.css";
 import { AuthContext } from "../../context/AuthContext";
 import { LuLandmark, LuWrench, LuX, LuPlus, LuPencil, LuTrash2 } from "react-icons/lu";
 
+// Gender-appropriate HD portraits from Unsplash (free to use)
+const M = [
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80',
+]
+const F = [
+  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=400&q=80',
+]
+
 const initialMembers = [
-  { id: 1,  nama: "Budi Hermawan",     jabatan: "Kepala Desa",         level: 1, img: img1 },
-  { id: 2,  nama: "Dwi Nur Atika",     jabatan: "Sekretaris Desa",     level: 2, img: img2 },
-  { id: 3,  nama: "Siti Aminah",       jabatan: "Bendahara Desa",      level: 2, img: img1 },
-  { id: 4,  nama: "Ahmad Sutanto",     jabatan: "Kasi Pemerintahan",   level: 3, img: img2 },
-  { id: 5,  nama: "Rina Marlina",      jabatan: "Kasi Kesejahteraan",  level: 3, img: img1 },
-  { id: 6,  nama: "Yusuf Hidayat",     jabatan: "Kasi Pelayanan",      level: 3, img: img2 },
-  { id: 7,  nama: "Hendra Saputra",    jabatan: "Kadus Sejahtera",     level: 4, img: img1 },
-  { id: 8,  nama: "Dewi Rahayu",       jabatan: "Kadus Makmur",        level: 4, img: img2 },
-  { id: 9,  nama: "Wulandari",         jabatan: "Kadus Damai",         level: 4, img: img1 },
+  { id: 1,  nama: "Budi Hermawan",     jabatan: "Kepala Desa",         level: 1, img: M[0] },
+  { id: 2,  nama: "Dwi Nur Atika",     jabatan: "Sekretaris Desa",     level: 2, img: F[0] },
+  { id: 3,  nama: "Siti Aminah",       jabatan: "Bendahara Desa",      level: 2, img: F[1] },
+  { id: 4,  nama: "Ahmad Sutanto",     jabatan: "Kasi Pemerintahan",   level: 3, img: M[1] },
+  { id: 5,  nama: "Rina Marlina",      jabatan: "Kasi Kesejahteraan",  level: 3, img: F[2] },
+  { id: 6,  nama: "Yusuf Hidayat",     jabatan: "Kasi Pelayanan",      level: 3, img: M[2] },
+  { id: 7,  nama: "Hendra Saputra",    jabatan: "Kadus Sejahtera",     level: 4, img: M[3] },
+  { id: 8,  nama: "Dewi Rahayu",       jabatan: "Kadus Makmur",        level: 4, img: F[3] },
+  { id: 9,  nama: "Wulandari",         jabatan: "Kadus Damai",         level: 4, img: F[2] },
 ];
 
 const levelLabels = {

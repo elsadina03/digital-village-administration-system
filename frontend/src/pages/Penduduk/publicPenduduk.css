@@ -12,6 +12,15 @@
 .pubpend-hero h1 {
   font-size: 2rem;
   margin: 0 0 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.pubpend-hero-icon {
+  font-size: 1.9rem;
+  flex-shrink: 0;
 }
 
 .pubpend-hero p {
@@ -47,6 +56,14 @@
 .pubpend-icon {
   font-size: 2.5rem;
   margin-bottom: 0.75rem;
+  color: #2D6A4F;
+  display: flex;
+  justify-content: center;
+}
+
+.pubpend-icon svg {
+  width: 2.5rem;
+  height: 2.5rem;
 }
 
 .pubpend-value {

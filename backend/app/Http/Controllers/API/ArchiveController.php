@@ -22,7 +22,7 @@ class ArchiveController extends Controller
         }
 
         // If user is Warga, they can only see their own 'pribadi' archives and all 'desa' archives
-        if ($user->role->name === 'Warga') {
+        if ($user->role?->name === 'Warga') {
             $query->where(function ($q) use ($user) {
                 $q->where('uploaded_by', $user->id) // 'pribadi' docs uploaded by them
                   ->orWhere('type', 'desa'); // all 'desa' docs
@@ -45,7 +45,7 @@ class ArchiveController extends Controller
         $user = Auth::user();
 
         // Check permission if trying to upload 'desa' archive
-        if ($request->type === 'desa' && $user->role->name === 'Warga') {
+        if ($request->type === 'desa' && $user->role?->name === 'Warga') {
             return response()->json(['message' => 'Unauthorized to upload arsip desa'], 403);
         }
 
@@ -74,7 +74,7 @@ class ArchiveController extends Controller
         $user = Auth::user();
 
         // Check permission: Warga can only delete their own
-        if ($user->role->name === 'Warga' && $archive->uploaded_by !== $user->id) {
+        if ($user->role?->name === 'Warga' && $archive->uploaded_by !== $user->id) {
             return response()->json(['message' => 'Unauthorized to delete this arsip'], 403);
         }
 

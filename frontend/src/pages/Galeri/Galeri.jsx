@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect, useContext } from "react";
 import "./galeri.css";
 import api from "../../services/api";
 import { AuthContext } from "../../context/AuthContext";
+import { LuSearch } from "react-icons/lu";
 
 export default function Galeri() {
   const { isAdmin } = useContext(AuthContext);
@@ -149,12 +150,15 @@ export default function Galeri() {
 
         {/* Toolbar */}
         <div className="galeri-toolbar">
-          <input
-            className="galeri-search"
-            placeholder="🔍 Cari foto..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+          <div className="galeri-search-wrapper">
+            <LuSearch className="galeri-search-icon" />
+            <input
+              className="galeri-search"
+              placeholder="Cari foto..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
           <div className="galeri-filter">
             {KATEGORI_ALL.map((k) => (
               <button

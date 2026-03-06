@@ -2,28 +2,17 @@ import { useState, useEffect, useContext } from "react";
 import "./kontak.css";
 import { AuthContext, ROLES } from "../../context/AuthContext";
 import api from "../../services/api";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
-import L from "leaflet";
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
+
 import {
   LuMapPin, LuPhone, LuSmartphone, LuMail, LuGlobe,
   LuPin, LuClock, LuUsers, LuMap, LuMessageCircle,
   LuPencil, LuCircleCheck, LuSave, LuSend,
 } from "react-icons/lu";
 
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
-
-const DESA_COORDS = [-7.614529, 112.1774926];
+const JUANDA_COORDS = [-7.3798, 112.7869];
 
 const INIT_INFO = {
-  alamat:  "Jl. Raya Desa Bahagia No. 1, Kecamatan Sejahtera, Kabupaten Makmur, Jawa Timur 64184",
+  alamat:  "Bandar Udara Internasional Juanda, Jl. Raya Juanda, Semambung, Kec. Gedangan, Kabupaten Sidoarjo, Jawa Timur 61253",
   telepon: "(0321) 123-4567",
   wa:      "0812-3456-7890",
   email:   "desabahagia@mail.desa.id",
@@ -231,22 +220,16 @@ export default function Kontak() {
             <div className="kontak-card">
               <h3><LuMap size={18} /> Lokasi Kantor Desa</h3>
               <div className="map-placeholder">
-                <div style={{ height: "260px", borderRadius: "10px", overflow: "hidden" }}>
-                  <MapContainer
-                    center={DESA_COORDS}
-                    zoom={15}
-                    style={{ height: "100%", width: "100%" }}
-                    scrollWheelZoom={false}
-                  >
-                    <TileLayer
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                    />
-                    <Marker position={DESA_COORDS} />
-                  </MapContainer>
-                </div>
+                <iframe
+                  title="Lokasi Kantor Desa"
+                  src={`https://maps.google.com/maps?q=${JUANDA_COORDS[0]},${JUANDA_COORDS[1]}&z=15&output=embed`}
+                  style={{ width: "100%", height: "260px", border: 0, borderRadius: "10px", display: "block" }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
                 <p className="map-note">
-                  <LuMapPin size={14} /> Jl. Merdeka No.1, Desa Bahagia, Jawa Timur
+                  <LuMapPin size={14} /> Bandar Udara Internasional Juanda, Jl. Raya Juanda, Sidoarjo, Jawa Timur
                 </p>
               </div>
             </div>
