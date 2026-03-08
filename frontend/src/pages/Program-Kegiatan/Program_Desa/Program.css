@@ -374,13 +374,15 @@
   display: flex;
   gap: 18px;
   align-items: flex-start;
-  justify-content: flex-start; /* align timeline to the left inside the card */
+  justify-content: flex-start;
+  /* align timeline to the left inside the card */
 }
 
 .tlLine {
   width: 60px;
   position: relative;
-  flex: 0 0 60px; /* fixed column for the line/dot */
+  flex: 0 0 60px;
+  /* fixed column for the line/dot */
 }
 
 .tlLine::before {
@@ -397,14 +399,17 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: min(880px, calc(100% - 120px)); /* slightly narrower so it fits better on left */
-  margin-left: 8px; /* nudge list a bit left toward the line */
+  width: min(880px, calc(100% - 120px));
+  /* slightly narrower so it fits better on left */
+  margin-left: 8px;
+  /* nudge list a bit left toward the line */
 }
 
 .tlItem {
   display: flex;
   gap: 14px;
-  align-items: center; /* keep dot vertically centered when card height grows */
+  align-items: center;
+  /* keep dot vertically centered when card height grows */
 }
 
 .tlDot {
@@ -412,16 +417,19 @@
   height: 44px;
   box-sizing: border-box;
   border-radius: 50%;
-  display: flex; /* use flex to avoid inline/svg quirks */
+  display: flex;
+  /* use flex to avoid inline/svg quirks */
   align-items: center;
   justify-content: center;
-  flex: 0 0 44px; /* prevent stretching */
+  flex: 0 0 44px;
+  /* prevent stretching */
   font-size: 20px;
   color: #fff;
   background: #fff;
   border: 4px solid #e6eef0;
   line-height: 1;
-  overflow: hidden; /* ensure circle remains clean */
+  overflow: hidden;
+  /* ensure circle remains clean */
 }
 
 .tlCard {
@@ -432,15 +440,41 @@
 }
 
 /* status colors */
-.tlCard--ok { background: #ecfdf6; border-color: #d1fae5; }
-.tlCard--run { background: #fffbeb; border-color: #fef3c7; }
-.tlCard--wait { background: #f1f5f9; border-color: #e2e8f0; }
+.tlCard--ok {
+  background: #ecfdf6;
+  border-color: #d1fae5;
+}
 
-.tlDot--ok { background: #10b981; border-color: #6ee7b7; }
-.tlDot--run { background: #f59e0b; border-color: #ffd28a; }
-.tlDot--wait { background: #64748b; border-color: #9aa8b8; }
+.tlCard--run {
+  background: #fffbeb;
+  border-color: #fef3c7;
+}
 
-.tlDot svg { width: 20px; height: 20px; display: block; }
+.tlCard--wait {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
+.tlDot--ok {
+  background: #10b981;
+  border-color: #6ee7b7;
+}
+
+.tlDot--run {
+  background: #f59e0b;
+  border-color: #ffd28a;
+}
+
+.tlDot--wait {
+  background: #64748b;
+  border-color: #9aa8b8;
+}
+
+.tlDot svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
 
 .tlName {
   margin: 0 0 6px 0;
@@ -454,9 +488,17 @@
 }
 
 /* per-status category coloring */
-.tlCard--ok .tlKat { color: #0b5c4f; }
-.tlCard--run .tlKat { color: #b45309; }
-.tlCard--wait .tlKat { color: #475569; }
+.tlCard--ok .tlKat {
+  color: #0b5c4f;
+}
+
+.tlCard--run .tlKat {
+  color: #b45309;
+}
+
+.tlCard--wait .tlKat {
+  color: #475569;
+}
 
 .tlDesc {
   margin: 0 0 12px 0;
@@ -486,7 +528,10 @@
   text-align: right;
 }
 
-.charCount.warn { color: #b91c1c; font-weight: 700; }
+.charCount.warn {
+  color: #b91c1c;
+  font-weight: 700;
+}
 
 /* ellipsis for timeline name and meta values */
 .tlName {
@@ -495,6 +540,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .tlMetaVal {
   font-weight: 800;
   max-width: 200px;
@@ -508,13 +554,77 @@
   .prTop {
     grid-template-columns: 1fr;
   }
+
   .prGrid2 {
     grid-template-columns: 1fr;
   }
+
   .prSpan2 {
-    grid-column: auto;
+    grid-column: span 1;
   }
+
   .prActions {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .prWrap {
+    padding: 0;
+    margin-top: 10px;
+  }
+
+  .prBox {
+    padding: 14px;
+    border-radius: 12px;
+  }
+
+  .tlWrap {
+    gap: 10px;
+  }
+
+  .tlLine {
+    width: 34px;
+    flex: 0 0 34px;
+  }
+
+  .tlLine::before {
+    left: 16px;
+    top: 10px;
+    bottom: -20px;
+  }
+
+  .tlDot {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+  }
+
+  .tlDot svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .tlList {
+    width: calc(100% - 46px);
+    margin-left: 0;
+  }
+
+  .tlCard {
+    padding: 14px;
+  }
+
+  .tlName {
+    font-size: 16px;
+    white-space: normal;
+  }
+
+  .tlMeta {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .tlMetaVal {
+    white-space: normal;
   }
 }

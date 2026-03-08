@@ -7,7 +7,7 @@ import { LuChevronDown } from "react-icons/lu";
 const KATEGORI = ["Infrastruktur", "Pelayanan", "Kesehatan", "Keamanan", "Kebersihan", "Lainnya"];
 
 export default function Pengaduan() {
-  const fileRef = useRef(null);
+  const fileRef = useRef(null); 
 
   const [nama, setNama] = useState("");
   const [wa, setWa] = useState("");

@@ -17,6 +17,7 @@
   min-width: 0;
 }
 
+<<<<<<< HEAD
 /* Backdrop for mobile sidebar overlay */
 .sidebar-backdrop {
   display: none;
@@ -47,5 +48,12 @@
 @media (min-width: 768px) and (max-width: 1023px) {
   .page {
     padding: 20px 16px;
+=======
+/* --- RESPONSIF: LAYAR KECIL --- */
+@media (max-width: 768px) {
+  .page {
+    padding: 14px;
+    /* Kurangi padding di layar HP agar lebih lega */
+>>>>>>> 9a218f1 (refactor: update frontend components, layouts and add root .gitignore)
   }
 }

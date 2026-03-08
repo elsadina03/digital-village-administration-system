@@ -1,43 +1,33 @@
 import { NavLink } from "react-router-dom";
 import { useMemo, useState, useContext } from "react";
 import { AuthContext, ROLES } from "../context/AuthContext";
-import "./sidebar.css";
-import {
-    LuHouse, LuFileText, LuUsers, LuChartBar, LuClipboardList,
-    LuCreditCard, LuHeartHandshake, LuNewspaper, LuSettings, LuChevronDown,
-} from "react-icons/lu";
 
 const { ADMIN, KEPDES, SEKRETARIS, BENDAHARA, WARGA } = ROLES;
 
-/**
- * Definisi semua menu + aturan role mana yang boleh mengaksesnya.
- * `allowedRoles: null`  → semua role boleh.
- * `allowedRoles: [...]` → hanya role di array yang boleh.
- */
 const ALL_MENUS = [
     {
         type: "link",
         label: "Beranda",
         to: "/",
-        icon: <LuHouse size={18} />,
-        allowedRoles: null, // semua
+        icon: <i className="fas fa-home"></i>,
+        allowedRoles: null,
     },
     {
         type: "group",
         key: "layanan",
         label: "Layanan",
-        icon: <LuFileText size={18} />,
-        allowedRoles: null, // semua
+        icon: <i className="fas fa-envelope-open-text"></i>,
+        allowedRoles: null,
         itemRules: {
-            "/pengajuan":         null,   // semua
-            "/arsip":             null,
-            "/pengaduan":         null,
-            "/persetujuan-surat": [ADMIN, KEPDES], // hanya KepDes + Admin
+            "/pengajuan": null,
+            "/arsip": null,
+            "/pengaduan": null,
+            "/persetujuan-surat": [ADMIN, KEPDES],
         },
         items: [
-            { label: "Pengajuan Surat Online",     to: "/pengajuan" },
-            { label: "Arsip Dokumen",              to: "/arsip" },
-            { label: "Pengaduan",                  to: "/pengaduan" },
+            { label: "Pengajuan Surat Online", to: "/pengajuan" },
+            { label: "Arsip Dokumen", to: "/arsip" },
+            { label: "Pengaduan", to: "/pengaduan" },
             { label: "Persetujuan Surat (KepDes)", to: "/persetujuan-surat" },
         ],
     },
@@ -45,7 +35,7 @@ const ALL_MENUS = [
         type: "group",
         key: "penduduk",
         label: "Data Penduduk",
-        icon: <LuUsers size={18} />,
+        icon: <i className="fas fa-users"></i>,
         allowedRoles: [ADMIN, KEPDES],
         items: [
             { label: "Daftar Penduduk", to: "/warga" },
@@ -55,18 +45,18 @@ const ALL_MENUS = [
         type: "group",
         key: "monitoring",
         label: "Dashboard Monitoring",
-        icon: <LuChartBar size={18} />,
-        allowedRoles: [ADMIN, KEPDES, BENDAHARA], // Sekretaris tidak perlu dashboard
+        icon: <i className="fas fa-chart-bar"></i>,
+        allowedRoles: [ADMIN, KEPDES, BENDAHARA],
         itemRules: {
-            "/penduduk-stats":  [ADMIN, KEPDES],
-            "/surat":           [ADMIN, KEPDES],
-            "/anggaran":        [ADMIN, KEPDES, BENDAHARA],
-            "/bantuan-sosial":  [ADMIN, KEPDES, BENDAHARA],
+            "/penduduk-stats": [ADMIN, KEPDES],
+            "/surat": [ADMIN, KEPDES],
+            "/anggaran": [ADMIN, KEPDES, BENDAHARA],
+            "/bantuan-sosial": [ADMIN, KEPDES, BENDAHARA],
         },
         items: [
-            { label: "Jumlah Penduduk",     to: "/penduduk-stats" },
-            { label: "Surat Diproses",      to: "/surat" },
-            { label: "Total Anggaran",      to: "/anggaran" },
+            { label: "Jumlah Penduduk", to: "/penduduk-stats" },
+            { label: "Surat Diproses", to: "/surat" },
+            { label: "Total Anggaran", to: "/anggaran" },
             { label: "Data Bantuan Sosial", to: "/bantuan-sosial" },
         ],
     },
@@ -74,16 +64,16 @@ const ALL_MENUS = [
         type: "group",
         key: "program",
         label: "Program & Kegiatan",
-        icon: <LuClipboardList size={18} />,
+        icon: <i className="fas fa-tasks"></i>,
         allowedRoles: [ADMIN, KEPDES, SEKRETARIS],
         itemRules: {
-            "/program-desa":     null,          // semua yang boleh lihat group ini
+            "/program-desa": null,
             "/laporan-kegiatan": null,
-            "/surat-diajukan":   [ADMIN, SEKRETARIS], // KepDes TIDAK lihat ini
+            "/surat-diajukan": [ADMIN, SEKRETARIS],
         },
         items: [
-            { label: "Program Desa",       to: "/program-desa" },
-            { label: "Laporan Kegiatan",   to: "/laporan-kegiatan" },
+            { label: "Program Desa", to: "/program-desa" },
+            { label: "Laporan Kegiatan", to: "/laporan-kegiatan" },
             { label: "Surat yang Diajukan", to: "/surat-diajukan" },
         ],
     },
@@ -91,21 +81,21 @@ const ALL_MENUS = [
         type: "group",
         key: "keuangan",
         label: "Keuangan Desa",
-        icon: <LuCreditCard size={18} />,
+        icon: <i className="fas fa-wallet"></i>,
         allowedRoles: [ADMIN, KEPDES, BENDAHARA],
         items: [
-            { label: "Input APBDes",        to: "/input-apbdes" },
-            { label: "Data Anggaran",       to: "/data-anggaran" },
-            { label: "Realisasi Anggaran",  to: "/realisasi-anggaran" },
-            { label: "Laporan Dana Desa",   to: "/laporan-dana-desa" },
+            { label: "Input APBDes", to: "/input-apbdes" },
+            { label: "Data Anggaran", to: "/data-anggaran" },
+            { label: "Realisasi Anggaran", to: "/realisasi-anggaran" },
+            { label: "Laporan Dana Desa", to: "/laporan-dana-desa" },
         ],
     },
     {
         type: "group",
         key: "bansos",
         label: "Bantuan Sosial",
-        icon: <LuHeartHandshake size={18} />,
-        allowedRoles: [ADMIN, KEPDES, SEKRETARIS], // Sekretaris juga bisa lihat bansos
+        icon: <i className="fas fa-hand-holding-heart"></i>,
+        allowedRoles: [ADMIN, KEPDES, SEKRETARIS],
         items: [
             { label: "Kelola Bantuan", to: "/kelola-bansos" },
         ],
@@ -114,20 +104,20 @@ const ALL_MENUS = [
         type: "group",
         key: "informasi",
         label: "Informasi Desa",
-        icon: <LuNewspaper size={18} />,
-        allowedRoles: null, // semua
+        icon: <i className="fas fa-newspaper"></i>,
+        allowedRoles: null,
         items: [
-            { label: "Berita Desa",         to: "/berita" },
-            { label: "Galeri Desa",         to: "/galeri" },
+            { label: "Berita Desa", to: "/berita" },
+            { label: "Galeri Desa", to: "/galeri" },
             { label: "Struktur Organisasi", to: "/struktur-organisasi" },
-            { label: "Kontak & Lokasi",     to: "/kontak" },
+            { label: "Kontak & Lokasi", to: "/kontak" },
         ],
     },
     {
         type: "group",
         key: "kelola",
         label: "Kelola Sistem",
-        icon: <LuSettings size={18} />,
+        icon: <i className="fas fa-cog"></i>,
         allowedRoles: [ADMIN],
         items: [
             { label: "Manajemen User", to: "/users" },
@@ -135,36 +125,22 @@ const ALL_MENUS = [
     },
 ];
 
-export default function Sidebar({ collapsed }) {
+export default function Sidebar() {
     const { user } = useContext(AuthContext);
-    const roleName  = user?.role?.name ?? null;
+    const roleName = user?.role?.name ?? user?.role ?? null;
+    const userName = user?.name ?? "—";
 
-    const [open, setOpen] = useState({
-        layanan:    true,
-        monitoring: true,
-        informasi:  false,
-        program:    false,
-        keuangan:   false,
-        bansos:     false,
-        penduduk:   false,
-        kelola:     false,
-    });
-
-    const toggle = (key) => setOpen((p) => ({ ...p, [key]: !p[key] }));
-
-    // Filter menus based on current role
     const menus = useMemo(() => {
         return ALL_MENUS
             .filter((m) => {
-                if (!m.allowedRoles) return true; // semua boleh
+                if (!m.allowedRoles) return true;
                 return m.allowedRoles.includes(roleName);
             })
             .map((m) => {
-                // Filter sub-items if itemRules exists
                 if (m.itemRules) {
                     const filteredItems = m.items.filter((item) => {
                         const rule = m.itemRules[item.to];
-                        if (!rule) return true; // semua boleh
+                        if (!rule) return true;
                         return rule.includes(roleName);
                     });
                     return { ...m, items: filteredItems };
@@ -172,70 +148,61 @@ export default function Sidebar({ collapsed }) {
                 return m;
             })
             .filter((m) => {
-                // Hapus group jika tidak ada item tersisa
                 if (m.type === "group" && m.items?.length === 0) return false;
                 return true;
             });
     }, [roleName]);
 
     return (
-        <aside className={`sb ${collapsed ? "sb--collapsed" : ""}`}>
-            <div className="sb__top">
-                <div className="sb__logo">▦</div>
-            </div>
+        <nav className="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div className="sb-sidenav-menu">
+                <div className="nav">
+                    <div className="sb-sidenav-menu-heading">Menu Utama</div>
 
-            <nav className="sb__nav">
-                {menus.map((m, idx) => {
-                    if (m.type === "link") {
+                    {menus.map((m, idx) => {
+                        if (m.type === "link") {
+                            return (
+                                <NavLink key={idx} className="nav-link" to={m.to} end={m.to === "/"}>
+                                    <div className="sb-nav-link-icon">{m.icon}</div>
+                                    {m.label}
+                                </NavLink>
+                            );
+                        }
+
+                        const collapseId = `collapse${m.key.charAt(0).toUpperCase() + m.key.slice(1)}`;
+
                         return (
-                            <NavLink
-                                key={idx}
-                                to={m.to}
-                                end={m.to === "/"}
-                                className={({ isActive }) => `sb__item ${isActive ? "is-active" : ""}`}
-                            >
-                                <span className="sb__icon">{m.icon}</span>
-                                <span className="sb__label">{m.label}</span>
-                            </NavLink>
-                        );
-                    }
-
-                    const isOpen = !!open[m.key];
-
-                    return (
-                        <div key={m.key} className="sb__group">
-                            <button
-                                type="button"
-                                className="sb__groupBtn"
-                                onClick={() => toggle(m.key)}
-                                aria-expanded={isOpen}
-                            >
-                                <span className="sb__icon">{m.icon}</span>
-                                <span className="sb__label">{m.label}</span>
-                                <span className={`sb__chev ${isOpen ? "open" : ""}`}><LuChevronDown size={14} /></span>
-                            </button>
-
-                            {isOpen && m.items?.length > 0 && (
-                                <div className="sb__sub">
-                                    {m.items.map((it) => (
-                                        <NavLink
-                                            key={it.to}
-                                            to={it.to}
-                                            className={({ isActive }) =>
-                                                `sb__subItem ${isActive ? "is-active" : ""}`
-                                            }
-                                        >
-                                            {it.label}
-                                        </NavLink>
-                                    ))}
+                            <div key={m.key}>
+                                <a
+                                    className="nav-link collapsed"
+                                    href="#"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target={`#${collapseId}`}
+                                    aria-expanded="false"
+                                    aria-controls={collapseId}
+                                >
+                                    <div className="sb-nav-link-icon">{m.icon}</div>
+                                    {m.label}
+                                    <div className="sb-sidenav-collapse-arrow"><i className="fas fa-angle-down"></i></div>
+                                </a>
+                                <div className="collapse" id={collapseId} data-bs-parent="#sidenavAccordion">
+                                    <nav className="sb-sidenav-menu-nested nav">
+                                        {m.items.map((it) => (
+                                            <NavLink key={it.to} className="nav-link" to={it.to}>
+                                                {it.label}
+                                            </NavLink>
+                                        ))}
+                                    </nav>
                                 </div>
-                            )}
-                        </div>
-                    );
-                })}
-            </nav>
-        </aside>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+            <div className="sb-sidenav-footer">
+                <div className="small">Logged in as:</div>
+                {userName} ({roleName ?? "Warga"})
+            </div>
+        </nav>
     );
 }
-
-

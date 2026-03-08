@@ -28,9 +28,16 @@
   flex-shrink: 0;
 }
 
-.iconBtn:hover { background: #f3f4f6; }
+.iconBtn:hover {
+  background: #f3f4f6;
+}
 
-.searchWrap { flex: 1; display: flex; justify-content: center; }
+.searchWrap {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
 .search {
   width: min(520px, 100%);
   padding: 8px 12px;
@@ -39,8 +46,13 @@
   outline: none;
 }
 
-.right { display: flex; align-items: center; gap: 10px; }
+.right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
+<<<<<<< HEAD
 .profile { display: flex; align-items: center; gap: 10px; }
 .avatar { width: 32px; height: 32px; border-radius: 999px; background: #d1d5db; flex-shrink: 0; }
 .profileText .name { font-weight: 600; font-size: 13px; line-height: 1.1; }
@@ -110,4 +122,45 @@
   .profileText { display: none; }
 
   .topbar-brand { font-size: 16px; }
+=======
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #d1d5db;
+}
+
+.profileText .name {
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.1;
+}
+
+.profileText .role {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* --- RESPONSIF: LAYAR KECIL --- */
+@media (max-width: 768px) {
+  .topbar {
+    padding: 0 10px;
+  }
+
+  /* Sembunyikan search bar di HP agar tidak sumpek */
+  .searchWrap {
+    display: none;
+  }
+
+  /* Sembunyikan teks profil, sisa avatar saja */
+  .profileText {
+    display: none;
+  }
+>>>>>>> 9a218f1 (refactor: update frontend components, layouts and add root .gitignore)
 }

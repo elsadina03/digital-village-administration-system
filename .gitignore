@@ -1,0 +1,31 @@
+# Dependency directories
+backend/vendor/
+frontend/node_modules/
+
+# Environment files
+backend/.env
+backend/.env.*
+frontend/.env
+frontend/.env.*
+
+# Laravel specific
+backend/storage/*.key
+backend/storage/framework/cache/data/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/logs/*.log
+backend/bootstrap/cache/*
+
+# Build directories
+frontend/dist/
+frontend/dist-ssr/
+
+# Temporary files
+git_status.txt
+status.txt
+
+# Editor / OS files
+.vscode/
+.idea/
+.DS_Store
+*.swp

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useEffect, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import './dashboard.css'
@@ -7,6 +8,12 @@ import {
   LuUsers, LuFileText, LuBanknote, LuClipboardList,
   LuFilePen, LuNewspaper, LuCreditCard, LuLandmark, LuPencil,
 } from 'react-icons/lu'
+=======
+import React from 'react'
+import hero from '../../assets/1399369597_Modorima.jpeg'
+import img1 from '../../assets/IMG_3050.JPG'
+import img2 from '../../assets/Three Simple Steps to Empowered Word-Learning - Peers and Pedagogy.jpeg'
+>>>>>>> 9a218f1 (refactor: update frontend components, layouts and add root .gitignore)
 
 // HD village images from Unsplash (free to use)
 const HERO_IMG = 'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=1920&q=80'
@@ -23,9 +30,18 @@ const PHOTO_FEMALE = [
 ]
 
 const team = [
+<<<<<<< HEAD
   { id: 1, name: 'Budi Hermawan', role: 'Kepala Desa', img: PHOTO_MALE[0] },
   { id: 2, name: 'Dwi Nur Atika', role: 'Sekretaris Desa', img: PHOTO_FEMALE[0] },
   { id: 3, name: 'Siti Aminah', role: 'Bendahara Desa', img: PHOTO_FEMALE[1] },
+=======
+  { id: 1, name: 'Budi Hermawan', role: 'Kepala Desa', img: img1 },
+  { id: 2, name: 'Dwi Nur Atika', role: 'Sekretaris Desa', img: img2 },
+  { id: 3, name: 'Siti Aminah', role: 'Bendahara Desa', img: img1 },
+  { id: 4, name: 'Ahmad Sutanto', role: 'Kasi Pemerintahan', img: img2 },
+  { id: 5, name: 'Rina Marlina', role: 'Kasi Kesejahteraan', img: img1 },
+  { id: 6, name: 'Yusuf Hidayat', role: 'Kasi Pelayanan', img: img2 },
+>>>>>>> 9a218f1 (refactor: update frontend components, layouts and add root .gitignore)
 ]
 
 export default function Dashboard() {
@@ -78,6 +94,7 @@ export default function Dashboard() {
   })
 
   return (
+<<<<<<< HEAD
     <div className="dashboard-root">
 
       {/* ====== ADMIN/STAFF PANEL (login only) ====== */}
@@ -227,10 +244,46 @@ export default function Dashboard() {
           <div className="org-card">
             <img src={PHOTO_MALE[2]} alt="Yusuf Hidayat" />
             <div className="org-body"><h4>Yusuf Hidayat</h4><p className="role">Kasi Pelayanan</p></div>
+=======
+    <div className="container-fluid px-4 pb-4">
+      <h1 className="mt-4">Dashboard</h1>
+      <ol className="breadcrumb mb-4">
+        <li className="breadcrumb-item active">Selamat Datang di Website Desa Bahagia</li>
+      </ol>
+
+      {/* Stats Cards */}
+      <div className="row">
+        <div className="col-xl-4 col-md-6">
+          <div className="card bg-primary text-white mb-4 shadow-sm">
+            <div className="card-body fs-4 fw-bold">345</div>
+            <div className="card-footer d-flex align-items-center justify-content-between">
+              <span className="small text-white">Penduduk</span>
+              <div className="small text-white"><i className="fas fa-users"></i></div>
+            </div>
+>>>>>>> 9a218f1 (refactor: update frontend components, layouts and add root .gitignore)
           </div>
         </div>
-      </section>
+        <div className="col-xl-4 col-md-6">
+          <div className="card bg-success text-white mb-4 shadow-sm">
+            <div className="card-body fs-4 fw-bold">12,4 km²</div>
+            <div className="card-footer d-flex align-items-center justify-content-between">
+              <span className="small text-white">Luas Wilayah</span>
+              <div className="small text-white"><i className="fas fa-map"></i></div>
+            </div>
+          </div>
+        </div>
+        <div className="col-xl-4 col-md-6">
+          <div className="card bg-warning text-white mb-4 shadow-sm">
+            <div className="card-body fs-4 fw-bold">69213</div>
+            <div className="card-footer d-flex align-items-center justify-content-between">
+              <span className="small text-white">Kode Pos</span>
+              <div className="small text-white"><i className="fas fa-envelope"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
+<<<<<<< HEAD
       {/* ====== LOGIN CTA (public, before footer) ====== */}
       {!isLoggedIn && (
         <section className="public-cta container">
@@ -258,10 +311,88 @@ export default function Dashboard() {
           <div>
             <h4>Alamat Kantor</h4>
             <p>Jl. Merdeka No.1, Desa Bahagia</p>
+=======
+      {/* Profil Kepala Desa & Visi Misi */}
+      <div className="row">
+        <div className="col-lg-5">
+          <div className="card mb-4 shadow-sm">
+            <div className="card-header">
+              <i className="fas fa-user-tie me-1"></i> Kepala Desa Bahagia
+            </div>
+            <div className="card-body text-center">
+              <img src={img1} className="rounded-circle mb-3" alt="Kepala Desa" style={{ width: '150px', height: '150px', objectFit: 'cover' }} />
+              <h4>Budi Hermawan</h4>
+              <p className="text-muted mb-2">Periode 2022 - 2029</p>
+              <p className="small text-start">
+                Desa Bahagia adalah komunitas yang fokus pada pembangunan berkelanjutan dan layanan publik yang mudah diakses.
+              </p>
+            </div>
+>>>>>>> 9a218f1 (refactor: update frontend components, layouts and add root .gitignore)
           </div>
         </div>
-        <div className="copyright">© {new Date().getFullYear()} Pemerintah Desa Bahagia</div>
-      </footer>
+        <div className="col-lg-7">
+          <div className="card mb-4 shadow-sm h-100">
+            <div className="card-header">
+              <i className="fas fa-bullseye me-1"></i> Visi Misi
+            </div>
+            <div className="card-body">
+              <h5 className="text-primary fw-bold">Visi</h5>
+              <p>Menyelenggarakan Pemerintahan Yang Bersih, Transparan, Amanah, Santun, Dan Bertanggungjawab Untuk Mewujudkan Perubahan Yang Lebih Baik</p>
+              <hr />
+              <h5 className="text-success fw-bold">Misi</h5>
+              <ol className="mb-0">
+                <li className="mb-1">Meningkatkan dan memperluas jaringan kerjasama Pemerintah dan Non Pemerintah.</li>
+                <li className="mb-1">Meningkatkan kemitraan Pemerintah dan Lembaga Kemasyarakatan dalam upaya mewujudkan Pembangunan Desa.</li>
+                <li>Meningkatkan jalinan Kerjasama dengan tokoh agama, masyarakat, adat, dan pemuda.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Berita Desa */}
+      <div className="card mb-4 shadow-sm">
+        <div className="card-header">
+          <i className="fas fa-newspaper me-1"></i> Berita Desa
+        </div>
+        <div className="card-body">
+          <div className="row">
+            {dummyNews.map(n => (
+              <div className="col-lg-4 col-md-6 mb-4" key={n.id}>
+                <div className="card h-100 border-0 shadow-sm">
+                  <img src={n.img} className="card-img-top" alt={n.title} style={{ height: '180px', objectFit: 'cover' }} />
+                  <div className="card-body bg-light">
+                    <h5 className="card-title fs-6 fw-bold">{n.title}</h5>
+                    <p className="card-text text-muted small mb-2">{n.date} &bull; {n.author}</p>
+                    <p className="card-text small">{n.excerpt}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Struktur Organisasi */}
+      <div className="card shadow-sm">
+        <div className="card-header">
+          <i className="fas fa-sitemap me-1"></i> Struktur Organisasi dan Tata Kerja Desa
+        </div>
+        <div className="card-body">
+          <div className="d-flex flex-nowrap overflow-auto gap-3 pb-3">
+            {team.map(p => (
+              <div className="card flex-shrink-0 text-center border-0 shadow-sm" style={{ width: '160px' }} key={p.id}>
+                <div className="card-body p-3">
+                  <img src={p.img} className="rounded-circle mb-3 border border-3 border-secondary" alt={p.name} style={{ width: '80px', height: '80px', objectFit: 'cover' }} />
+                  <h6 className="card-title text-truncate mb-1" title={p.name}>{p.name}</h6>
+                  <p className="card-text small text-muted text-truncate" title={p.role}>{p.role}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
     </div>
   )
 }

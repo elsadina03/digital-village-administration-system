@@ -1,109 +1,50 @@
-import "./topbar.css";
-import { useNavigate, NavLink } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { LuX, LuMenu, LuBell } from "react-icons/lu";
 
-export default function Topbar({ onToggleSidebar, isPublic }) {
+export default function Topbar() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   const displayName = user?.name ?? "—";
-  const displayRole = user?.role?.name ?? user?.role ?? "—";
 
-  const navItems = [
-    { to: "/",                    label: "Beranda",            end: true },
-    { to: "/berita",              label: "Berita" },
-    { to: "/penduduk",            label: "Penduduk" },
-    { to: "/galeri",              label: "Galeri" },
-    { to: "/struktur-organisasi", label: "Struktur Organisasi" },
-    { to: "/kontak",              label: "Kontak" },
-  ];
-
-  if (isPublic) {
-    return (
-      <>
-        <header className="topbar">
-          <div className="topbar-brand" onClick={() => navigate("/")}>
-            ▦ Desa Bahagia
-          </div>
-
-          {/* Desktop nav */}
-          <div className="searchWrap desktop-nav">
-            <nav style={{ display: "flex", gap: 12, justifyContent: "center" }}>
-              {navItems.map(({ to, label, end }) => (
-                <NavLink
-                  key={to}
-                  to={to}
-                  end={end}
-                  className={({ isActive }) => (isActive ? "nav-active" : "")}
-                >
-                  {label}
-                </NavLink>
-              ))}
-            </nav>
-          </div>
-
-          <div className="right">
-            <button className="btn" onClick={() => navigate("/login")}>
-              Login
-            </button>
-            {/* Hamburger for mobile */}
-            <button
-              className="iconBtn hamburger-btn"
-              onClick={() => setMobileNavOpen((v) => !v)}
-              aria-label="Toggle navigation"
-            >
-              {mobileNavOpen ? <LuX size={20} /> : <LuMenu size={20} />}
-            </button>
-          </div>
-        </header>
-
-        {/* Mobile dropdown nav */}
-        {mobileNavOpen && (
-          <nav className="mobile-nav">
-            {navItems.map(({ to, label, end }) => (
-              <NavLink
-                key={to}
-                to={to}
-                end={end}
-                className={({ isActive }) =>
-                  `mobile-nav-link ${isActive ? "nav-active" : ""}`
-                }
-                onClick={() => setMobileNavOpen(false)}
-              >
-                {label}
-              </NavLink>
-            ))}
-          </nav>
-        )}
-      </>
-    );
-  }
+  const handleToggle = (e) => {
+    e.preventDefault();
+    document.body.classList.toggle('sb-sidenav-toggled');
+    localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+  };
 
   return (
-    <header className="topbar">
-      <button className="iconBtn" onClick={onToggleSidebar} aria-label="Toggle sidebar">
-        <LuMenu size={20} />
+    <nav className="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+      {/* Navbar Brand*/}
+      <a className="navbar-brand ps-3" href="#" onClick={(e) => { e.preventDefault(); navigate("/"); }}>Digital Village</a>
+
+      {/* Sidebar Toggle*/}
+      <button className="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" onClick={handleToggle}>
+        <i className="fas fa-bars"></i>
       </button>
 
-      <div className="searchWrap">
-        <input className="search" placeholder="Cari Fitur" />
-      </div>
-
-      <div className="right">
-        <button className="iconBtn" title="Help">?</button>
-        <button className="iconBtn notif-btn" title="Notif"><LuBell size={20} /></button>
-
-        <div className="profile" onClick={() => navigate("/profile")} style={{ cursor: "pointer" }}>
-          <div className="avatar" />
-          <div className="profileText">
-            <div className="name">{displayName}</div>
-            <div className="role">{displayRole}</div>
-          </div>
+      {/* Navbar Search*/}
+      <form className="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+        <div className="input-group">
+          <input className="form-control" type="text" placeholder="Cari Fitur..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+          <button className="btn btn-primary" id="btnNavbarSearch" type="button"><i className="fas fa-search"></i></button>
         </div>
-      </div>
-    </header>
+      </form>
+
+      {/* Navbar*/}
+      <ul className="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+        <li className="nav-item dropdown">
+          <a className="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i className="fas fa-user fa-fw"></i> {displayName}
+          </a>
+          <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <li><a className="dropdown-item" href="#!" onClick={(e) => { e.preventDefault(); navigate("/profile"); }}>Profile</a></li>
+            <li><hr className="dropdown-divider" /></li>
+            <li><a className="dropdown-item" href="#!">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
   );
 }

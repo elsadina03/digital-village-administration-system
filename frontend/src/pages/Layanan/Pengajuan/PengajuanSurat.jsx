@@ -2,10 +2,20 @@ import { useEffect, useMemo, useRef, useState, useContext } from "react";
 import api from "../../../services/api";
 import { AuthContext, STAFF_ROLES } from "../../../context/AuthContext";
 import { LuPrinter, LuTrash2 } from "react-icons/lu";
-import "./PengajuanSurat.css";
+import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from "react-leaflet";
+import L from "leaflet";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import ttdImg from "../../../assets/ttd_taza.png";
+import "./PengajuanSurat.css";
 
-
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
 
 const SURAT_OPTIONS = [
   "Surat Usaha",
@@ -16,29 +26,28 @@ const SURAT_OPTIONS = [
 
 /* ================= STATUS ================= */
 const STATUS_BADGE = {
-  pending:         { label: "Menunggu Diproses",   cls: "badge--wait" },
-  diproses:        { label: "Sedang Diproses",      cls: "badge--process" },
+  pending: { label: "Menunggu Diproses", cls: "badge--wait" },
+  diproses: { label: "Sedang Diproses", cls: "badge--process" },
   menunggu_kepdes: { label: "Menunggu Kepala Desa", cls: "badge--review" },
-  selesai:         { label: "Selesai / Disetujui",  cls: "badge--done" },
-  ditolak:         { label: "Ditolak",              cls: "badge--reject" },
+  selesai: { label: "Selesai / Disetujui", cls: "badge--done" },
+  ditolak: { label: "Ditolak", cls: "badge--reject" },
 };
 
 /* ================= PDF HELPER ================= */
 const KEPDES_NAME = "Bapak Kepala Desa";
-const KEPDES_NIP  = "19750318 200312 1 002";
+const KEPDES_NIP = "19750318 200312 1 002";
 
 function buildLetterHtml(letter, ttdUrl) {
-  const jenis   = letter.judul        || "Surat Keterangan";
-  const nomor   = letter.letter_number || "___/___/___/___";
-  const nama    = letter.nama          || "—";
-  const alamat  = letter.alamat        || "—";
-  const tujuan  = letter.tujuan        || "keperluan yang bersangkutan";
-  const bln     = ["Januari","Februari","Maret","April","Mei","Juni",
-                   "Juli","Agustus","September","Oktober","November","Desember"];
-  const d       = new Date();
+  const jenis = letter.judul || "Surat Keterangan";
+  const nomor = letter.letter_number || "___/___/___/___";
+  const nama = letter.nama || "—";
+  const alamat = letter.alamat || "—";
+  const tujuan = letter.tujuan || "keperluan yang bersangkutan";
+  const bln = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+  const d = new Date();
   const tanggal = `${d.getDate()} ${bln[d.getMonth()]} ${d.getFullYear()}`;
-  // Absolute URL so the popup window (same origin) can load the image
-  const imgSrc  = ttdUrl ? (window.location.origin + ttdUrl) : "";
+  const imgSrc = ttdUrl ? (window.location.origin + ttdUrl) : "";
 
   return `<!DOCTYPE html>
 <html lang="id">
@@ -107,11 +116,29 @@ function buildLetterHtml(letter, ttdUrl) {
 
 function handleExportPDF(letter) {
   const html = buildLetterHtml(letter, ttdImg);
-  const win  = window.open("", "_blank", "width=900,height=700");
+  const win = window.open("", "_blank", "width=900,height=700");
   if (!win) { alert("Pop-up diblokir. Harap izinkan pop-up di browser untuk fitur cetak."); return; }
   win.document.write(html);
   win.document.close();
   win.onload = () => { win.focus(); win.print(); };
+}
+
+/* ================= LEAFLET HELPERS ================= */
+function FlyTo({ position }) {
+  const map = useMap();
+  useEffect(() => {
+    map.flyTo(position, 16);
+  }, [position, map]);
+  return null;
+}
+
+function PickMarker({ value, onChange }) {
+  useMapEvents({
+    click(e) {
+      onChange([e.latlng.lat, e.latlng.lng]);
+    },
+  });
+  return value ? <Marker position={value} /> : null;
 }
 
 /* ================= COMPONENT ================= */
@@ -144,17 +171,17 @@ export default function PengajuanSurat() {
         return;
       }
       const formatted = raw.map(l => ({
-        id:             l.id,
-        judul:          l.letter_type?.name || "Surat",
-        waktu:          new Date(l.created_at).toLocaleDateString("id-ID"),
-        status:         l.status,
-        nama:           l.nama,
-        alamat:         l.alamat,
-        tujuan:         l.tujuan,
-        wa:             l.wa,
-        letter_number:  l.letter_number,
+        id: l.id,
+        judul: l.letter_type?.name || "Surat",
+        waktu: new Date(l.created_at).toLocaleDateString("id-ID"),
+        status: l.status,
+        nama: l.nama,
+        alamat: l.alamat,
+        tujuan: l.tujuan,
+        wa: l.wa,
+        letter_number: l.letter_number,
         rejection_note: l.rejection_note,
-        user_id:        l.user_id,
+        user_id: l.user_id,
       }));
       setRiwayat(formatted);
     } catch (err) {
@@ -178,8 +205,8 @@ export default function PengajuanSurat() {
   const fileRef = useRef(null);
 
   const [jenisSurat, setJenisSurat] = useState("");
-  const [nama, setNama] = useState("");
-  const [email, setEmail] = useState("");
+  const [nama, setNama] = useState(user?.name || "");
+  const [email, setEmail] = useState(user?.email || "");
   const [wa, setWa] = useState("");
   const [tujuan, setTujuan] = useState("");
   const [fotoNpwp, setFotoNpwp] = useState(null);
@@ -192,7 +219,7 @@ export default function PengajuanSurat() {
   const [koordinat, setKoordinat] = useState([-7.3798, 112.7869]);
 
   const npwpFileName = useMemo(
-    () => (fotoNpwp ? fotoNpwp.name : "Belum ada file yang dipilih"),
+    () => (fotoNpwp ? fotoNpwp.name : "Belum ada file yang dipilih..."),
     [fotoNpwp]
   );
 
@@ -248,7 +275,6 @@ export default function PengajuanSurat() {
 
   function canDelete(x) {
     if (isStaff) return true;
-    // Warga hanya bisa hapus surat miliknya sendiri yang masih pending atau ditolak
     return x.status === "pending" || x.status === "ditolak";
   }
 
@@ -256,7 +282,7 @@ export default function PengajuanSurat() {
     e.preventDefault();
 
     if (!jenisSurat || !nama || !email || !wa || !alamat) {
-      alert("Lengkapi data wajib.");
+      alert("Lengkapi data wajib (*).");
       return;
     }
 
@@ -281,15 +307,10 @@ export default function PengajuanSurat() {
 
       alert("Surat berhasil diajukan!");
 
-      // refresh
       fetchRiwayat();
       setPage(1);
 
-      // reset
       setJenisSurat("");
-      setNama("");
-      setEmail("");
-      setWa("");
       setTujuan("");
       setFotoNpwp(null);
       setAlamat("");
@@ -305,188 +326,188 @@ export default function PengajuanSurat() {
   /* ================= RENDER ================= */
 
   return (
-    <div className="psWrap">
-      {/* ================= RIWAYAT ================= */}
-      <div className="box">
-        <h1 className="title">Riwayat Pengajuan</h1>
+    <div className="container-fluid px-4 pb-4">
+      <h1 className="mt-4">Pengajuan Surat Online</h1>
+      <ol className="breadcrumb mb-4">
+        <li className="breadcrumb-item active">Layanan / Pengajuan Surat</li>
+      </ol>
 
-        <div className="historyArea">
+      {/* ================= RIWAYAT ================= */}
+      <div className="card mb-4 shadow-sm">
+        <div className="card-header fw-bold">
+          <i className="fas fa-history me-1"></i>
+          Riwayat Pengajuan
+        </div>
+        <div className="card-body">
           {riwayatLoading ? (
-            <div className="historyEmpty">Memuat riwayat…</div>
+            <div className="text-center py-4">Memuat riwayat…</div>
           ) : riwayatError ? (
-            <div className="historyEmpty" style={{ color: "#ef4444" }}>
-              {riwayatError}
-              <br />
-              <button
-                onClick={fetchRiwayat}
-                style={{ marginTop: "0.75rem", padding: "0.4rem 1rem", cursor: "pointer", border: "1px solid #ef4444", borderRadius: "6px", background: "transparent", color: "#ef4444", fontSize: "0.85rem" }}
-              >
-                Coba lagi
-              </button>
+            <div className="alert alert-danger">
+              {riwayatError} <button className="btn btn-sm btn-outline-danger ms-2" onClick={fetchRiwayat}>Coba lagi</button>
             </div>
           ) : riwayatPage.length === 0 ? (
-            <div className="historyEmpty">Belum ada riwayat pengajuan untuk akun ini.</div>
+            <div className="alert alert-light text-center text-muted border border-dashed py-4 mb-0">
+              Belum ada riwayat pengajuan surat.
+            </div>
           ) : (
-            <div className="cards">
+            <div className="row g-3">
               {riwayatPage.map((x) => {
                 const badge = STATUS_BADGE[x.status] || { label: x.status, cls: "badge--wait" };
                 return (
-                  <div key={x.id} className="card">
-                    <div className="cardTitle">{x.judul}</div>
-                    {x.letter_number && (
-                      <div className="cardNomor">No: {x.letter_number}</div>
-                    )}
-                    <div className="cardTime">{x.waktu}</div>
-                    {x.status === "ditolak" && x.rejection_note && (
-                      <div className="cardReject">{x.rejection_note}</div>
-                    )}
-                    <div className="cardFoot">
-                      <span className={`badge ${badge.cls}`}>{badge.label}</span>
-                      {x.status === "selesai" && (
-                        <button
-                          className="btnExportPdf"
-                          onClick={() => handleExportPDF(x)}
-                          title="Cetak / Simpan surat sebagai PDF"
-                        >
-                          <LuPrinter size={13} /> Cetak PDF
-                        </button>
-                      )}
-                      {canDelete(x) && (
-                        <button
-                          className="btnDeleteCard"
-                          onClick={() => handleDelete(x)}
-                          title="Hapus pengajuan"
-                        >
-                          <LuTrash2 size={13} />
-                        </button>
-                      )}
+                  <div key={x.id} className="col-md-6 col-lg-4">
+                    <div className="card border-0 shadow-sm h-100 bg-light">
+                      <div className="card-body p-3">
+                        <div className="d-flex justify-content-between align-items-start mb-2">
+                          <h6 className="card-title fw-bold mb-0">{x.judul}</h6>
+                          {canDelete(x) && (
+                            <button className="btn btn-sm text-danger p-0" onClick={() => handleDelete(x)} title="Hapus">
+                              <LuTrash2 size={16} />
+                            </button>
+                          )}
+                        </div>
+                        {x.letter_number && <p className="small text-primary mb-1">No: {x.letter_number}</p>}
+                        <p className="card-text text-muted small mb-2">{x.waktu}</p>
+
+                        {x.status === "ditolak" && x.rejection_note && (
+                          <div className="alert alert-danger p-2 small mb-2">{x.rejection_note}</div>
+                        )}
+
+                        <div className="d-flex justify-content-between align-items-center mt-auto">
+                          <span className={`badge ${badge.cls.replace('badge--', 'bg-')}`}>{badge.label}</span>
+                          {x.status === "selesai" && (
+                            <button className="btn btn-sm btn-primary" onClick={() => handleExportPDF(x)}>
+                              <LuPrinter size={13} className="me-1" /> Cetak
+                            </button>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 );
               })}
             </div>
           )}
+
+          {riwayat.length > pageSize && (
+            <nav className="mt-4">
+              <ul className="pagination pagination-sm justify-content-center">
+                {[...Array(totalPages)].map((_, i) => (
+                  <li key={i} className={`page-item ${page === i + 1 ? "active" : ""}`}>
+                    <button className="page-link" onClick={() => setPage(i + 1)}>{i + 1}</button>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
         </div>
       </div>
 
       {/* ================= FORM ================= */}
-      <h2 className="formTitle">Pengajuan Surat</h2>
-
-      <form className="form" onSubmit={handleAjukan}>
-        <div className="grid2">
-          <div className="field">
-            <label>Jenis Surat*</label>
-            <select value={jenisSurat} onChange={(e) => setJenisSurat(e.target.value)}>
-              <option value="">Pilih kategori surat</option>
-              {SURAT_OPTIONS.map((s) => (
-                <option key={s}>{s}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="field">
-            <label>Nama*</label>
-            <input value={nama} onChange={(e) => setNama(e.target.value)} />
-          </div>
-
-          <div className="field">
-            <label>Email*</label>
-            <input value={email} onChange={(e) => setEmail(e.target.value)} />
-          </div>
-
-          <div className="field">
-            <label>No. WhatsApp*</label>
-            <input value={wa} onChange={(e) => setWa(e.target.value)} />
-          </div>
+      <div className="card mb-4 shadow-sm">
+        <div className="card-header fw-bold">
+          <i className="fas fa-edit me-1"></i>
+          Formulis Pengajuan Surat Baru
         </div>
-
-        <div className="field">
-          <label>Tujuan (opsional)</label>
-          <input value={tujuan} onChange={(e) => setTujuan(e.target.value)} />
-        </div>
-
-        <div className="field">
-          <label>Foto NPWP</label>
-
-          <div className="fileRow">
-            <button
-              type="button"
-              className="btnGhost"
-              onClick={() => fileRef.current?.click()}
-            >
-              Pilih File
-            </button>
-
-            <input
-              ref={fileRef}
-              type="file"
-              accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-              onChange={(e) => setFotoNpwp(e.target.files?.[0] ?? null)}
-              style={{ display: "none" }}
-            />
-
-            <div className={`fileName ${fotoNpwp ? "filled" : ""}`}>
-              {npwpFileName}
-            </div>
-          </div>
-
-          <div className="hint">*PDF, Word, PNG, JPG, JPEG</div>
-        </div>
-
-        {/* ================= ALAMAT AUTOCOMPLETE ================= */}
-        <div className="field">
-          <label>Alamat*</label>
-
-          <div style={{ position: "relative" }}>
-            <input
-              value={alamat}
-              onChange={(e) => {
-                setAlamat(e.target.value);
-                setShowSuggest(true);
-              }}
-              onFocus={() => setShowSuggest(true)}
-              onBlur={() => setTimeout(() => setShowSuggest(false), 150)}
-              placeholder="Ketik alamat..."
-            />
-
-            {showSuggest && (loadingSuggest || suggestions.length > 0) && (
-              <div className="suggestBox">
-                {loadingSuggest && <div className="suggestItem">Mencari...</div>}
-
-                {!loadingSuggest &&
-                  suggestions.map((s) => (
-                    <button
-                      type="button"
-                      key={s.id}
-                      className="suggestItem"
-                      onClick={() => {
-                        setAlamat(s.label);
-                        setKoordinat([s.lat, s.lon]);
-                        setShowSuggest(false);
-                      }}
-                    >
-                      {s.label}
-                    </button>
+        <div className="card-body">
+          <form onSubmit={handleAjukan}>
+            <div className="row mb-3">
+              <div className="col-md-6 mb-3 mb-md-0">
+                <label className="form-label fw-bold">Jenis Surat*</label>
+                <select className="form-select" value={jenisSurat} onChange={(e) => setJenisSurat(e.target.value)}>
+                  <option value="">Pilih kategori surat</option>
+                  {SURAT_OPTIONS.map((s) => (
+                    <option key={s}>{s}</option>
                   ))}
+                </select>
               </div>
-            )}
-          </div>
-        </div>
+              <div className="col-md-6">
+                <label className="form-label fw-bold">Nama Pemohon*</label>
+                <input className="form-control" placeholder="Nama Lengkap" value={nama} onChange={(e) => setNama(e.target.value)} />
+              </div>
+            </div>
 
-        {/* ================= MAP ================= */}
-        <div className="mapWrap">
-          <iframe
-            title="Lokasi Alamat"
-            src={`https://maps.google.com/maps?q=${koordinat[0]},${koordinat[1]}&z=15&output=embed`}
-            style={{ width: "100%", height: 360, border: 0, borderRadius: 12, display: "block" }}
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
-        </div>
+            <div className="row mb-3">
+              <div className="col-md-6 mb-3 mb-md-0">
+                <label className="form-label fw-bold">Email*</label>
+                <input type="email" className="form-control" placeholder="Email aktif" value={email} onChange={(e) => setEmail(e.target.value)} />
+              </div>
+              <div className="col-md-6">
+                <label className="form-label fw-bold">No. WhatsApp*</label>
+                <input type="tel" className="form-control" placeholder="08xx xxxx xxxx" value={wa} onChange={(e) => setWa(e.target.value)} />
+              </div>
+            </div>
 
-        <button className="btnSubmit">Ajukan</button>
-      </form>
+            <div className="mb-3">
+              <label className="form-label fw-bold">Tujuan Pengajuan (opsional)</label>
+              <input className="form-control" placeholder="Keperluan surat..." value={tujuan} onChange={(e) => setTujuan(e.target.value)} />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label fw-bold">Foto NPWP / Bukti Pendukung</label>
+              <div className="input-group">
+                <button type="button" className="btn btn-outline-secondary" onClick={() => fileRef.current?.click()}>
+                  <i className="fas fa-upload me-1"></i> Pilih File
+                </button>
+                <input type="text" className="form-control bg-light" readOnly value={npwpFileName} />
+              </div>
+              <input ref={fileRef} type="file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" onChange={(e) => setFotoNpwp(e.target.files?.[0] ?? null)} style={{ display: "none" }} />
+              <div className="form-text text-danger mt-1 small">*PDF, Word, PNG, JPG, JPEG</div>
+            </div>
+
+            <div className="mb-3 position-relative">
+              <label className="form-label fw-bold">Alamat Lengkap*</label>
+              <input
+                className="form-control"
+                value={alamat}
+                onChange={(e) => {
+                  setAlamat(e.target.value);
+                  setShowSuggest(true);
+                }}
+                onFocus={() => setShowSuggest(true)}
+                onBlur={() => setTimeout(() => setShowSuggest(false), 200)}
+                placeholder="Ketik alamat domisili Anda..."
+              />
+              {showSuggest && (loadingSuggest || suggestions.length > 0) && (
+                <ul className="list-group position-absolute w-100 shadow mt-1" style={{ zIndex: 1050 }}>
+                  {loadingSuggest && <li className="list-group-item text-muted text-center py-2">Mencari alamat...</li>}
+                  {!loadingSuggest &&
+                    suggestions.map((s) => (
+                      <button
+                        type="button"
+                        key={s.id}
+                        className="list-group-item list-group-item-action py-2 lh-sm px-3"
+                        onClick={() => {
+                          setAlamat(s.label);
+                          setKoordinat([s.lat, s.lon]);
+                          setShowSuggest(false);
+                        }}
+                      >
+                        <small>{s.label}</small>
+                      </button>
+                    ))}
+                </ul>
+              )}
+            </div>
+
+            <div className="mb-4">
+              <label className="form-label fw-bold mb-2">Tandai Lokasi Rumah di Peta</label>
+              <div className="rounded overflow-hidden border shadow-sm">
+                <MapContainer center={koordinat} zoom={14} style={{ height: 360, width: '100%' }}>
+                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                  <FlyTo position={koordinat} />
+                  <PickMarker value={koordinat} onChange={setKoordinat} />
+                </MapContainer>
+              </div>
+            </div>
+
+            <div className="d-grid mt-4">
+              <button className="btn btn-primary btn-lg" type="submit">
+                <i className="fas fa-paper-plane me-2"></i> Ajukan Surat Sekarang
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

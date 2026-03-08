@@ -1,9 +1,12 @@
 ﻿.pgWrap {
   position: relative;
-  max-width: 1100px;  /* sama kayak page pengajuan */
+  max-width: 1100px;
+  /* sama kayak page pengajuan */
   margin: 20px auto;
-  padding: 0 16px;    /* biar aman di layar kecil */
+  padding: 0 16px;
+  /* biar aman di layar kecil */
 }
+
 .pgCard {
   background: #ffffff;
   border: 1px solid #e6eef0;
@@ -39,6 +42,10 @@
 .pgForm input {
   width: 100%;
   padding: 12px;
+<<<<<<< HEAD
+=======
+  /* atau 12px 14px */
+>>>>>>> 9a218f1 (refactor: update frontend components, layouts and add root .gitignore)
   border-radius: 12px;
   border: 1px solid #cfd8dc;
   outline: none;
@@ -227,6 +234,7 @@
   transform: translateY(-2px);
 }
 
+<<<<<<< HEAD
 /* ── Responsive ─────────────────────────────────── */
 @media (max-width: 600px) {
   .pgWrap { margin: 12px auto; }
@@ -235,4 +243,30 @@
   .btnSend { font-size: 14px; padding: 12px; }
   .fileRow { flex-direction: column; }
   .btnGhost { border-right: 0; border-bottom: 1px solid #cfd8dc; padding: 10px 14px; }
+=======
+/* ================= RESPONSIF ================= */
+@media (max-width: 768px) {
+  .pgWrap {
+    padding: 0;
+    margin: 10px auto;
+  }
+
+  .pgCard {
+    padding: 14px;
+    border-radius: 12px;
+  }
+
+  /* Susun tombol lampirkan file jadi bertumpuk jika layar sempit ekstrim,
+     tapi defaultnya flex stretch udah cukup aman. Kita biarkan flex, 
+     cuma kecilkan padding text-nya */
+  .fileName {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .btnGhost {
+    padding: 0 10px;
+    font-size: 13px;
+  }
+>>>>>>> 9a218f1 (refactor: update frontend components, layouts and add root .gitignore)
 }

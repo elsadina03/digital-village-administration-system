@@ -1,0 +1,25 @@
+ M frontend/index.html
+ M frontend/src/components/Layout.jsx
+ M frontend/src/components/Sidebar.jsx
+ M frontend/src/components/Topbar.jsx
+ M frontend/src/components/layout.css
+ M frontend/src/components/sidebar.css
+ M frontend/src/components/topbar.css
+ M frontend/src/pages/Dashboard/Dashboard.jsx
+ M frontend/src/pages/Dashboard/dashboard.css
+ M frontend/src/pages/Dashboard_Monitoring/Surat_Diproses/suratdiproses.css
+ M frontend/src/pages/Keuangan/Data-Anggaran.css
+ M frontend/src/pages/Keuangan/Data-Anggaran.jsx
+ M frontend/src/pages/Layanan/Arsip/arsipdokumen.css
+ M frontend/src/pages/Layanan/Pengaduan/Pengaduan.css
+ M frontend/src/pages/Layanan/Pengaduan/Pengaduan.jsx
+ M frontend/src/pages/Layanan/Pengajuan/PengajuanSurat.css
+ M frontend/src/pages/Layanan/Pengajuan/PengajuanSurat.jsx
+ M frontend/src/pages/Program-Kegiatan/Program_Desa/Program.css
+?? backend/.env
+?? backend/bootstrap/
+?? backend/public/
+?? backend/storage/
+?? backend/vendor/
+?? frontend/public/sb-admin/
+?? git_status.txt

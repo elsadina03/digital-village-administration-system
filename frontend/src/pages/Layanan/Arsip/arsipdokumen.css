@@ -46,11 +46,16 @@
 
 .ddBtn {
   width: 100%;
+<<<<<<< HEAD
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   padding: 13px 16px;
+=======
+  padding: 14px 48px 14px 14px;
+  /* kanan lebih lega */
+>>>>>>> 9a218f1 (refactor: update frontend components, layouts and add root .gitignore)
   border-radius: 14px;
   border: 1px solid #cfd8dc;
   background: #fff;
@@ -390,19 +395,38 @@
   .panelTop {
     grid-template-columns: 1fr;
   }
+
   .tabs {
     justify-content: flex-start;
+    flex-wrap: wrap;
+    /* biar tab tidak melebar kalau tab banyak */
   }
+
   .cards {
     grid-template-columns: 1fr;
   }
+
   .grid2 {
     grid-template-columns: 1fr;
   }
+
   .cardTitle {
     font-size: 26px;
   }
+
   .emptyText {
     font-size: 22px;
+  }
+}
+
+@media (max-width: 768px) {
+  .arsipWrap {
+    padding: 0;
+  }
+
+  .panel,
+  .form {
+    padding: 12px;
+    border-radius: 12px;
   }
 }

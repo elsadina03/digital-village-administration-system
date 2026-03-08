@@ -83,6 +83,7 @@ export default function DataAnggaran() {
     const paginated = rows.slice((page - 1) * PER_PAGE, page * PER_PAGE);
     const totalPages = Math.max(1, Math.ceil(rows.length / PER_PAGE));
 
+<<<<<<< HEAD
     // ... CRUD handlers ...
     const openAdd  = () => { setEditId(null); setForm({ tahun: year, kategori: "Pemasukan", deskripsi: "", bulan: "Januari", sumber_dana: "", nominal_anggaran: "", nominal_realisasi: "0", keterangan: "" }); setShowForm(true); };
     const openEdit = (b) => { setEditId(b.id); setForm({ tahun: b.tahun, kategori: b.kategori ?? "Pemasukan", deskripsi: b.deskripsi ?? "", bulan: b.bulan ?? "Januari", sumber_dana: b.sumber_dana, nominal_anggaran: b.nominal_anggaran, nominal_realisasi: b.nominal_realisasi, keterangan: b.keterangan ?? "" }); setShowForm(true); };
@@ -238,6 +239,43 @@ export default function DataAnggaran() {
                         )}
                     </section>
                 </main>
+=======
+            <div className="kw-tableWrap">
+              <table className="kw-table">
+                <thead>
+                  <tr>
+                    <th>TANGGAL</th>
+                    <th>DESKRIPSI</th>
+                    <th>KATEGORI</th>
+                    <th>ANGGARAN</th>
+                    <th>REALISASI</th>
+                    <th>AKSI</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((r, i) => (
+                    <tr key={i}>
+                      <td className="kw-muted" data-label="TANGGAL">{r.tgl}</td>
+                      <td className="kw-strong" data-label="DESKRIPSI">{r.desk}</td>
+                      <td data-label="KATEGORI">
+                        {r.kategori === "Pemasukan" ? (
+                          <Pill kind="green">Pemasukan</Pill>
+                        ) : r.kategori === "Belanja Modal" ? (
+                          <Pill kind="amber">Belanja Modal</Pill>
+                        ) : (
+                          <Pill kind="mint">Belanja Desa</Pill>
+                        )}
+                      </td>
+                      <td className="kw-muted" data-label="ANGGARAN">{r.anggaran}</td>
+                      <td className="kw-strong" data-label="REALISASI">{r.realisasi}</td>
+                      <td data-label="AKSI">
+                        <button className="kw-detail" type="button">Detail</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+>>>>>>> 9a218f1 (refactor: update frontend components, layouts and add root .gitignore)
 
                 {/* Right sidebar filter */}
                 <aside className="kw-side">
