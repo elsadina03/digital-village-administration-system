@@ -4,9 +4,9 @@ import { AuthContext } from "../../context/AuthContext";
 import "./Data-Anggaran.css";
 import { LuLandmark, LuSearch, LuClipboardList, LuBanknote, LuTrendingUp, LuCalendar, LuCircleCheck } from "react-icons/lu";
 
-const BULAN_LIST = ["Semua Bulan","Januari","Februari","Maret","April","Mei","Juni",
-                    "Juli","Agustus","September","Oktober","November","Desember"];
-const KATEGORI_LIST = ["Pemasukan","Belanja Desa","Belanja Modal","Belanja Pegawai","Lainnya"];
+const BULAN_LIST = ["Semua Bulan", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+const KATEGORI_LIST = ["Pemasukan", "Belanja Desa", "Belanja Modal", "Belanja Pegawai", "Lainnya"];
 
 function rupiah(n) {
     if (!n && n !== 0) return "Rp -";
@@ -26,22 +26,22 @@ function pillKind(k) {
 export default function DataAnggaran() {
     const { isAdmin, canAccessFinance } = useContext(AuthContext);
 
-    const [budgets,  setBudgets]  = useState([]);
-    const [summary,  setSummary]  = useState({});
-    const [loading,  setLoading]  = useState(true);
-    const [error,    setError]    = useState(null);
+    const [budgets, setBudgets] = useState([]);
+    const [summary, setSummary] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const [tab,    setTab]    = useState("pemasukan");
-    const [q,      setQ]      = useState("");
-    const [year,   setYear]   = useState(String(new Date().getFullYear()));
-    const [month,  setMonth]  = useState("Semua Bulan");
-    const [page,   setPage]   = useState(1);
+    const [tab, setTab] = useState("pemasukan");
+    const [q, setQ] = useState("");
+    const [year, setYear] = useState(String(new Date().getFullYear()));
+    const [month, setMonth] = useState("Semua Bulan");
+    const [page, setPage] = useState(1);
     const PER_PAGE = 10;
 
     // ... Modal tambah / edit ...
-    const [showForm, setShowForm]   = useState(false);
-    const [editId,   setEditId]     = useState(null);
-    const [form,     setForm]       = useState({
+    const [showForm, setShowForm] = useState(false);
+    const [editId, setEditId] = useState(null);
+    const [form, setForm] = useState({
         tahun: String(new Date().getFullYear()),
         kategori: "Pemasukan", deskripsi: "", bulan: "Januari",
         sumber_dana: "", nominal_anggaran: "", nominal_realisasi: "0", keterangan: "",
@@ -57,7 +57,7 @@ export default function DataAnggaran() {
         setLoading(true);
         try {
             const params = {};
-            if (year)                  params.tahun = year;
+            if (year) params.tahun = year;
             if (month !== "Semua Bulan") params.bulan = month;
             const res = await api.get("/budgets", { params });
             setBudgets(res.data.data || []);
@@ -75,7 +75,7 @@ export default function DataAnggaran() {
         const s = q.trim().toLowerCase();
         let list = budgets;
         if (s) list = list.filter(b => (b.deskripsi + " " + b.sumber_dana + " " + b.kategori).toLowerCase().includes(s));
-        if (tab === "pemasukan")   list = list.filter(b => b.kategori === "Pemasukan");
+        if (tab === "pemasukan") list = list.filter(b => b.kategori === "Pemasukan");
         if (tab === "pengeluaran") list = list.filter(b => b.kategori !== "Pemasukan");
         return list;
     }, [budgets, q, tab]);
@@ -83,9 +83,8 @@ export default function DataAnggaran() {
     const paginated = rows.slice((page - 1) * PER_PAGE, page * PER_PAGE);
     const totalPages = Math.max(1, Math.ceil(rows.length / PER_PAGE));
 
-<<<<<<< HEAD
     // ... CRUD handlers ...
-    const openAdd  = () => { setEditId(null); setForm({ tahun: year, kategori: "Pemasukan", deskripsi: "", bulan: "Januari", sumber_dana: "", nominal_anggaran: "", nominal_realisasi: "0", keterangan: "" }); setShowForm(true); };
+    const openAdd = () => { setEditId(null); setForm({ tahun: year, kategori: "Pemasukan", deskripsi: "", bulan: "Januari", sumber_dana: "", nominal_anggaran: "", nominal_realisasi: "0", keterangan: "" }); setShowForm(true); };
     const openEdit = (b) => { setEditId(b.id); setForm({ tahun: b.tahun, kategori: b.kategori ?? "Pemasukan", deskripsi: b.deskripsi ?? "", bulan: b.bulan ?? "Januari", sumber_dana: b.sumber_dana, nominal_anggaran: b.nominal_anggaran, nominal_realisasi: b.nominal_realisasi, keterangan: b.keterangan ?? "" }); setShowForm(true); };
 
     const handleSave = async (e) => {
@@ -137,22 +136,22 @@ export default function DataAnggaran() {
                     <form className="kw-modal" onClick={e => e.stopPropagation()} onSubmit={handleSave}>
                         <div className="kw-modal-title">{editId ? "Edit Data Anggaran" : "Tambah Data Anggaran"}</div>
                         <div className="kw-form-grid">
-                            <label>Tahun<input className="kw-input" value={form.tahun} onChange={e => setForm(p => ({...p, tahun: e.target.value}))} required /></label>
+                            <label>Tahun<input className="kw-input" value={form.tahun} onChange={e => setForm(p => ({ ...p, tahun: e.target.value }))} required /></label>
                             <label>Bulan
-                                <select className="kw-input" value={form.bulan} onChange={e => setForm(p => ({...p, bulan: e.target.value}))}>
+                                <select className="kw-input" value={form.bulan} onChange={e => setForm(p => ({ ...p, bulan: e.target.value }))}>
                                     {BULAN_LIST.slice(1).map(b => <option key={b}>{b}</option>)}
                                 </select>
                             </label>
                             <label>Kategori
-                                <select className="kw-input" value={form.kategori} onChange={e => setForm(p => ({...p, kategori: e.target.value}))}>
+                                <select className="kw-input" value={form.kategori} onChange={e => setForm(p => ({ ...p, kategori: e.target.value }))}>
                                     {KATEGORI_LIST.map(k => <option key={k}>{k}</option>)}
                                 </select>
                             </label>
-                            <label>Sumber Dana<input className="kw-input" value={form.sumber_dana} onChange={e => setForm(p => ({...p, sumber_dana: e.target.value}))} required /></label>
-                            <label className="kw-form-full">Deskripsi<input className="kw-input" value={form.deskripsi} onChange={e => setForm(p => ({...p, deskripsi: e.target.value}))} /></label>
-                            <label>Nominal Anggaran (Rp)<input type="number" className="kw-input" value={form.nominal_anggaran} onChange={e => setForm(p => ({...p, nominal_anggaran: e.target.value}))} required /></label>
-                            <label>Realisasi (Rp)<input type="number" className="kw-input" value={form.nominal_realisasi} onChange={e => setForm(p => ({...p, nominal_realisasi: e.target.value}))} /></label>
-                            <label className="kw-form-full">Keterangan<textarea className="kw-input" value={form.keterangan} onChange={e => setForm(p => ({...p, keterangan: e.target.value}))} /></label>
+                            <label>Sumber Dana<input className="kw-input" value={form.sumber_dana} onChange={e => setForm(p => ({ ...p, sumber_dana: e.target.value }))} required /></label>
+                            <label className="kw-form-full">Deskripsi<input className="kw-input" value={form.deskripsi} onChange={e => setForm(p => ({ ...p, deskripsi: e.target.value }))} /></label>
+                            <label>Nominal Anggaran (Rp)<input type="number" className="kw-input" value={form.nominal_anggaran} onChange={e => setForm(p => ({ ...p, nominal_anggaran: e.target.value }))} required /></label>
+                            <label>Realisasi (Rp)<input type="number" className="kw-input" value={form.nominal_realisasi} onChange={e => setForm(p => ({ ...p, nominal_realisasi: e.target.value }))} /></label>
+                            <label className="kw-form-full">Keterangan<textarea className="kw-input" value={form.keterangan} onChange={e => setForm(p => ({ ...p, keterangan: e.target.value }))} /></label>
                         </div>
                         <div className="kw-modal-actions">
                             <button type="button" className="kw-btn-cancel" onClick={() => setShowForm(false)}>Batal</button>
@@ -190,92 +189,55 @@ export default function DataAnggaran() {
                         </div>
 
                         <div className="kw-tabs">
-                            {["pemasukan","pengeluaran","laporan"].map(t => (
+                            {["pemasukan", "pengeluaran", "laporan"].map(t => (
                                 <button key={t} className={`kw-tab ${tab === t ? "is-active" : ""}`} onClick={() => { setTab(t); setPage(1); }} type="button">
                                     {t === "pemasukan" ? "Pemasukan" : t === "pengeluaran" ? "Pengeluaran" : "Semua"}
                                 </button>
                             ))}
                         </div>
 
-                        {loading ? <div style={{padding:"1rem"}}>Memuat data...</div> : error ? <div style={{padding:"1rem",color:"red"}}>{error}</div> : (
-                        <div className="kw-tableWrap">
-                            <table className="kw-table">
-                                <thead>
-                                    <tr>
-                                        <th>BULAN/TAHUN</th>
-                                        <th>DESKRIPSI</th>
-                                        <th>KATEGORI</th>
-                                        <th>ANGGARAN</th>
-                                        <th>REALISASI</th>
-                                        {canAccessFinance() && <th>AKSI</th>}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {paginated.length === 0 ? (
-                                        <tr><td colSpan="6" style={{textAlign:"center",padding:"1.5rem",color:"#999"}}>Tidak ada data</td></tr>
-                                    ) : paginated.map((b) => (
-                                        <tr key={b.id}>
-                                            <td className="kw-muted">{b.bulan ? `${b.bulan} ${b.tahun}` : b.tahun}</td>
-                                            <td className="kw-strong">{b.deskripsi || b.sumber_dana}</td>
-                                            <td><Pill kind={pillKind(b.kategori)}>{b.kategori}</Pill></td>
-                                            <td className="kw-muted">{rupiah(b.nominal_anggaran)}</td>
-                                            <td className="kw-strong">{rupiah(b.nominal_realisasi)}</td>
-                                            {canAccessFinance() && (
-                                                <td>
-                                                    <button className="kw-detail" type="button" onClick={() => openEdit(b)}>Edit</button>
-                                                    {isAdmin() && <button className="kw-detail kw-detail--del" type="button" onClick={() => handleDelete(b.id)}>Hapus</button>}
-                                                </td>
-                                            )}
+                        {loading ? <div style={{ padding: "1rem" }}>Memuat data...</div> : error ? <div style={{ padding: "1rem", color: "red" }}>{error}</div> : (
+                            <div className="kw-tableWrap">
+                                <table className="kw-table">
+                                    <thead>
+                                        <tr>
+                                            <th>BULAN/TAHUN</th>
+                                            <th>DESKRIPSI</th>
+                                            <th>KATEGORI</th>
+                                            <th>ANGGARAN</th>
+                                            <th>REALISASI</th>
+                                            {canAccessFinance() && <th>AKSI</th>}
                                         </tr>
+                                    </thead>
+                                    <tbody>
+                                        {paginated.length === 0 ? (
+                                            <tr><td colSpan="6" style={{ textAlign: "center", padding: "1.5rem", color: "#999" }}>Tidak ada data</td></tr>
+                                        ) : paginated.map((b) => (
+                                            <tr key={b.id}>
+                                                <td className="kw-muted">{b.bulan ? `${b.bulan} ${b.tahun}` : b.tahun}</td>
+                                                <td className="kw-strong">{b.deskripsi || b.sumber_dana}</td>
+                                                <td><Pill kind={pillKind(b.kategori)}>{b.kategori}</Pill></td>
+                                                <td className="kw-muted">{rupiah(b.nominal_anggaran)}</td>
+                                                <td className="kw-strong">{rupiah(b.nominal_realisasi)}</td>
+                                                {canAccessFinance() && (
+                                                    <td>
+                                                        <button className="kw-detail" type="button" onClick={() => openEdit(b)}>Edit</button>
+                                                        {isAdmin() && <button className="kw-detail kw-detail--del" type="button" onClick={() => handleDelete(b.id)}>Hapus</button>}
+                                                    </td>
+                                                )}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                                <div className="kw-pager">
+                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                                        <button key={p} type="button" className={`kw-pageBtn ${page === p ? "is-active" : ""}`} onClick={() => setPage(p)}>{p}</button>
                                     ))}
-                                </tbody>
-                            </table>
-                            <div className="kw-pager">
-                                {Array.from({length: totalPages}, (_, i) => i+1).map(p => (
-                                    <button key={p} type="button" className={`kw-pageBtn ${page === p ? "is-active" : ""}`} onClick={() => setPage(p)}>{p}</button>
-                                ))}
+                                </div>
                             </div>
-                        </div>
                         )}
                     </section>
                 </main>
-=======
-            <div className="kw-tableWrap">
-              <table className="kw-table">
-                <thead>
-                  <tr>
-                    <th>TANGGAL</th>
-                    <th>DESKRIPSI</th>
-                    <th>KATEGORI</th>
-                    <th>ANGGARAN</th>
-                    <th>REALISASI</th>
-                    <th>AKSI</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map((r, i) => (
-                    <tr key={i}>
-                      <td className="kw-muted" data-label="TANGGAL">{r.tgl}</td>
-                      <td className="kw-strong" data-label="DESKRIPSI">{r.desk}</td>
-                      <td data-label="KATEGORI">
-                        {r.kategori === "Pemasukan" ? (
-                          <Pill kind="green">Pemasukan</Pill>
-                        ) : r.kategori === "Belanja Modal" ? (
-                          <Pill kind="amber">Belanja Modal</Pill>
-                        ) : (
-                          <Pill kind="mint">Belanja Desa</Pill>
-                        )}
-                      </td>
-                      <td className="kw-muted" data-label="ANGGARAN">{r.anggaran}</td>
-                      <td className="kw-strong" data-label="REALISASI">{r.realisasi}</td>
-                      <td data-label="AKSI">
-                        <button className="kw-detail" type="button">Detail</button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
->>>>>>> 9a218f1 (refactor: update frontend components, layouts and add root .gitignore)
 
                 {/* Right sidebar filter */}
                 <aside className="kw-side">

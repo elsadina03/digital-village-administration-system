@@ -74,6 +74,7 @@
   transition: transform 0.15s ease;
   opacity: 0.7;
 }
+
 .sb__chev.open {
   transform: rotate(180deg);
 }
@@ -120,7 +121,6 @@
 }
 
 .sb--collapsed .sb__sub {
-<<<<<<< HEAD
   display: none;
 }
 
@@ -130,18 +130,10 @@
 
 /* ── Mobile sidebar overlay (≤ 767px) ─────────────── */
 @media (max-width: 767px) {
-=======
-  display: none; /* optional: sub menu disembunyiin pas collapse */
-}
-
-/* --- RESPONSIF: LAYAR KECIL --- */
-@media (max-width: 768px) {
->>>>>>> 9a218f1 (refactor: update frontend components, layouts and add root .gitignore)
   .sb {
     position: fixed;
     top: 0;
     left: 0;
-<<<<<<< HEAD
     height: 100%;
     width: 260px;
     z-index: 100;
@@ -168,26 +160,3 @@
     display: unset;
   }
 }
-=======
-    bottom: 0;
-    z-index: 1000;
-    transform: translateX(0);
-    transition: transform 0.3s ease;
-    width: 260px; /* Lebar penuh di mobile saat terbuka */
-  }
-
-  /* Saat Sidebar diklik toggle (collapse), di mobile artinya disembunyikan total */
-  .sb--collapsed {
-    transform: translateX(-100%);
-  }
-
-  /* Tambahkan overlay backdrop saat sidebar terbuka di mobile */
-  .sb-backdrop {
-    display: block;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-  }
-}
->>>>>>> 9a218f1 (refactor: update frontend components, layouts and add root .gitignore)

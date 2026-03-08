@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-﻿:root{
-=======
 :root {
->>>>>>> 9a218f1 (refactor: update frontend components, layouts and add root .gitignore)
   --kw-bg: #f2f6f5;
   --kw-top: #2aa69a;
   --kw-top2: #238f85;
@@ -514,11 +510,7 @@
 .kw-statItem {
   padding: 10px 12px;
   border-radius: 12px;
-<<<<<<< HEAD
-  background:#F8F6F1;
-=======
-  background: #f3f7f6;
->>>>>>> 9a218f1 (refactor: update frontend components, layouts and add root .gitignore)
+  background: #F8F6F1;
   border: 1px solid #e6f0ee;
   font-weight: 900;
   font-size: 13px;
@@ -565,102 +557,21 @@
 }
 
 /* ============ Responsive tweaks ============ */
-<<<<<<< HEAD
-@media (max-width: 640px){
-  .kw-title{ display:none; }
-  .kw-search{ width: 180px; }
-  .kw-export{ padding: 10px 10px; font-size: 12px; }
-  .kw-table thead{ display:none; }
-  .kw-table, .kw-table tbody, .kw-table tr, .kw-table td{ display:block; width: 100%; }
-  .kw-table tr{ border-bottom: 1px solid #edf2f1; }
-  .kw-table td{ border: 0; padding: 10px 14px; }
-}
-
-/* ============ Modal ============ */
-.kw-modal-overlay{
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.45);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 200;
-}
-.kw-modal{
-  background: #fff;
-  border-radius: 14px;
-  padding: 28px 32px;
-  max-width: 600px;
-  width: 92%;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0,0,0,.2);
-}
-.kw-modal-title{
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 18px;
-  color: var(--kw-top);
-}
-.kw-form-grid{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-.kw-form-full{ grid-column: 1 / -1; }
-.kw-form-grid label{ display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 600; color: #374151; }
-.kw-input{
-  border: 1.5px solid #d1d5db;
-  border-radius: 8px;
-  padding: 8px 10px;
-  font-size: 14px;
-  outline: none;
-  transition: border-color .2s;
-}
-.kw-input:focus{ border-color: var(--kw-top); }
-.kw-modal-actions{
-  display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;
-}
-.kw-btn-cancel{
-  padding: 9px 20px; border-radius: 8px; border: 1.5px solid #d1d5db;
-  background: #fff; cursor: pointer; font-size: 14px;
-}
-.kw-btn-save{
-  padding: 9px 20px; border-radius: 8px; border: none;
-  background: var(--kw-top); color: #fff; cursor: pointer; font-size: 14px;
-  font-weight: 600;
-}
-.kw-btn-save:hover{ background: var(--kw-top2); }
-.kw-detail--del{ color: #ef4444; border-color: #ef4444; margin-left: 4px; }
-=======
 /* ============ Responsive tweaks ============ */
-@media (max-width: 900px) {
-  .kw-shell {
-    grid-template-columns: 1fr;
-  }
-
-  .kw-bottom {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 768px) {
-  .kw-shell {
-    padding: 12px;
-  }
-
+@media (max-width: 640px) {
   .kw-title {
     display: none;
   }
 
   .kw-search {
-    width: 140px;
-    padding: 6px 8px;
+    width: 180px;
   }
 
   .kw-export {
-    padding: 8px 10px;
-    font-size: 11px;
+    padding: 10px 10px;
+    font-size: 12px;
   }
 
-  /* Table jadi tampilan Card/Mobile */
   .kw-table thead {
     display: none;
   }
@@ -674,61 +585,109 @@
   }
 
   .kw-table tr {
-    border: 1px solid #edf2f1;
-    border-radius: 12px;
-    margin-bottom: 12px;
-    padding: 10px 0;
-    background: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    border-bottom: 1px solid #edf2f1;
   }
 
   .kw-table td {
-    border-bottom: 1px solid #f2f6f5;
-    padding: 8px 14px 8px 45%;
-    text-align: right;
-    position: relative;
-    min-height: 40px;
-    /* Biar ada jarak kalau row kosong */
-  }
-
-  .kw-table td:last-child {
-    border-bottom: 0;
-  }
-
-  /* Responsive Table "Card" Style padding */
-  .kw-table td::before {
-    content: attr(data-label);
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 12px;
-    font-weight: 800;
-    text-align: left;
-    color: #6b7280;
-  }
-
-  /* Detail button inside cards */
-  .kw-table td[data-label="AKSI"] {
-    text-align: center;
-    padding-left: 14px;
-  }
-
-  .kw-table td[data-label="AKSI"]::before {
-    display: none;
-  }
-
-  /* Atur kw-strip agar stack vertikal */
-  .kw-strip {
-    flex-direction: column;
-    text-align: center;
-    gap: 12px;
-  }
-
-  .kw-strip-right {
-    margin-left: 0;
-    text-align: center;
-    margin-top: 5px;
+    border: 0;
+    padding: 10px 14px;
   }
 }
->>>>>>> 9a218f1 (refactor: update frontend components, layouts and add root .gitignore)
+
+/* ============ Modal ============ */
+.kw-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.kw-modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px 32px;
+  max-width: 600px;
+  width: 92%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .2);
+}
+
+.kw-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: var(--kw-top);
+}
+
+.kw-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.kw-form-full {
+  grid-column: 1 / -1;
+}
+
+.kw-form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.kw-input {
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color .2s;
+}
+
+.kw-input:focus {
+  border-color: var(--kw-top);
+}
+
+.kw-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.kw-btn-cancel {
+  padding: 9px 20px;
+  border-radius: 8px;
+  border: 1.5px solid #d1d5db;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.kw-btn-save {
+  padding: 9px 20px;
+  border-radius: 8px;
+  border: none;
+  background: var(--kw-top);
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.kw-btn-save:hover {
+  background: var(--kw-top2);
+}
+
+.kw-detail--del {
+  color: #ef4444;
+  border-color: #ef4444;
+  margin-left: 4px;
+}
