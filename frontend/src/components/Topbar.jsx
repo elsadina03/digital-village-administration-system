@@ -2,17 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
-export default function Topbar() {
+export default function Topbar({ onToggleSidebar, isPublic }) {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
 
   const displayName = user?.name ?? "—";
-
-  const handleToggle = (e) => {
-    e.preventDefault();
-    document.body.classList.toggle('sb-sidenav-toggled');
-    localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
-  };
 
   return (
     <nav className="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -20,9 +14,11 @@ export default function Topbar() {
       <a className="navbar-brand ps-3" href="#" onClick={(e) => { e.preventDefault(); navigate("/"); }}>Digital Village</a>
 
       {/* Sidebar Toggle*/}
-      <button className="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" onClick={handleToggle}>
-        <i className="fas fa-bars"></i>
-      </button>
+      {!isPublic && (
+        <button className="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" onClick={(e) => { e.preventDefault(); onToggleSidebar(); }}>
+          <i className="fas fa-bars"></i>
+        </button>
+      )}
 
       {/* Navbar Search*/}
       <form className="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
@@ -41,7 +37,7 @@ export default function Topbar() {
           <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
             <li><a className="dropdown-item" href="#!" onClick={(e) => { e.preventDefault(); navigate("/profile"); }}>Profile</a></li>
             <li><hr className="dropdown-divider" /></li>
-            <li><a className="dropdown-item" href="#!">Logout</a></li>
+            <li><a className="dropdown-item" href="#!" onClick={(e) => { e.preventDefault(); logout(); navigate("/"); }}>Logout</a></li>
           </ul>
         </li>
       </ul>

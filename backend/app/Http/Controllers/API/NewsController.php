@@ -30,11 +30,16 @@ class NewsController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'title'   => 'required|string|max:255',
-            'content' => 'required|string',
-            'image'   => 'nullable|image|max:4096',
-        ]);
+        try {
+            $request->validate([
+                'title'   => 'required|string|max:255',
+                'content' => 'required|string',
+                'image'   => 'nullable|image|max:4096',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Illuminate\Support\Facades\Log::error('News Store Validation Failed: ' . json_encode($e->errors()));
+            throw $e;
+        }
 
         $imagePath = null;
         if ($request->hasFile('image')) {
@@ -69,11 +74,16 @@ class NewsController extends Controller
 
     public function update(Request $request, News $news)
     {
-        $request->validate([
-            'title'   => 'sometimes|string|max:255',
-            'content' => 'sometimes|string',
-            'image'   => 'nullable|image|max:4096',
-        ]);
+        try {
+            $request->validate([
+                'title'   => 'sometimes|string|max:255',
+                'content' => 'sometimes|string',
+                'image'   => 'nullable|image|max:4096',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Illuminate\Support\Facades\Log::error('News Update Validation Failed: ' . json_encode($e->errors()));
+            throw $e;
+        }
 
         if ($request->hasFile('image')) {
             if ($news->image_path) Storage::disk('public')->delete($news->image_path);

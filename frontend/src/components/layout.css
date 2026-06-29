@@ -1,13 +1,40 @@
-﻿.shell {
+/* Base Layout Structure */
+.shell {
   display: flex;
   min-height: 100vh;
 }
 
+/* Make sure the topbar class is fixed at the top */
+.sb-topnav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  z-index: 1030;
+}
+
+/* Sidebar is fixed on the left under the topbar */
+.sb-sidenav {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  bottom: 0;
+  width: 225px;
+  z-index: 1020;
+  overflow-y: auto;
+  transition: transform 0.15s ease-in-out, width 0.15s ease-in-out;
+}
+
+/* Main content wrapper offsets the topbar height and sidebar width */
 .main {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-width: 0;
+  margin-top: 56px;
+  margin-left: 225px; /* Matches sidebar width */
+  transition: margin-left 0.15s ease-in-out;
 }
 
 .page {
@@ -23,14 +50,36 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
-  z-index: 99;
+  z-index: 1035; /* Above page content, below sidebar */
 }
 
-/* ── Mobile (≤ 767px) ─────────────────────────────── */
+/* --- Collapsed State (Desktop >= 768px) --- */
+@media (min-width: 768px) {
+  .shell.is-collapsed .sb-sidenav {
+    transform: translateX(-225px);
+  }
+
+  .shell.is-collapsed .main {
+    margin-left: 0;
+  }
+}
+
+/* --- Mobile Styling (< 768px) --- */
 @media (max-width: 767px) {
-  .shell {
-    /* main takes full width; sidebar overlays */
-    position: relative;
+  /* On mobile, the sidebar starts off-screen (hidden) */
+  .sb-sidenav {
+    transform: translateX(-225px);
+    z-index: 1040; /* Sit above navbar and content */
+  }
+
+  /* When open on mobile, slide in */
+  .mobile-open .sb-sidenav {
+    transform: translateX(0);
+  }
+
+  /* Content takes full width on mobile */
+  .main {
+    margin-left: 0;
   }
 
   .page {
@@ -48,4 +97,13 @@
   .page {
     padding: 20px 16px;
   }
+}
+
+/* --- Public View Styling (Logged Out) --- */
+.shell.is-public .main {
+  margin-left: 0;
+}
+
+.shell.is-public .sb-sidenav {
+  display: none;
 }

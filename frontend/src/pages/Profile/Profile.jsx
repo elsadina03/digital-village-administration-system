@@ -75,7 +75,7 @@ export default function Profile() {
     }
     if (!window.confirm("Apakah Anda yakin ingin keluar?")) return;
     logout?.();
-    navigate("/login");
+    navigate("/");
   }
 
   if (loading) {

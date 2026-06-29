@@ -37,7 +37,7 @@ export default function Layout() {
   };
 
   return (
-    <div className={`shell ${collapsed ? "is-collapsed" : ""} ${mobileOpen ? "mobile-open" : ""}`}>
+    <div className={`shell ${isPublic ? "is-public" : ""} ${collapsed ? "is-collapsed" : ""} ${mobileOpen ? "mobile-open" : ""}`}>
       {!isPublic && (
         <>
           <Sidebar collapsed={collapsed} />

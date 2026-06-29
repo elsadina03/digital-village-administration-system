@@ -29,7 +29,7 @@ class FonnteService
         }
 
         try {
-            $response = Http::withHeaders([
+            $response = Http::timeout(3)->withHeaders([
                 'Authorization' => $token,
             ])->post('https://api.fonnte.com/send', [
                 'target'  => $target,

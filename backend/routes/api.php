@@ -73,7 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('users/count', [UserController::class, 'count']);
 
     /* ── Users list (semua staff, untuk dropdown PJ) */
-    Route::middleware('role:Admin Desa,Kepala Desa,Sekretaris Desa,Bendahara Desa')->group(function () {
+    Route::middleware('role:Admin Desa,Kepala Desa,Sekretaris Desa,Bendahara')->group(function () {
         Route::get('users', [UserController::class, 'index']);
     });
 
@@ -193,7 +193,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('users/count', [UserController::class, 'count']);
 
     // Users list (semua staff, untuk dropdown PJ)
-    Route::middleware('role:Admin Desa,Kepala Desa,Sekretaris Desa,Bendahara Desa')->group(function () {
+    Route::middleware('role:Admin Desa,Kepala Desa,Sekretaris Desa,Bendahara')->group(function () {
         Route::get('users', [UserController::class, 'index']);
     });
 
